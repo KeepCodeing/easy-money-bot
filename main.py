@@ -35,7 +35,9 @@ def crawl_and_save():
     # 初始化爬虫和数据库
     spider = CS2MarketSpider()
     
-    spider.crawl_all_items()
+    result = spider.crawl_all_items()
+    
+    print(result)
     
     exit(0)
     
