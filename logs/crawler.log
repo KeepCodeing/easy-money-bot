@@ -399,3 +399,53 @@
 2025-07-05 15:47:29,938 - src.analysis.chart - INFO - 选择最新下轨触碰点: 日期=2025-06-17 16:00:00, 价格=63666.00
 2025-07-05 15:47:29,939 - src.analysis.chart - INFO - 触碰点检测完成，保留 2 个最新触碰点
 2025-07-05 15:47:29,939 - src.analysis.chart - INFO - 准备添加 2 个价格标注
+2025-07-05 15:48:38,535 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:52:23,779 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:52:23,794 - main - ERROR - 测试图表时出错: local variable 'axes' referenced before assignment
+2025-07-05 15:53:38,916 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:53:38,943 - main - ERROR - 测试图表时出错: local variable 'axes' referenced before assignment
+2025-07-05 15:54:55,840 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:54:56,216 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 0 个最新信号
+2025-07-05 15:54:56,216 - src.analysis.chart - INFO - 准备添加 0 个Vegas通道信号标注
+2025-07-05 15:54:57,066 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 16:00:47,058 - main - INFO - 开始执行爬虫任务
+2025-07-05 16:00:47,070 - crawler - INFO - 成功初始化UserAgent
+2025-07-05 16:00:47,073 - crawler - INFO - 使用测试商品ID列表
+2025-07-05 16:00:47,081 - crawler - INFO - 开始爬取 1 个商品的数据
+2025-07-05 16:00:47,082 - crawler - INFO - 开始获取商品 1315938982167306240 的历史数据，目标天数: 360
+2025-07-05 16:00:47,084 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-05 16:00:47,085 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751702447
+2025-07-05 16:00:47,089 - crawler - INFO - 开始获取商品 1315938982167306240 的数据，maxTime=1751702447
+2025-07-05 16:00:47,346 - crawler - INFO - 成功获取商品 1315938982167306240 的数据
+2025-07-05 16:00:47,347 - crawler - INFO - 获取到 91 条数据
+2025-07-05 16:00:48,625 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743926447
+2025-07-05 16:00:48,629 - crawler - INFO - 开始获取商品 1315938982167306240 的数据，maxTime=1743926447
+2025-07-05 16:00:48,881 - crawler - INFO - 成功获取商品 1315938982167306240 的数据
+2025-07-05 16:00:48,882 - crawler - INFO - 获取到 91 条数据
+2025-07-05 16:00:51,475 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736150447
+2025-07-05 16:00:51,475 - crawler - INFO - 开始获取商品 1315938982167306240 的数据，maxTime=1736150447
+2025-07-05 16:00:51,707 - crawler - INFO - 成功获取商品 1315938982167306240 的数据
+2025-07-05 16:00:51,708 - crawler - INFO - 获取到 88 条数据
+2025-07-05 16:00:53,718 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728374447
+2025-07-05 16:00:53,718 - crawler - INFO - 开始获取商品 1315938982167306240 的数据，maxTime=1728374447
+2025-07-05 16:00:53,889 - crawler - INFO - 成功获取商品 1315938982167306240 的数据
+2025-07-05 16:00:53,889 - crawler - WARNING - 时间戳 1728374447 没有获取到数据
+2025-07-05 16:00:53,889 - crawler - INFO - 商品 1315938982167306240 的历史数据获取完成，共获取 270 条数据
+2025-07-05 16:00:55,959 - crawler - INFO - 所有商品数据爬取完成，成功获取 1 个商品的数据
+2025-07-05 16:00:55,964 - main - INFO - 市场数据已保存到: data\market_data.json
+2025-07-05 16:01:04,242 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 16:01:04,243 - main - ERROR - 未找到商品 525873303 的数据
+2025-07-05 16:01:59,122 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 16:01:59,411 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2025-07-05 07:50:47, 价格=1688.00
+2025-07-05 16:01:59,412 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-07-05 07:50:47, 价格=1688.00
+2025-07-05 16:01:59,412 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 16:01:59,413 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 16:02:00,306 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png
+2025-07-05 16:04:17,204 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 16:04:17,503 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2025-07-05 07:50:47, 价格=1688.00
+2025-07-05 16:04:17,505 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-07-05 07:50:47, 价格=1688.00
+2025-07-05 16:04:17,505 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 16:04:17,505 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 16:04:18,452 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png
+2025-07-05 16:04:43,832 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 16:04:44,941 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png

@@ -132,6 +132,79 @@ class KLineChart:
         logger.info(f"触碰点检测完成，保留 {len(touches)} 个最新触碰点")
         return touches
 
+    def _find_vegas_touches(
+        self, df: pd.DataFrame, ema1: pd.Series, ema2: pd.Series, ema3: pd.Series
+    ) -> List[Dict]:
+        """
+        查找触碰Vegas通道的点，并返回对应时间点的价格
+        - 买入信号：K线下轨（实体低点）触碰到通道
+        - 卖出信号：K线底部下穿过滤线
+
+        Args:
+            df: K线数据
+            ema1: 快速EMA（上轨）
+            ema2: 中速EMA（中轨）
+            ema3: 慢速EMA（下轨/过滤线）
+
+        Returns:
+            触碰点列表，每个点包含：
+            - index: 时间索引
+            - price: 价格
+            - signal: 'buy' 或 'sell'
+        """
+        # 分别存储买入和卖出信号
+        buy_signals = []
+        sell_signals = []
+        
+        # 定义容差范围（0.5%）
+        tolerance = 0.005
+        
+        logger.debug(f"开始检测Vegas通道触碰点，数据长度：{len(df)}")
+        
+        for idx in df.index:
+            open_price = df.loc[idx, "Open"]
+            close_price = df.loc[idx, "Close"]
+            low_price = df.loc[idx, "Low"]
+            
+            # 获取实体的较低价格（开盘价和收盘价中的较小值）
+            body_low_price = min(open_price, close_price)
+            
+            # 获取当前的通道值
+            filter_line = ema3[idx]  # 过滤线
+            
+            # 检查买入信号（实体低点触碰通道）
+            if body_low_price <= filter_line * (1 + tolerance):
+                buy_signals.append({
+                    "index": idx,
+                    "price": body_low_price,
+                    "signal": "buy"
+                })
+                logger.debug(f"检测到买入信号: 日期={idx}, 价格={body_low_price:.2f}, 过滤线={filter_line:.2f}")
+            
+            # 检查卖出信号（最低价下穿过滤线）
+            if low_price < filter_line * (1 - tolerance):
+                sell_signals.append({
+                    "index": idx,
+                    "price": low_price,
+                    "signal": "sell"
+                })
+                logger.debug(f"检测到卖出信号: 日期={idx}, 价格={low_price:.2f}, 过滤线={filter_line:.2f}")
+        
+        # 只保留最新的信号
+        signals = []
+        if buy_signals:
+            latest_buy = buy_signals[-1]
+            signals.append(latest_buy)
+            logger.info(f"选择最新买入信号: 日期={latest_buy['index']}, 价格={latest_buy['price']:.2f}")
+            
+        if sell_signals:
+            latest_sell = sell_signals[-1]
+            signals.append(latest_sell)
+            logger.info(f"选择最新卖出信号: 日期={latest_sell['index']}, 价格={latest_sell['price']:.2f}")
+        
+        logger.info(f"Vegas通道触碰点检测完成，保留 {len(signals)} 个最新信号")
+        return signals
+
     def plot_candlestick(
         self,
         item_id: str,
@@ -244,51 +317,48 @@ class KLineChart:
             datetime_format="%m/%d",  # 设置日期格式为MM/DD
         )
 
-        # 添加触碰点价格标注
-        if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
-            logger.debug("开始添加布林线触碰点标注")
-            ax = axes[0]
+        # 获取主图对象
+        ax = axes[0]
+
+        # 添加标注
+        if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
+            # 添加Vegas通道触碰点标注
+            # 获取y轴范围
+            y_min, y_max = ax.get_ylim()
+            y_range = y_max - y_min
             
-            # 在添加标注之前先检查数据
-            logger.debug(f"布林线上轨数据：\n{upper}")
-            logger.debug(f"布林线下轨数据：\n{lower}")
-            
-            # 查找触碰点（只在这里调用一次）
-            touches = self._find_bollinger_touches(df, upper, lower)
-            logger.info(f"准备添加 {len(touches)} 个价格标注")
-            
-            # 创建数值索引映射
-            date_index = list(range(len(df.index)))
-            
-            for i, touch in enumerate(touches):
-                # 获取时间索引对应的数值索引
-                idx = df.index.get_loc(touch["index"])
+            # 查找触碰点
+            touches = self._find_vegas_touches(df, ema1, ema2, ema3)
+            logger.info(f"准备添加 {len(touches)} 个Vegas通道信号标注")
+
+            for touch in touches:
+                idx = touch["index"]
+                price = touch["price"]
+                signal = touch["signal"]
                 
-                # 根据位置调整偏移量和位置
-                if touch["position"] == "upper":
-                    # 上轨保持原样
-                    y_offset = touch["price"] * 0.01
-                    va = "bottom"
-                else:
-                    # 下轨增加偏移量，确保标注在实体下方足够距离
-                    y_offset = -touch["price"] * 0.015
+                # 获取x轴位置
+                x_pos = df.index.get_loc(idx)
+                
+                # 根据信号类型调整标注位置和样式
+                if signal == "buy":
+                    y_offset = -y_range * 0.02  # 下方偏移2%
                     va = "top"
+                    text = f"{price:,.0f}"  # 只显示价格
+                else:
+                    y_offset = -y_range * 0.02  # 下方偏移2%
+                    va = "top"
+                    text = f"{price:,.0f}"  # 只显示价格
                 
-                # 格式化价格，保留2位小数
-                price_text = f"{touch['price']:.0f}"  # 改为整数显示
-                
-                logger.debug(f"添加标注：位置={touch['position']}, 价格={price_text}, 索引={idx}")
-                
-                # 使用数值索引进行标注
+                # 添加价格标注
                 ax.annotate(
-                    price_text,
-                    xy=(idx, touch["price"]),
-                    xytext=(idx, touch["price"] + y_offset),
-                    color="black",
+                    text,
+                    xy=(x_pos, price),
+                    xytext=(x_pos, price + y_offset),
                     fontsize=8,
-                    ha="center",
+                    color="black",
                     va=va,
-                    bbox=None,
+                    ha="center",
+                    bbox=None,  # 移除背景框
                     arrowprops=dict(
                         arrowstyle="->",
                         color="black",
@@ -298,51 +368,27 @@ class KLineChart:
                     zorder=100
                 )
 
-        # 添加成交量标注
-        volume_ax = axes[1]  # 获取成交量子图
-        
-        # 获取最近7天的数据
-        recent_data = df.tail(7)
-        
-        # 计算当前y轴范围
-        y_min, y_max = volume_ax.get_ylim()
-        
-        # 为标注预留额外空间（当前最大值的30%）
-        volume_ax.set_ylim(y_min, y_max * 1.3)
-        
-        # 遍历最近7天的数据添加成交量标注
-        for i, (idx, row) in enumerate(recent_data.iterrows()):
-            # 获取时间索引对应的数值索引
-            date_idx = df.index.get_loc(idx)
-            volume = row["Volume"]
-            
-            # 格式化成交量，大于1000的显示为k
-            if volume >= 1000:
-                volume_text = f"{volume/1000:.1f}k"
-            else:
-                volume_text = f"{volume:.0f}"
-            
-            # 计算标注位置（在柱状图上方）
-            y_pos = volume * 1.05  # 降低偏移量到5%
-            
-            # 添加成交量标注
-            volume_ax.annotate(
-                volume_text,
-                xy=(date_idx, volume),
-                xytext=(date_idx, y_pos),
-                color="black",
-                fontsize=8,
-                ha="center",
-                va="bottom",
-                bbox=None,
-                zorder=100
-            )
-
-        # 调整标题位置
-        fig.suptitle(title, y=0.95)
+        # 设置标题
+        fig.suptitle(
+            title,
+            y=0.95,  # 调整标题位置
+            fontsize=12,
+            fontweight="bold"
+        )
 
         # 调整布局
-        fig.tight_layout(rect=[0, 0, 1, 0.95])  # 为标题预留空间
+        fig.subplots_adjust(
+            top=0.90,      # 为标题留出空间
+            bottom=0.1,    # 底部边距
+            right=0.95,    # 右边距
+            left=0.1,      # 左边距
+            hspace=0.1     # 子图间距
+        )
+
+        # 保存图表
+        save_path = os.path.join(self.charts_dir, f"{item_id}_candlestick.png")
+        fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        logger.info(f"K线图已保存至: {save_path}")
 
         return fig
 
