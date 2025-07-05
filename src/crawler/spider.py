@@ -240,14 +240,16 @@ class CS2MarketSpider:
                         break
                     
                     page_num += 1
-                    # 随机延迟1-3秒
-                    time.sleep(random.uniform(1, 3))
-
-                    exit(0)
+                    # 随机延迟5-8秒
+                    delay = random.uniform(5, 8)
+                    logger.info(f"等待 {delay:.1f} 秒后继续...")
+                    time.sleep(delay)
                 
-                # 收藏夹之间随机延迟3-5秒
+                # 收藏夹之间随机延迟5-10秒
                 if fav_id != settings.FAV_LIST_ID[-1]:
-                    time.sleep(random.uniform(3, 5))
+                    delay = random.uniform(5, 10)
+                    logger.info(f"等待 {delay:.1f} 秒后继续...")
+                    time.sleep(delay)
             
             logger.info(f"共获取到 {len(items)} 个商品信息")
             return items
@@ -310,19 +312,32 @@ class CS2MarketSpider:
             data = self.get_item_data(item_id, timestamp)
             
             if not data or 'data' not in data or not data['data']:
-                logger.warning(f"时间戳 {timestamp} 没有获取到数据")
-                continue
+                logger.warning(f"时间戳 {timestamp} 没有获取到数据，由于是按时间顺序请求，终止后续请求")
+                break  # 如果某个时间段没有数据，更早的时间段也不会有数据，直接结束
                 
             # 提取数据并添加到结果列表
             item_data = data['data']
             logger.info(f"获取到 {len(item_data)} 条数据")
+            
+            # 检查是否有实际的价格数据
+            valid_data = [d for d in item_data if any(float(x) > 0 for x in d[1:5])]  # 检查OHLC是否都为0
+            if not valid_data:
+                logger.warning(f"时间戳 {timestamp} 的数据全部为0，可能是无效数据，终止后续请求")
+                break
+            
             all_data.extend(item_data)
             
             # 添加延迟，避免请求过于频繁
             if i < len(timestamps) - 1:  # 最后一次请求后不需要延迟
-                time.sleep(random.uniform(1, 3))
+                delay = random.uniform(5, 8)  # 随机延迟5-8秒
+                logger.info(f"等待 {delay:.1f} 秒后继续...")
+                time.sleep(delay)
         
-        logger.info(f"商品 {item_id} 的历史数据获取完成，共获取 {len(all_data)} 条数据")
+        if all_data:
+            logger.info(f"商品 {item_id} 的历史数据获取完成，共获取 {len(all_data)} 条数据")
+        else:
+            logger.warning(f"商品 {item_id} 没有获取到任何有效数据")
+            
         return all_data
     
     def crawl_all_items(self) -> Dict[str, Dict]:
@@ -359,7 +374,9 @@ class CS2MarketSpider:
                 logger.warning(f"获取商品 [{name}]({item_id}) 的数据失败")
             
             # 添加随机延迟，避免请求过于频繁
-            time.sleep(random.uniform(2, 5))
+            delay = random.uniform(5, 10)  # 随机延迟5-10秒
+            logger.info(f"等待 {delay:.1f} 秒后继续...")
+            time.sleep(delay)
         
         logger.info(f"所有商品数据爬取完成，成功获取 {len(result)} 个商品的数据")
         return result

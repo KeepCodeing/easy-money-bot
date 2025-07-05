@@ -12,6 +12,7 @@ import logging
 import argparse
 from datetime import datetime
 from typing import Dict, List, Optional
+import re
 
 from src.crawler.spider import CS2MarketSpider
 from src.storage.database import DatabaseManager
@@ -31,16 +32,77 @@ logging.basicConfig(
 logger = logging.getLogger("main")
 
 
-def save_market_data(data: Dict[str, List], filename: str):
-    """保存市场数据到JSON文件"""
+def clean_filename(name: str) -> str:
+    """
+    清理文件名，移除或替换不合法字符
+    
+    Args:
+        name: 原始文件名
+        
+    Returns:
+        清理后的文件名
+    """
+    # 替换Windows文件名中不允许的字符
+    invalid_chars = r'[<>:"/\\|?*]'
+    # 将特殊字符替换为下划线
+    cleaned_name = re.sub(invalid_chars, '_', name)
+    # 移除多余的空格和下划线
+    cleaned_name = re.sub(r'[\s_]+', '_', cleaned_name)
+    # 移除首尾的空格和下划线
+    cleaned_name = cleaned_name.strip('_')
+    return cleaned_name
+
+
+def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> str:
+    """
+    保存市场数据到JSON文件
+    
+    Args:
+        data: 市场数据字典
+        filename: 可选的文件名，如果不提供则自动生成
+        
+    Returns:
+        保存的文件路径
+    """
+    # 如果没有提供文件名，使用时间戳生成
+    if not filename:
+        # 获取第一个商品的名称作为文件名前缀
+        first_item = next(iter(data.values()))
+        name_prefix = clean_filename(first_item.get('name', 'market_data'))
+        # 生成时间戳
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{name_prefix}-{timestamp}.json"
+    
     save_path = os.path.join(settings.DATA_DIR, filename)
     with open(save_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     logger.info(f"已保存市场数据到 {save_path}")
+    return save_path
 
 
-def load_market_data(filename: str) -> dict:
-    """从JSON文件加载市场数据"""
+def load_market_data(filename: Optional[str] = None) -> dict:
+    """
+    从JSON文件加载市场数据
+    
+    Args:
+        filename: 可选的文件名，如果不提供则加载最新的数据文件
+        
+    Returns:
+        加载的市场数据
+    """
+    if not filename:
+        # 获取数据目录下所有的JSON文件
+        json_files = [f for f in os.listdir(settings.DATA_DIR) if f.endswith('.json')]
+        if not json_files:
+            raise FileNotFoundError("未找到任何数据文件")
+        
+        # 按文件修改时间排序，获取最新的文件
+        latest_file = max(
+            json_files,
+            key=lambda f: os.path.getmtime(os.path.join(settings.DATA_DIR, f))
+        )
+        filename = latest_file
+    
     load_path = os.path.join(settings.DATA_DIR, filename)
     with open(load_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -49,7 +111,7 @@ def load_market_data(filename: str) -> dict:
 
 
 def test_chart_from_local(item_id: str = "525873303", 
-                         filename: str = "market_data.json",
+                         filename: Optional[str] = None,
                          indicator: str = "all"):
     """从本地JSON文件读取数据并绘制K线图"""
     try:
@@ -94,7 +156,7 @@ def test_chart_from_local(item_id: str = "525873303",
 
 def test_chart_by_date_range(
     item_id: str = "525873303",
-    filename: str = "market_data.json",
+    filename: Optional[str] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     indicator: str = "all"
@@ -104,7 +166,7 @@ def test_chart_by_date_range(
 
     Args:
         item_id: 商品ID
-        filename: 数据文件名
+        filename: 数据文件名，如果不提供则使用最新的数据文件
         start_date: 开始日期，格式：YYYY-MM-DD
         end_date: 结束日期，格式：YYYY-MM-DD
         indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
@@ -152,7 +214,7 @@ def test_chart_by_date_range(
 
 
 def generate_all_charts(
-    filename: str = "market_data.json",
+    filename: Optional[str] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     indicator: str = "all"
@@ -192,7 +254,7 @@ def generate_all_charts(
         logger.error(f"批量生成图表时出错: {e}")
 
 
-def crawl_and_save(filename: str = "market_data.json"):
+def crawl_and_save(filename: Optional[str] = None):
     """爬取数据并保存到数据库"""
     logger.info("开始执行爬虫任务")
     start_time = time.time()
@@ -299,7 +361,7 @@ def main():
     parser.add_argument("--date-range", action="store_true", help="按日期范围显示图表")
     parser.add_argument("--all", action="store_true", help="生成所有收藏商品的图表")
     parser.add_argument("--item-id", type=str, default="525873303", help="指定商品ID")
-    parser.add_argument("--data-file", type=str, default="market_data.json", help="指定数据文件名")
+    parser.add_argument("--data-file", type=str, help="指定数据文件名（可选，默认使用最新的数据文件）")
     parser.add_argument("--indicator", type=str, choices=["all", "boll", "vegas"], 
                        default="all", help="指定要显示的技术指标")
     parser.add_argument("--start-date", type=str, help="开始日期 (YYYY-MM-DD)")
