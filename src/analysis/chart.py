@@ -99,10 +99,10 @@ class KLineChart:
         upper_touches = []
         lower_touches = []
         
-        # 定义容差范围（3%）
-        tolerance = 0.03
+        # 定义容差范围（1%）
+        tolerance = 0.01
         
-        logger.debug(f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}")
+        logger.info(f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}")
         
         for idx in df.index:
             high_price = df.loc[idx, "High"]
@@ -124,7 +124,7 @@ class KLineChart:
                 upper_touches.append(
                     {"index": idx, "price": high_price, "position": "upper"}
                 )
-                logger.debug(f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}")
+                logger.info(f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}")
             
             # 检查下轨（只使用实体价格）
             lower_threshold = lower_band * (1 + tolerance)
@@ -132,21 +132,11 @@ class KLineChart:
                 lower_touches.append(
                     {"index": idx, "price": body_low_price, "position": "lower"}
                 )
-                logger.debug(f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}")
+                logger.info(f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}")
         
-        # 只保留最新的触碰点
-        touches = []
-        if upper_touches:
-            latest_upper = upper_touches[-1]  # 取最后一个（最新的）上轨触碰点
-            touches.append(latest_upper)
-            logger.info(f"选择最新上轨触碰点: 日期={latest_upper['index']}, 价格={latest_upper['price']:.2f}")
-            
-        if lower_touches:
-            latest_lower = lower_touches[-1]  # 取最后一个（最新的）下轨触碰点
-            touches.append(latest_lower)
-            logger.info(f"选择最新下轨触碰点: 日期={latest_lower['index']}, 价格={latest_lower['price']:.2f}")
-        
-        logger.info(f"触碰点检测完成，保留 {len(touches)} 个最新触碰点")
+        # 返回所有触碰点
+        touches = upper_touches + lower_touches
+        logger.info(f"触碰点检测完成，共发现 {len(touches)} 个触碰点")
         return touches
 
     def _find_vegas_touches(
@@ -372,9 +362,68 @@ class KLineChart:
         # 获取主图对象
         ax = axes[0]
 
-        # 添加标注
+        # 添加布林线触点标注
+        if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
+            # 查找布林线触碰点
+            touches = self._find_bollinger_touches(df, upper, lower)
+            logger.info(f"检测到 {len(touches)} 个布林线触点")
+
+            # 获取y轴范围
+            y_min, y_max = ax.get_ylim()
+            y_range = y_max - y_min
+
+            # 分离上下轨触点
+            upper_touches = [t for t in touches if t["position"] == "upper"]
+            lower_touches = [t for t in touches if t["position"] == "lower"]
+
+            # 只获取最后一个上轨和下轨触点
+            latest_touches = []
+            if upper_touches:
+                latest_touches.append(upper_touches[-1])
+                logger.info(f"将显示最新上轨触点: 日期={upper_touches[-1]['index']}, 价格={upper_touches[-1]['price']:.2f}")
+            if lower_touches:
+                latest_touches.append(lower_touches[-1])
+                logger.info(f"将显示最新下轨触点: 日期={lower_touches[-1]['index']}, 价格={lower_touches[-1]['price']:.2f}")
+
+            # 添加最新触点标注
+            for touch in latest_touches:
+                idx = touch["index"]
+                price = touch["price"]
+                position = touch["position"]
+                
+                # 获取x轴位置
+                x_pos = df.index.get_loc(idx)
+                
+                # 根据触点位置调整标注位置和样式
+                if position == "upper":
+                    y_offset = y_range * 0.02  # 上方偏移2%
+                    va = "bottom"
+                else:
+                    y_offset = -y_range * 0.02  # 下方偏移2%
+                    va = "top"
+                
+                # 添加价格标注
+                ax.annotate(
+                    f"{price:,.0f}",
+                    xy=(x_pos, price),
+                    xytext=(x_pos, price + y_offset),
+                    fontsize=8,
+                    color="black",
+                    va=va,
+                    ha="center",
+                    bbox=None,  # 移除背景框
+                    fontproperties=font if 'font' in globals() else None,  # 使用中文字体（如果可用）
+                    arrowprops=dict(
+                        arrowstyle="->",
+                        color="black",
+                        alpha=0.6,
+                        connectionstyle="arc3,rad=0"
+                    ),
+                    zorder=100
+                )
+
+        # 添加Vegas通道触碰点标注
         if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
-            # 添加Vegas通道触碰点标注
             # 获取y轴范围
             y_min, y_max = ax.get_ylim()
             y_range = y_max - y_min
