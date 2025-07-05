@@ -257,3 +257,12 @@
 2025-07-05 14:51:31,155 - main - ERROR - 测试图表时出错: [Errno 22] Invalid argument: 'data\\market_data.json\\'
 2025-07-05 14:51:35,886 - main - INFO - 已从 data\market_data.json 加载市场数据
 2025-07-05 14:51:57,094 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 14:54:45,582 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 14:56:45,546 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 14:56:45,979 - main - ERROR - 测试图表时出错: zero-size array to reduction operation maximum which has no identity
+2025-07-05 14:56:57,201 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:02:03,548 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:02:03,898 - main - ERROR - 测试图表时出错: x and y must have same first dimension, but have shapes (30,) and (354,)
+2025-07-05 15:03:09,613 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:06:19,292 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 15:06:44,087 - main - INFO - 已从 data\market_data.json 加载市场数据

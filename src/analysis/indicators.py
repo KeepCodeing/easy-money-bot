@@ -133,18 +133,18 @@ class TechnicalIndicators:
                 # 添加布林带
                 middle, upper, lower = self.calculate_bollinger_bands(df)
                 plots.extend([
-                    mpf.make_addplot(middle, color='yellow', linestyle='--', width=1, alpha=0.7),
-                    mpf.make_addplot(upper, color='red', linestyle='--', width=1, alpha=0.7),
-                    mpf.make_addplot(lower, color='green', linestyle='--', width=1, alpha=0.7)
+                    mpf.make_addplot(middle, color='yellow', linestyle='--', width=1, alpha=0.7, secondary_y=False),
+                    mpf.make_addplot(upper, color='red', linestyle='--', width=1, alpha=0.7, secondary_y=False),
+                    mpf.make_addplot(lower, color='green', linestyle='--', width=1, alpha=0.7, secondary_y=False)
                 ])
             
             if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
                 # 添加维加斯通道
                 ema1, ema2, ema3 = self.calculate_vegas_tunnel(df)
                 plots.extend([
-                    mpf.make_addplot(ema1, color='blue', width=1, alpha=0.7),
-                    mpf.make_addplot(ema2, color='magenta', width=1, alpha=0.7),
-                    mpf.make_addplot(ema3, color='cyan', width=1, alpha=0.7)
+                    mpf.make_addplot(ema1, color='blue', width=1, alpha=0.7, secondary_y=False),
+                    mpf.make_addplot(ema2, color='magenta', width=1, alpha=0.7, secondary_y=False),
+                    mpf.make_addplot(ema3, color='cyan', width=1, alpha=0.7, secondary_y=False)
                 ])
             
         except Exception as e:

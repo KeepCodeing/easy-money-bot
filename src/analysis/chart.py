@@ -77,10 +77,14 @@ class KLineChart:
             return None
         
         # 转换数据格式
-        df = self.indicators.prepare_dataframe(raw_data)
+        df_full = self.indicators.prepare_dataframe(raw_data)
+        
+        # 在全量数据上计算技术指标
+        middle, upper, lower = self.indicators.calculate_bollinger_bands(df_full)
+        ema1, ema2, ema3 = self.indicators.calculate_vegas_tunnel(df_full)
         
         # 筛选最近N天的数据
-        df = self._filter_recent_data(df)
+        df = self._filter_recent_data(df_full)
         
         if len(df) == 0:
             logger.warning(f"商品 {item_id} 筛选后没有数据，无法绘制K线图")
@@ -90,8 +94,29 @@ class KLineChart:
         if title is None:
             title = f"Kline Chart of {item_id} (Last {self.days_to_show} days)"
         
-        # 获取技术指标的绘图参数
-        addplots = self.indicators.get_indicator_plots(df, indicator_type)
+        # 准备技术指标数据（确保与显示数据长度匹配）
+        addplots = []
+        if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
+            # 添加布林带（使用与df相同的时间范围）
+            middle = middle[df.index]
+            upper = upper[df.index]
+            lower = lower[df.index]
+            addplots.extend([
+                mpf.make_addplot(middle, color='yellow', linestyle='-', width=1, alpha=0.7, secondary_y=False),
+                mpf.make_addplot(upper, color='red', linestyle='-', width=1, alpha=0.7, secondary_y=False),
+                mpf.make_addplot(lower, color='green', linestyle='-', width=1, alpha=0.7, secondary_y=False)
+            ])
+        
+        if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
+            # 添加维加斯通道（使用与df相同的时间范围）
+            ema1 = ema1[df.index]
+            ema2 = ema2[df.index]
+            ema3 = ema3[df.index]
+            addplots.extend([
+                mpf.make_addplot(ema1, color='blue', width=1, alpha=0.7, secondary_y=False),
+                mpf.make_addplot(ema2, color='magenta', width=1, alpha=0.7, secondary_y=False),
+                mpf.make_addplot(ema3, color='cyan', width=1, alpha=0.7, secondary_y=False)
+            ])
         
         # 创建子图，为技术指标预留空间
         fig, axes = mpf.plot(
