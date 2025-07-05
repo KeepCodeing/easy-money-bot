@@ -18,6 +18,6 @@ dependencies:
     - pandas-ta==0.3.14b
     - itchat==1.3.10
     - schedule==1.2.0
-    - pyecharts==2.0.3  # 额外的交互式图表库
-    - pillow==10.0.0    # 图像处理
-    - python-dotenv==1.0.0  # 环境变量管理 
+    - pyecharts==2.0.3
+    - pillow==10.0.0
+    - python-dotenv==1.0.0 
