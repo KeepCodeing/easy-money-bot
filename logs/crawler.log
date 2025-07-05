@@ -449,3 +449,110 @@
 2025-07-05 16:04:18,452 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png
 2025-07-05 16:04:43,832 - main - INFO - 已从 data\market_data.json 加载市场数据
 2025-07-05 16:04:44,941 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png
+2025-07-05 19:55:49,255 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 19:55:50,392 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1315938982167306240_candlestick.png
+2025-07-05 20:44:54,449 - main - INFO - 已从 market_data.json 加载市场数据
+2025-07-05 20:44:54,453 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 20:44:54,453 - main - ERROR - 未找到商品 525873303 的数据
+2025-07-05 20:45:30,680 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:45:30,682 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:45:30,993 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 0 个最新信号
+2025-07-05 20:45:30,994 - src.analysis.chart - INFO - 准备添加 0 个Vegas通道信号标注
+2025-07-05 20:45:31,885 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 20:45:59,739 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:45:59,741 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:46:00,883 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 20:46:47,385 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:46:47,387 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:47:15,099 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:47:15,101 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:47:15,407 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 0 个最新信号
+2025-07-05 20:47:15,407 - src.analysis.chart - INFO - 准备添加 0 个Vegas通道信号标注
+2025-07-05 20:47:16,246 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 20:47:30,019 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:47:30,022 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:47:31,130 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 20:48:38,653 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:48:38,655 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:48:39,763 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 20:52:48,291 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 20:52:48,294 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 20:52:49,394 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:00:24,930 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:00:24,932 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:00:26,019 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:01:22,539 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:01:22,541 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:01:23,630 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:02:53,186 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:02:53,189 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:02:54,298 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:05:55,163 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:05:55,165 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:05:56,368 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:07:58,450 - main - INFO - 已从 market_data.json 加载市场数据
+2025-07-05 21:07:58,451 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 21:07:58,452 - main - ERROR - 未找到商品 525873303 的数据
+2025-07-05 21:08:15,892 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:08:15,894 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:08:16,975 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:08:43,956 - main - INFO - 已从 data\market_data.json 加载市场数据
+2025-07-05 21:08:43,957 - main - ERROR - 未找到商品 525873303 的数据
+2025-07-05 21:09:00,568 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:09:01,685 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:20:47,050 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:20:47,052 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:20:47,359 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-09-30 16:00:00, 价格=26475.00
+2025-07-05 21:20:47,360 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2024-09-30 16:00:00, 价格=26400.00
+2025-07-05 21:20:47,360 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:20:47,361 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:20:48,269 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:21:26,121 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:21:26,123 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:21:26,420 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 0 个最新信号
+2025-07-05 21:21:26,421 - src.analysis.chart - INFO - 准备添加 0 个Vegas通道信号标注
+2025-07-05 21:21:27,253 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:22:26,692 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:22:26,694 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:22:26,990 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 0 个最新信号
+2025-07-05 21:22:26,991 - src.analysis.chart - INFO - 准备添加 0 个Vegas通道信号标注
+2025-07-05 21:22:27,830 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:23:24,730 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:23:25,317 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:23:25,318 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-02-21 16:00:00, 价格=23333.00
+2025-07-05 21:23:25,318 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:23:25,319 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:23:26,450 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:23:40,269 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:23:40,853 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:23:40,854 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-02-21 16:00:00, 价格=23333.00
+2025-07-05 21:23:40,855 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:23:40,855 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:23:42,385 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:25:27,490 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:25:28,080 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:25:28,080 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-02-21 16:00:00, 价格=23333.00
+2025-07-05 21:25:28,081 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:25:28,082 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:25:29,219 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:25:42,683 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:25:42,686 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:25:43,016 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:25:43,017 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-01-07 16:00:00, 价格=26500.00
+2025-07-05 21:25:43,017 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:25:43,017 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:25:43,948 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:27:07,842 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:27:07,844 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:27:08,207 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:27:08,208 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-01-07 16:00:00, 价格=26500.00
+2025-07-05 21:27:08,208 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:27:08,209 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:27:09,146 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-05 21:30:18,032 - main - INFO - 已从 market_data_shuli.json 加载市场数据
+2025-07-05 21:30:18,034 - main - INFO - 已从 data\market_data_shuli.json 加载市场数据
+2025-07-05 21:30:18,415 - src.analysis.chart - INFO - 选择最新买入信号: 日期=2024-12-19 16:00:00, 价格=26647.00
+2025-07-05 21:30:18,416 - src.analysis.chart - INFO - 选择最新卖出信号: 日期=2025-01-07 16:00:00, 价格=26500.00
+2025-07-05 21:30:18,416 - src.analysis.chart - INFO - Vegas通道触碰点检测完成，保留 2 个最新信号
+2025-07-05 21:30:18,417 - src.analysis.chart - INFO - 准备添加 2 个Vegas通道信号标注
+2025-07-05 21:30:19,347 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png

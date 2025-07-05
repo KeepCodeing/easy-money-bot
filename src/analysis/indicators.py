@@ -152,35 +152,43 @@ class TechnicalIndicators:
         
         return plots
     
-    @staticmethod
-    def prepare_dataframe(data: List[List]) -> pd.DataFrame:
+    def prepare_dataframe(self, raw_data: List[List]) -> pd.DataFrame:
         """
         将原始数据转换为DataFrame
         
         Args:
-            data: K线数据列表
+            raw_data: 原始K线数据列表，格式为:
+                     [[timestamp, open, close, high, low, volume, amount], ...]
             
         Returns:
             处理后的DataFrame
         """
         try:
             # 创建DataFrame
-            df = pd.DataFrame(data, columns=['Date', 'Open', 'Close', 'High', 'Low', 'Volume', 'Amount'])
+            df = pd.DataFrame(
+                raw_data,
+                columns=['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
+            )
             
-            # 转换时间戳为日期
-            df['Date'] = pd.to_datetime(df['Date'].astype(int), unit='s')
+            # 转换时间列为datetime类型
+            df['Time'] = pd.to_datetime(df['Time'].astype(int), unit='s')
             
-            # 设置日期为索引
-            df.set_index('Date', inplace=True)
+            # 设置时间索引
+            df.set_index('Time', inplace=True)
             
-            # 确保数值类型
-            numeric_columns = ['Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
-            df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric)
+            # 确保数值类型正确
+            numeric_columns = ['Open', 'Close', 'High', 'Low']
+            df[numeric_columns] = df[numeric_columns].astype(float)
+            
+            # 处理成交量和成交额
+            df['Volume'] = pd.to_numeric(df['Volume'], errors='coerce')
+            df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
             
             # 按时间升序排序
             df.sort_index(inplace=True)
             
             return df
+            
         except Exception as e:
-            logger.error(f"准备DataFrame时出错: {e}")
+            logger.error(f"数据转换失败: {e}")
             return pd.DataFrame() 

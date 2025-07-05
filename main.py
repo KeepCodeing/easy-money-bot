@@ -11,6 +11,7 @@ import json
 import logging
 import argparse
 from datetime import datetime
+from typing import Optional
 
 from src.crawler.spider import CS2MarketSpider
 from src.storage.database import DatabaseManager
@@ -71,11 +72,67 @@ def test_chart_from_local(item_id: str = "525873303",
             indicator_type = IndicatorType.VEGAS
         
         # 创建并显示图表
-        chart = KLineChart(days_to_show=30)
+        chart = KLineChart(days_to_show=300)
         fig = chart.plot_candlestick(
             item_id, 
             cleaned_data,
             indicator_type=indicator_type
+        )
+        
+        if fig:
+            fig.show()
+            fig.waitforbuttonpress()
+        else:
+            logger.error("创建图表失败")
+            
+    except Exception as e:
+        logger.error(f"测试图表时出错: {e}")
+
+
+def test_chart_by_date_range(
+    item_id: str = "525873303",
+    filename: str = "market_data.json",
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    indicator: str = "all"
+):
+    """
+    显示指定时间段的K线图
+
+    Args:
+        item_id: 商品ID
+        filename: 数据文件名
+        start_date: 开始日期，格式：YYYY-MM-DD
+        end_date: 结束日期，格式：YYYY-MM-DD
+        indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
+    """
+    try:
+        # 加载数据
+        logger.info(f"已从 {filename} 加载市场数据")
+        data = load_market_data(filename)
+        
+        if item_id not in data:
+            logger.error(f"未找到商品 {item_id} 的数据")
+            return
+            
+        # 清理数据
+        cleaned_data = MarketDataCleaner.clean_kline_data(data[item_id])
+        
+        # 确定要显示的指标类型
+        indicator_type = IndicatorType.ALL
+        if indicator.lower() == "boll":
+            indicator_type = IndicatorType.BOLL
+        elif indicator.lower() == "vegas":
+            indicator_type = IndicatorType.VEGAS
+        
+        # 创建并显示图表
+        chart = KLineChart(days_to_show=30)  # days_to_show在使用日期范围时不起作用
+        fig = chart.plot_candlestick(
+            item_id=item_id,
+            raw_data=cleaned_data,
+            indicator_type=indicator_type,
+            start_date=start_date,
+            end_date=end_date
         )
         
         if fig:
@@ -166,34 +223,62 @@ def crawl_and_save():
     return success_count, total_records
 
 
+def setup_logging():
+    """配置日志"""
+    # 创建logs目录
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+        
+    # 配置根日志记录器
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.FileHandler("logs/main.log", encoding="utf-8"),
+            logging.StreamHandler()
+        ]
+    )
+
+
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description="CS2市场数据爬虫")
-    parser.add_argument("--crawl", action="store_true", help="执行爬虫任务")
-    parser.add_argument("--export", action="store_true", help="导出数据为JSON")
-    parser.add_argument("--test-chart", action="store_true", help="从本地数据测试K线图")
-    parser.add_argument("--item-id", type=str, help="指定商品ID")
+    # 设置日志
+    setup_logging()
+    
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description="CS2行情数据爬虫和分析工具")
+    parser.add_argument("--crawl", action="store_true", help="爬取数据")
+    parser.add_argument("--test", action="store_true", help="测试图表")
+    parser.add_argument("--date-range", action="store_true", help="按日期范围显示图表")
+    parser.add_argument("--item-id", type=str, default="525873303", help="指定商品ID")
     parser.add_argument("--data-file", type=str, default="market_data.json", help="指定数据文件名")
     parser.add_argument("--indicator", type=str, choices=["all", "boll", "vegas"], 
                        default="all", help="指定要显示的技术指标")
-
+    parser.add_argument("--start-date", type=str, help="开始日期 (YYYY-MM-DD)")
+    parser.add_argument("--end-date", type=str, help="结束日期 (YYYY-MM-DD)")
     args = parser.parse_args()
-
+    
     if args.crawl:
+        # 爬取数据
         crawl_and_save()
-    elif args.export and args.item_id:
-        db = DatabaseManager()
-        success = db.export_to_json(args.item_id)
-        if success:
-            logger.info(f"商品 {args.item_id} 数据导出成功")
-        else:
-            logger.error(f"商品 {args.item_id} 数据导出失败")
-    elif args.test_chart:
-        item_id = args.item_id if args.item_id else "525873303"
-        test_chart_from_local(item_id, args.data_file, args.indicator)
+    elif args.test:
+        # 测试图表
+        test_chart_from_local(
+            item_id=args.item_id,
+            filename=args.data_file,
+            indicator=args.indicator
+        )
+    elif args.date_range:
+        # 按日期范围显示图表
+        test_chart_by_date_range(
+            item_id=args.item_id,
+            filename=args.data_file,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            indicator=args.indicator
+        )
     else:
-        # 默认执行爬虫任务
-        crawl_and_save()
+        parser.print_help()
 
 
 if __name__ == "__main__":

@@ -64,7 +64,7 @@ class KLineChart:
         """
         查找触碰布林线的点，并返回对应时间点的价格
         - 上轨：使用最高价(High)检测和显示
-        - 下轨：使用实体(Close/Open)检测和显示
+        - 下轨：使用实体(Close/Open)检测和显示，不使用下影线
         对于多个触碰点，只返回最新的一个
 
         Args:
@@ -82,8 +82,8 @@ class KLineChart:
         upper_touches = []
         lower_touches = []
         
-        # 定义容差范围（0.5%）
-        tolerance = 0.005
+        # 定义容差范围（3%）
+        tolerance = 0.03
         
         logger.debug(f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}")
         
@@ -109,7 +109,7 @@ class KLineChart:
                 )
                 logger.debug(f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}")
             
-            # 检查下轨（改用实体价格）
+            # 检查下轨（只使用实体价格）
             lower_threshold = lower_band * (1 + tolerance)
             if body_low_price <= lower_threshold:
                 lower_touches.append(
@@ -205,12 +205,37 @@ class KLineChart:
         logger.info(f"Vegas通道触碰点检测完成，保留 {len(signals)} 个最新信号")
         return signals
 
+    def _filter_date_range(self, df: pd.DataFrame, start_date: Optional[str] = None, end_date: Optional[str] = None) -> pd.DataFrame:
+        """
+        按日期范围筛选数据
+
+        Args:
+            df: 原始DataFrame
+            start_date: 开始日期，格式：YYYY-MM-DD
+            end_date: 结束日期，格式：YYYY-MM-DD
+
+        Returns:
+            筛选后的DataFrame
+        """
+        try:
+            filtered_df = df.copy()
+            if start_date:
+                filtered_df = filtered_df[filtered_df.index >= pd.to_datetime(start_date)]
+            if end_date:
+                filtered_df = filtered_df[filtered_df.index <= pd.to_datetime(end_date)]
+            return filtered_df
+        except Exception as e:
+            logger.error(f"按日期范围筛选数据时出错: {e}")
+            return df
+
     def plot_candlestick(
         self,
         item_id: str,
         raw_data: List[List],
         title: Optional[str] = None,
         indicator_type: IndicatorType = IndicatorType.ALL,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
     ) -> Any:
         """
         绘制K线图
@@ -220,6 +245,8 @@ class KLineChart:
             raw_data: 原始K线数据
             title: 图表标题，默认为"Kline Chart of {item_id}"
             indicator_type: 要显示的指标类型
+            start_date: 开始日期，格式：YYYY-MM-DD
+            end_date: 结束日期，格式：YYYY-MM-DD
 
         Returns:
             matplotlib figure 对象
@@ -235,8 +262,11 @@ class KLineChart:
         middle, upper, lower = self.indicators.calculate_bollinger_bands(df_full)
         ema1, ema2, ema3 = self.indicators.calculate_vegas_tunnel(df_full)
 
-        # 筛选最近N天的数据
-        df = self._filter_recent_data(df_full)
+        # 按日期范围筛选数据
+        if start_date or end_date:
+            df = self._filter_date_range(df_full, start_date, end_date)
+        else:
+            df = self._filter_recent_data(df_full)
 
         if len(df) == 0:
             logger.warning(f"商品 {item_id} 筛选后没有数据，无法绘制K线图")
@@ -244,7 +274,14 @@ class KLineChart:
 
         # 设置图表标题
         if title is None:
-            title = f"Kline Chart of {item_id} (Last {self.days_to_show} days)"
+            if start_date and end_date:
+                title = f"Kline Chart of {item_id} ({start_date} to {end_date})"
+            elif start_date:
+                title = f"Kline Chart of {item_id} (from {start_date})"
+            elif end_date:
+                title = f"Kline Chart of {item_id} (until {end_date})"
+            else:
+                title = f"Kline Chart of {item_id} (Last {self.days_to_show} days)"
 
         # 准备技术指标数据（确保与显示数据长度匹配）
         addplots = []
