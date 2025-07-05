@@ -84,38 +84,177 @@ class CS2MarketSpider:
     
     def _get_headers(self) -> Dict[str, str]:
         """构建请求头"""
+        windows_user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0",
+        ]
+        
         return {
-            'User-Agent': self._get_random_user_agent(),
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': 'https://xxx.xxx.com/',
-            'Origin': 'https://xxx.xxx.com',
+            'User-Agent': random.choice(windows_user_agents),
+            'Accept': 'application/json',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Content-Type': 'application/json',
+            'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', # 暂时不知道这个参数怎么计算出来的，但是GET请求不需要
+            'Origin': 'https://steamdt.com',
+            'Referer': 'https://steamdt.com/',
             'Connection': 'keep-alive',
+            'x-app-version': '1.0.0',
+            'x-currency': 'CNY',
+            'x-device': '1',
+            'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df',
+            'language': 'zh_CN',
+            'DNT': '1',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'cross-site',
+            'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"'
         }
     
-    def _make_request(self, url: str, params: Dict[str, Any]) -> Optional[Dict]:
-        """发送HTTP请求并处理重试逻辑"""
-        for attempt in range(self.max_retries + 1):
+    def _make_request(self, url: str, method: str = 'GET', params: Optional[Dict] = None, json_data: Optional[Dict] = None) -> Optional[Dict]:
+        """
+        发送HTTP请求并处理重试逻辑
+        
+        Args:
+            url: 请求URL
+            method: 请求方法（GET或POST）
+            params: URL参数（用于GET请求）
+            json_data: JSON数据（用于POST请求）
+            
+        Returns:
+            响应数据（JSON）或None（如果请求失败）
+        """
+        headers = self._get_headers()
+        
+        # 打印请求信息
+        logger.info(f"发送请求:")
+        logger.info(f"Method: {method}")
+        logger.info(f"Headers: {headers}")
+        
+        for attempt in range(settings.MAX_RETRIES + 1):
             try:
-                headers = self._get_headers()
-                response = requests.get(url, params=params, headers=headers, timeout=self.timeout)
+                if method.upper() == 'GET':
+                    # 准备请求
+                    req = requests.Request('GET', url, params=params, headers=headers)
+                    prepared_req = req.prepare()
+                    # 打印完整URL
+                    logger.info(f"完整URL: {prepared_req.url}")
+                    
+                    # 发送请求
+                    session = requests.Session()
+                    response = session.send(prepared_req, timeout=settings.REQUEST_TIMEOUT)
+                else:
+                    # 对于POST请求，将timestamp作为URL参数
+                    if json_data and 'timestamp' in json_data:
+                        params = {'timestamp': json_data['timestamp']}
+                        # 从json_data中移除timestamp
+                        json_data = {k: v for k, v in json_data.items() if k != 'timestamp'}
+                    
+                    # 准备请求
+                    req = requests.Request('POST', url, params=params, json=json_data, headers=headers)
+                    prepared_req = req.prepare()
+                    # 打印完整URL和JSON数据
+                    logger.info(f"完整URL: {prepared_req.url}")
+                    if json_data:
+                        logger.info(f"JSON Data: {json_data}")
+                    
+                    # 发送请求
+                    session = requests.Session()
+                    response = session.send(prepared_req, timeout=settings.REQUEST_TIMEOUT)
+                
+                # 打印响应信息
+                logger.info(f"Response Status: {response.status_code}")
+                logger.info(f"Response Headers: {dict(response.headers)}")
+                logger.info(f"Response Body: {response.text[:1000]}...")  # 只打印前1000个字符
+                
                 response.raise_for_status()
                 return response.json()
+                
             except requests.exceptions.RequestException as e:
-                if attempt < self.max_retries:
-                    wait_time = self.retry_delay * (2 ** attempt)  # 指数退避策略
-                    logger.warning(f"请求失败，{wait_time}秒后重试 ({attempt+1}/{self.max_retries}): {e}")
+                if attempt < settings.MAX_RETRIES:
+                    wait_time = settings.RETRY_DELAY * (2 ** attempt)  # 指数退避策略
+                    logger.warning(f"请求失败，{wait_time}秒后重试 ({attempt+1}/{settings.MAX_RETRIES}): {e}")
                     time.sleep(wait_time)
                 else:
                     logger.error(f"请求失败，已达到最大重试次数: {e}")
                     return None
     
-    def get_favorite_items(self) -> List[str]:
-        """获取收藏商品ID列表"""
-        # TODO: 实现从FAV_URL获取商品ID列表的功能
-        # 目前使用测试数据
-        logger.info("使用测试商品ID列表")
-        return settings.TEST_ITEM_IDS
+    def get_favorite_items(self) -> List[Dict]:
+        """
+        获取收藏商品信息列表
+        
+        Returns:
+            商品信息列表，每个商品包含：
+            - item_id: 商品ID
+            - name: 商品名称
+        """
+        items = []
+        
+        try:
+            # 遍历收藏夹ID
+            for fav_id in settings.FAV_LIST_ID:
+                logger.info(f"正在获取收藏夹 {fav_id} 的商品信息")
+                page_num = 1
+                
+                while True:
+                    # 准备请求数据
+                    json_data = {
+                        "pageSize": 50,
+                        "pageNum": page_num,
+                        "folder": {
+                            "folderId": fav_id,
+                            "expected": ""
+                        },
+                        "platform": settings.PLATFORM,
+                        "timestamp": int(time.time() * 1000)
+                    }
+                    
+                    # 发送POST请求
+                    response = self._make_request(settings.FAV_URL, method='POST', json_data=json_data)
+                    if not response or not response.get('success'):
+                        logger.error(f"获取收藏夹 {fav_id} 第 {page_num} 页数据失败")
+                        break
+                    
+                    # 解析数据
+                    data = response['data']
+                    item_list = data.get('list', [])
+                    
+                    # 添加商品信息
+                    for item in item_list:
+                        items.append({
+                            'item_id': str(item['itemId']),
+                            'name': str(item['name'])
+                        })
+                    
+                    # 检查是否还有下一页
+                    total = int(data.get('total', 0))
+                    page_size = 50
+                    total_pages = (total + page_size - 1) // page_size  # 向上取整计算总页数
+                    
+                    if page_num >= total_pages:
+                        logger.info(f"已到达最后一页（当前第{page_num}页，共{total_pages}页）")
+                        break
+                    
+                    page_num += 1
+                    # 随机延迟1-3秒
+                    time.sleep(random.uniform(1, 3))
+
+                    exit(0)
+                
+                # 收藏夹之间随机延迟3-5秒
+                if fav_id != settings.FAV_LIST_ID[-1]:
+                    time.sleep(random.uniform(3, 5))
+            
+            logger.info(f"共获取到 {len(items)} 个商品信息")
+            return items
+            
+        except Exception as e:
+            logger.error(f"获取收藏商品信息失败: {e}")
+            return []
     
     def get_item_data(self, item_id: str, max_time: Optional[int] = None) -> Optional[Dict]:
         """
@@ -133,15 +272,15 @@ class CS2MarketSpider:
         
         params = {
             'timestamp': int(time.time() * 1000),  # 当前时间戳（毫秒）
-            'type': self.data_type,
+            'type': settings.DATA_TYPE,  # 使用settings中的配置
             'maxTime': max_time,
-            'typeVal': item_id,
-            'platform': self.platform,
+            'typeVal': item_id,  # 直接使用item_id
+            'platform': settings.PLATFORM,  # 使用settings中的配置
             'specialStyle': ''
         }
         
         logger.info(f"开始获取商品 {item_id} 的数据，maxTime={max_time}")
-        result = self._make_request(self.api_url, params)
+        result = self._make_request(settings.API_URL, params=params)  # 使用settings中的API_URL
         
         if result:
             logger.info(f"成功获取商品 {item_id} 的数据")
@@ -186,22 +325,38 @@ class CS2MarketSpider:
         logger.info(f"商品 {item_id} 的历史数据获取完成，共获取 {len(all_data)} 条数据")
         return all_data
     
-    def crawl_all_items(self) -> Dict[str, List[Dict]]:
+    def crawl_all_items(self) -> Dict[str, Dict]:
         """
         爬取所有收藏商品的数据
         
         Returns:
-            包含所有商品数据的字典，键为商品ID，值为数据列表
+            包含所有商品数据的字典，格式为：
+            {
+                item_id: {
+                    name: str,  # 商品名称
+                    data: List[Dict]  # 商品数据列表
+                }
+            }
         """
         result = {}
-        item_ids = self.get_favorite_items()
+        items = self.get_favorite_items()
         
-        logger.info(f"开始爬取 {len(item_ids)} 个商品的数据")
+        logger.info(f"开始爬取 {len(items)} 个商品的数据")
         
-        for item_id in item_ids:
+        for item in items:
+            item_id = item['item_id']
+            name = item['name']
+            logger.info(f"开始获取商品 [{name}]({item_id}) 的数据")
+            
             item_data = self.get_item_history(item_id)
             if item_data:
-                result[item_id] = item_data
+                result[item_id] = {
+                    'name': name,
+                    'data': item_data
+                }
+                logger.info(f"成功获取商品 [{name}]({item_id}) 的数据")
+            else:
+                logger.warning(f"获取商品 [{name}]({item_id}) 的数据失败")
             
             # 添加随机延迟，避免请求过于频繁
             time.sleep(random.uniform(2, 5))

@@ -11,14 +11,13 @@ import json
 import logging
 import argparse
 from datetime import datetime
-from typing import Optional
+from typing import Dict, List, Optional
 
 from src.crawler.spider import CS2MarketSpider
 from src.storage.database import DatabaseManager
 from config import settings
-from src.analysis.chart import KLineChart
+from src.analysis.chart import KLineChart, IndicatorType
 from src.analysis.data_cleaner import MarketDataCleaner
-from src.analysis.indicators import IndicatorType
 
 # 配置日志
 logging.basicConfig(
@@ -32,17 +31,17 @@ logging.basicConfig(
 logger = logging.getLogger("main")
 
 
-def save_market_data(data: dict, filename: str = "market_data.json"):
+def save_market_data(data: Dict[str, List], filename: str):
     """保存市场数据到JSON文件"""
-    save_path = os.path.join("data", filename)
+    save_path = os.path.join(settings.DATA_DIR, filename)
     with open(save_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    logger.info(f"市场数据已保存到: {save_path}")
+    logger.info(f"已保存市场数据到 {save_path}")
 
 
-def load_market_data(filename: str = "market_data.json") -> dict:
+def load_market_data(filename: str) -> dict:
     """从JSON文件加载市场数据"""
-    load_path = os.path.join("data", filename)
+    load_path = os.path.join(settings.DATA_DIR, filename)
     with open(load_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     logger.info(f"已从 {load_path} 加载市场数据")
@@ -61,8 +60,17 @@ def test_chart_from_local(item_id: str = "525873303",
             logger.error(f"未找到商品 {item_id} 的数据")
             return
             
+        # 获取商品名称和数据
+        item_data = data[item_id]
+        if not isinstance(item_data, dict):  # 如果是旧格式（直接的K线数据列表）
+            name = f'Item-{item_id}'
+            kline_data = item_data
+        else:  # 如果是新格式（带name的字典）
+            name = item_data.get('name', f'Item-{item_id}')
+            kline_data = item_data.get('data', [])
+        
         # 清理数据
-        cleaned_data = MarketDataCleaner.clean_kline_data(data[item_id])
+        cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
         
         # 确定要显示的指标类型
         indicator_type = IndicatorType.ALL
@@ -71,22 +79,17 @@ def test_chart_from_local(item_id: str = "525873303",
         elif indicator.lower() == "vegas":
             indicator_type = IndicatorType.VEGAS
         
-        # 创建并显示图表
-        chart = KLineChart(days_to_show=300)
-        fig = chart.plot_candlestick(
-            item_id, 
-            cleaned_data,
+        # 创建图表
+        chart = KLineChart()
+        chart.plot_candlestick(
+            item_id=item_id,
+            raw_data=cleaned_data,
+            title=name,
             indicator_type=indicator_type
         )
         
-        if fig:
-            fig.show()
-            fig.waitforbuttonpress()
-        else:
-            logger.error("创建图表失败")
-            
     except Exception as e:
-        logger.error(f"测试图表时出错: {e}")
+        logger.error(f"生成图表时出错: {e}")
 
 
 def test_chart_by_date_range(
@@ -108,15 +111,23 @@ def test_chart_by_date_range(
     """
     try:
         # 加载数据
-        logger.info(f"已从 {filename} 加载市场数据")
         data = load_market_data(filename)
         
         if item_id not in data:
             logger.error(f"未找到商品 {item_id} 的数据")
             return
             
+        # 获取商品名称和数据
+        item_data = data[item_id]
+        if not isinstance(item_data, dict):  # 如果是旧格式（直接的K线数据列表）
+            name = f'Item-{item_id}'
+            kline_data = item_data
+        else:  # 如果是新格式（带name的字典）
+            name = item_data.get('name', f'Item-{item_id}')
+            kline_data = item_data.get('data', [])
+        
         # 清理数据
-        cleaned_data = MarketDataCleaner.clean_kline_data(data[item_id])
+        cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
         
         # 确定要显示的指标类型
         indicator_type = IndicatorType.ALL
@@ -125,27 +136,63 @@ def test_chart_by_date_range(
         elif indicator.lower() == "vegas":
             indicator_type = IndicatorType.VEGAS
         
-        # 创建并显示图表
-        chart = KLineChart(days_to_show=30)  # days_to_show在使用日期范围时不起作用
-        fig = chart.plot_candlestick(
+        # 创建图表
+        chart = KLineChart()
+        chart.plot_candlestick(
             item_id=item_id,
             raw_data=cleaned_data,
+            title=name,
             indicator_type=indicator_type,
             start_date=start_date,
             end_date=end_date
         )
         
-        if fig:
-            fig.show()
-            fig.waitforbuttonpress()
-        else:
-            logger.error("创建图表失败")
+    except Exception as e:
+        logger.error(f"生成图表时出错: {e}")
+
+
+def generate_all_charts(
+    filename: str = "market_data.json",
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    indicator: str = "all"
+):
+    """为所有收藏商品生成图表"""
+    try:
+        # 加载数据
+        data = load_market_data(filename)
+        
+        # 遍历所有商品
+        for item_id, item_data in data.items():
+            # 获取商品名称
+            if not isinstance(item_data, dict):  # 如果是旧格式（直接的K线数据列表）
+                name = f'Item-{item_id}'
+            else:  # 如果是新格式（带name的字典）
+                name = item_data.get('name', f'Item-{item_id}')
+                
+            logger.info(f"正在生成商品 [{name}] 的K线图")
+            
+            # 生成图表
+            if start_date and end_date:
+                test_chart_by_date_range(
+                    item_id=item_id,
+                    filename=filename,
+                    start_date=start_date,
+                    end_date=end_date,
+                    indicator=indicator
+                )
+            else:
+                test_chart_from_local(
+                    item_id=item_id,
+                    filename=filename,
+                    indicator=indicator
+                )
             
     except Exception as e:
-        logger.error(f"测试图表时出错: {e}")
+        logger.error(f"批量生成图表时出错: {e}")
 
 
-def crawl_and_save():
+def crawl_and_save(filename: str = "market_data.json"):
     """爬取数据并保存到数据库"""
     logger.info("开始执行爬虫任务")
     start_time = time.time()
@@ -157,7 +204,7 @@ def crawl_and_save():
     result = spider.crawl_all_items()
     
     # 保存数据到JSON
-    save_market_data(result)
+    save_market_data(result, filename)
     
     exit(0)
 
@@ -250,6 +297,7 @@ def main():
     parser.add_argument("--crawl", action="store_true", help="爬取数据")
     parser.add_argument("--test", action="store_true", help="测试图表")
     parser.add_argument("--date-range", action="store_true", help="按日期范围显示图表")
+    parser.add_argument("--all", action="store_true", help="生成所有收藏商品的图表")
     parser.add_argument("--item-id", type=str, default="525873303", help="指定商品ID")
     parser.add_argument("--data-file", type=str, default="market_data.json", help="指定数据文件名")
     parser.add_argument("--indicator", type=str, choices=["all", "boll", "vegas"], 
@@ -260,7 +308,7 @@ def main():
     
     if args.crawl:
         # 爬取数据
-        crawl_and_save()
+        crawl_and_save(args.data_file)
     elif args.test:
         # 测试图表
         test_chart_from_local(
@@ -272,6 +320,14 @@ def main():
         # 按日期范围显示图表
         test_chart_by_date_range(
             item_id=args.item_id,
+            filename=args.data_file,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            indicator=args.indicator
+        )
+    elif args.all:
+        # 生成所有收藏商品的图表
+        generate_all_charts(
             filename=args.data_file,
             start_date=args.start_date,
             end_date=args.end_date,

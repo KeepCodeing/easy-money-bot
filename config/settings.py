@@ -25,20 +25,27 @@ if not os.path.exists(DATA_DIR):
 DB_PATH = os.path.join(DATA_DIR, 'db.sqlite')
 
 # API配置
-API_URL = os.getenv('API_URL', 'https://sdt-api.ok-skins.com/user/steam/category/v1/kline')
-FAV_URL = os.getenv('FAV_URL', 'https://xxx.xxx.com/user/fav/url')
-# ?timestamp=1751610210385&type=2&maxTime&typeVal=525873303&platform=YOUPIN&specialStyle
-PLATFORM = os.getenv('PLATFORM', 'YOUPIN')
-DATA_TYPE = os.getenv('DATA_TYPE', 2)
+API_URL = os.getenv('API_URL', 'https://sdt-api.ok-skins.com/user/steam/category/v1/kline') # get 请求
+FAV_URL = os.getenv('FAV_URL', 'https://sdt-api.ok-skins.com/user/collect/skin/v1/page') # post 请求
+PLATFORM = os.getenv('PLATFORM', 'YOUPIN') # 平台，主要使用悠悠有品
+DATA_TYPE = os.getenv('DATA_TYPE', 2) # 数据类型，对应K线tab
+
+FAV_LIST_ID = [
+    # "1414805408485134336", # 贴纸1
+    # "1414804544713326592", # 贴纸2
+    #"1414804160054743040", # 探员
+    #"1414787065409622016", # 我的关注
+    "1415633294154125312", # test
+]
 
 # 策略参数
 CATEGORY_MONTH = int(os.getenv('CATEGORY_MONTH', 4)) # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv('CATEGORY_DAYS', 90)) # 360天
-BOLLINGER_PERIOD = int(os.getenv('BOLLINGER_PERIOD', 20))
-BOLLINGER_STD = int(os.getenv('BOLLINGER_STD', 2))
-VEGAS_EMA1 = int(os.getenv('VEGAS_EMA1', 12))
-VEGAS_EMA2 = int(os.getenv('VEGAS_EMA2', 144))
-VEGAS_EMA3 = int(os.getenv('VEGAS_EMA3', 169))
+BOLLINGER_PERIOD = int(os.getenv('BOLLINGER_PERIOD', 20)) # 布林线周期
+BOLLINGER_STD = int(os.getenv('BOLLINGER_STD', 2)) # 布林线标准差
+VEGAS_EMA1 = int(os.getenv('VEGAS_EMA1', 12)) # 维加斯通道EMA1周期
+VEGAS_EMA2 = int(os.getenv('VEGAS_EMA2', 144)) # 维加斯通道EMA2周期
+VEGAS_EMA3 = int(os.getenv('VEGAS_EMA3', 169)) # 维加斯通道EMA3周期
 
 # 爬虫配置
 CRAWL_INTERVAL = int(os.getenv('CRAWL_INTERVAL', 4))  # 小时

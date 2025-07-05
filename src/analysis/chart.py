@@ -11,10 +11,26 @@ from typing import List, Dict, Optional, Any
 
 import pandas as pd
 import mplfinance as mpf
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 from config import settings
 from .indicators import TechnicalIndicators, IndicatorType
 
 logger = logging.getLogger(__name__)
+
+# 设置中文字体
+try:
+    # 尝试使用微软雅黑（Windows）
+    font = FontProperties(fname=r"C:\Windows\Fonts\msyh.ttc")
+    plt.rcParams['font.family'] = ['Microsoft YaHei']
+    logger.info("成功加载微软雅黑字体")
+except Exception as e:
+    try:
+        # 尝试使用其他中文字体（Linux/macOS）
+        plt.rcParams['font.family'] = ['Heiti TC', 'Heiti SC', 'STHeiti', 'SimHei', 'sans-serif']
+        logger.info("成功加载系统中文字体")
+    except Exception as e:
+        logger.warning(f"加载中文字体失败: {e}，将使用系统默认字体")
 
 
 class KLineChart:
@@ -46,6 +62,7 @@ class KLineChart:
                 ohlc="inherit",
             ),
             rc={
+                'font.family': plt.rcParams['font.family'],  # 使用全局字体设置
                 "axes.labelsize": 10,
                 "axes.titlesize": 12,
                 "xtick.labelsize": 8,
@@ -243,7 +260,7 @@ class KLineChart:
         Args:
             item_id: 商品ID
             raw_data: 原始K线数据
-            title: 图表标题，默认为"Kline Chart of {item_id}"
+            title: 图表标题，默认为"name(n天)"
             indicator_type: 要显示的指标类型
             start_date: 开始日期，格式：YYYY-MM-DD
             end_date: 结束日期，格式：YYYY-MM-DD
@@ -274,14 +291,12 @@ class KLineChart:
 
         # 设置图表标题
         if title is None:
+            title = f"Item-{item_id} ({self.days_to_show}天)"
+        else:
             if start_date and end_date:
-                title = f"Kline Chart of {item_id} ({start_date} to {end_date})"
-            elif start_date:
-                title = f"Kline Chart of {item_id} (from {start_date})"
-            elif end_date:
-                title = f"Kline Chart of {item_id} (until {end_date})"
+                title = f"{title} ({start_date} ~ {end_date})"
             else:
-                title = f"Kline Chart of {item_id} (Last {self.days_to_show} days)"
+                title = f"{title} ({self.days_to_show}天)"
 
         # 准备技术指标数据（确保与显示数据长度匹配）
         addplots = []
@@ -396,6 +411,7 @@ class KLineChart:
                     va=va,
                     ha="center",
                     bbox=None,  # 移除背景框
+                    fontproperties=font if 'font' in globals() else None,  # 使用中文字体（如果可用）
                     arrowprops=dict(
                         arrowstyle="->",
                         color="black",
@@ -410,7 +426,8 @@ class KLineChart:
             title,
             y=0.95,  # 调整标题位置
             fontsize=12,
-            fontweight="bold"
+            fontweight="bold",
+            fontproperties=font if 'font' in globals() else None  # 使用中文字体（如果可用）
         )
 
         # 调整布局
