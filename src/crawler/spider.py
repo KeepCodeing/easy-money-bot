@@ -243,14 +243,14 @@ class CS2MarketSpider:
                         break
                     
                     page_num += 1
-                    # 随机延迟5-8秒
-                    delay = random.uniform(5, 8)
+                    # 使用配置的翻页延迟
+                    delay = random.uniform(settings.PAGE_DELAY_MIN, settings.PAGE_DELAY_MAX)
                     logger.info(f"等待 {delay:.1f} 秒后继续...")
                     time.sleep(delay)
                 
-                # 收藏夹之间随机延迟5-10秒
+                # 收藏夹之间使用配置的切换延迟
                 if fav_id != settings.FAV_LIST_ID[-1]:
-                    delay = random.uniform(5, 10)
+                    delay = random.uniform(settings.FOLDER_DELAY_MIN, settings.FOLDER_DELAY_MAX)
                     logger.info(f"等待 {delay:.1f} 秒后继续...")
                     time.sleep(delay)
             
@@ -332,7 +332,7 @@ class CS2MarketSpider:
             
             # 添加延迟，避免请求过于频繁
             if i < len(timestamps) - 1:  # 最后一次请求后不需要延迟
-                delay = random.uniform(5, 8)  # 随机延迟5-8秒
+                delay = random.uniform(settings.PAGE_DELAY_MIN, settings.PAGE_DELAY_MAX)  # 使用配置的翻页延迟
                 logger.info(f"等待 {delay:.1f} 秒后继续...")
                 time.sleep(delay)
         
@@ -351,15 +351,12 @@ class CS2MarketSpider:
             str: 创建的文件夹路径
         """
         timestamp = int(time.time())
-        folder_path = os.path.join(self.data_dir, str(timestamp))
-        
-        try:
-            os.makedirs(folder_path, exist_ok=True)
-            logger.info(f"创建数据文件夹: {folder_path}")
-            return folder_path
-        except Exception as e:
-            logger.error(f"创建数据文件夹失败: {e}")
-            raise
+        folder_path = os.path.join(self.data_dir, 'items', str(timestamp))
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        logger.info(f"创建数据文件夹: {folder_path}")
+        return folder_path
     
     def _save_item_to_json(self, folder_path: str, item_id: str, name: str, data: List[Dict]) -> bool:
         """
@@ -414,7 +411,10 @@ class CS2MarketSpider:
                 }
             }
         """
+        start_time = time.time()
         result = {}
+        successful_items = []  # 记录成功爬取的商品
+        failed_items = []      # 记录失败的商品
         items = self.get_favorite_items()
         
         if not items:
@@ -443,20 +443,56 @@ class CS2MarketSpider:
                     # 保存为独立的JSON文件
                     self._save_item_to_json(folder_path, item_id, name, item_data)
                     logger.info(f"成功获取并保存商品 [{name}]({item_id}) 的数据")
+                    successful_items.append(name)
                 else:
                     logger.warning(f"获取商品 [{name}]({item_id}) 的数据失败")
+                    failed_items.append(name)
                 
                 # 添加随机延迟，避免请求过于频繁
                 if item != items[-1]:  # 如果不是最后一个商品
-                    delay = random.uniform(5, 10)  # 随机延迟5-10秒
+                    delay = random.uniform(settings.ITEM_DELAY_MIN, settings.ITEM_DELAY_MAX)  # 使用配置的商品延迟
                     logger.info(f"等待 {delay:.1f} 秒后继续...")
                     time.sleep(delay)
             
-            logger.info(f"所有商品数据爬取完成，成功获取 {len(result)} 个商品的数据")
+            # 计算运行时间
+            end_time = time.time()
+            total_time = end_time - start_time
+            hours = int(total_time // 3600)
+            minutes = int((total_time % 3600) // 60)
+            seconds = int(total_time % 60)
+            
+            # 打印汇总信息
+            logger.info("\n" + "="*50)
+            logger.info("爬取任务完成，结果汇总：")
+            logger.info(f"总运行时间: {hours}小时 {minutes}分钟 {seconds}秒")
+            logger.info(f"计划爬取商品数: {len(items)}")
+            logger.info(f"成功爬取商品数: {len(successful_items)}")
+            logger.info(f"失败商品数: {len(failed_items)}")
+            
+            if successful_items:
+                logger.info("\n成功爬取的商品：")
+                for i, name in enumerate(successful_items, 1):
+                    logger.info(f"{i}. {name}")
+                    
+            if failed_items:
+                logger.info("\n爬取失败的商品：")
+                for i, name in enumerate(failed_items, 1):
+                    logger.info(f"{i}. {name}")
+                    
+            logger.info("="*50)
+            logger.info(f"数据已保存至: {folder_path}")
             return result
             
         except Exception as e:
+            end_time = time.time()
+            total_time = end_time - start_time
+            hours = int(total_time // 3600)
+            minutes = int((total_time % 3600) // 60)
+            seconds = int(total_time % 60)
+            
             logger.error(f"爬取过程中发生错误: {e}")
+            logger.error(f"运行时间: {hours}小时 {minutes}分钟 {seconds}秒")
+            logger.error(f"成功爬取商品数: {len(successful_items)}")
             return result
 
 
