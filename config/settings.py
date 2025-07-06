@@ -65,7 +65,7 @@ RETRY_DELAY = 5  # 重试延迟（秒）
 PAGE_DELAY_MIN = 2  # 翻页最小延迟（秒）
 PAGE_DELAY_MAX = 5  # 翻页最大延迟（秒）
 FOLDER_DELAY_MIN = 3  # 收藏夹切换最小延迟（秒）
-FOLDER_DELAY_MAX = 80  # 收藏夹切换最大延迟（秒）
+FOLDER_DELAY_MAX = 8  # 收藏夹切换最大延迟（秒）
 ITEM_DELAY_MIN = 2  # 商品爬取最小延迟（秒）
 ITEM_DELAY_MAX = 5  # 商品爬取最大延迟（秒）
 
