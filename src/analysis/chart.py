@@ -16,6 +16,7 @@ from matplotlib.font_manager import FontProperties
 from config import settings
 from .indicators import TechnicalIndicators, IndicatorType
 from src.utils.file_utils import clean_filename
+from .signal_summary import SignalSummary
 
 # 配置日志
 logging.basicConfig(
@@ -64,6 +65,9 @@ class KLineChart:
         if not os.path.exists(self.charts_dir):
             os.makedirs(self.charts_dir)
 
+        # 初始化信号汇总器
+        self.signal_summary = SignalSummary()
+
         # 设置图表样式
         self.chart_style = mpf.make_mpf_style(
             base_mpf_style="charles",
@@ -92,7 +96,8 @@ class KLineChart:
         self.indicators = TechnicalIndicators()
 
     def _find_bollinger_touches(
-        self, df: pd.DataFrame, upper: pd.Series, lower: pd.Series
+        self, df: pd.DataFrame, upper: pd.Series, lower: pd.Series, 
+        item_id: str = None, item_name: str = None
     ) -> List[Dict]:
         """
         查找触碰布林线的点，并返回对应时间点的价格
@@ -104,6 +109,8 @@ class KLineChart:
             df: K线数据
             upper: 布林线上轨
             lower: 布林线下轨
+            item_id: 商品ID（可选）
+            item_name: 商品名称（可选）
 
         Returns:
             触碰点列表，每个点包含：
@@ -123,11 +130,13 @@ class KLineChart:
         )
 
         for idx in df.index:
-            high_price = df.loc[idx, "High"]
-            open_price = df.loc[idx, "Open"]
-            close_price = df.loc[idx, "Close"]
-            upper_band = upper[idx]
-            lower_band = lower[idx]
+            high_price = float(df.loc[idx, "High"])
+            open_price = float(df.loc[idx, "Open"])
+            close_price = float(df.loc[idx, "Close"])
+            volume = float(df.loc[idx, "Volume"])
+            upper_band = float(upper[idx])
+            lower_band = float(lower[idx])
+            middle_band = float((upper_band + lower_band) / 2)  # 计算中轨
 
             # 获取实体的较低价格（开盘价和收盘价中的较小值）
             body_low_price = min(open_price, close_price)
@@ -141,9 +150,33 @@ class KLineChart:
             # 检查上轨（保持不变，使用最高价）
             upper_threshold = upper_band * (1 - tolerance)
             if high_price >= upper_threshold:
-                upper_touches.append(
-                    {"index": idx, "price": high_price, "position": "upper"}
-                )
+                touch = {
+                    "index": idx,
+                    "price": high_price,
+                    "position": "upper",
+                    "open": open_price,
+                    "close": close_price,
+                    "volume": volume
+                }
+                upper_touches.append(touch)
+                
+                # 如果是最新的一天且提供了商品ID，添加到信号汇总
+                if item_id and idx == df.index[-1]:
+                    self.signal_summary.add_signal(
+                        item_id=str(item_id),
+                        item_name=str(item_name or f'Item-{item_id}'),
+                        signal_type='sell',
+                        price=high_price,
+                        open_price=open_price,
+                        close_price=close_price,
+                        volume=volume,
+                        boll_values={
+                            'middle': middle_band,
+                            'upper': upper_band,
+                            'lower': lower_band
+                        },
+                        timestamp=pd.to_datetime(idx)
+                    )
                 logger.info(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
                 )
@@ -151,9 +184,33 @@ class KLineChart:
             # 检查下轨（只使用实体价格）
             lower_threshold = lower_band * (1 + tolerance)
             if body_low_price <= lower_threshold:
-                lower_touches.append(
-                    {"index": idx, "price": body_low_price, "position": "lower"}
-                )
+                touch = {
+                    "index": idx,
+                    "price": body_low_price,
+                    "position": "lower",
+                    "open": open_price,
+                    "close": close_price,
+                    "volume": volume
+                }
+                lower_touches.append(touch)
+                
+                # 如果是最新的一天且提供了商品ID，添加到信号汇总
+                if item_id and idx == df.index[-1]:
+                    self.signal_summary.add_signal(
+                        item_id=str(item_id),
+                        item_name=str(item_name or f'Item-{item_id}'),
+                        signal_type='buy',
+                        price=body_low_price,
+                        open_price=open_price,
+                        close_price=close_price,
+                        volume=volume,
+                        boll_values={
+                            'middle': middle_band,
+                            'upper': upper_band,
+                            'lower': lower_band
+                        },
+                        timestamp=pd.to_datetime(idx)
+                    )
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}"
                 )
@@ -326,6 +383,7 @@ class KLineChart:
         indicator_type: IndicatorType = IndicatorType.ALL,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
+        save_signals: bool = True
     ) -> Any:
         """
         绘制K线图
@@ -337,6 +395,7 @@ class KLineChart:
             indicator_type: 要显示的指标类型
             start_date: 开始日期，格式：YYYY-MM-DD
             end_date: 结束日期，格式：YYYY-MM-DD
+            save_signals: 是否保存信号到markdown文件
 
         Returns:
             matplotlib figure 对象
@@ -412,8 +471,10 @@ class KLineChart:
                 ]
             )
 
-            # 查找布林带触点
-            bollinger_touches = self._find_bollinger_touches(df, upper, lower)
+            # 查找布林带触点（传入商品ID和名称用于信号汇总）
+            bollinger_touches = self._find_bollinger_touches(
+                df, upper, lower, item_id, title
+            )
             # 查找中轨回落点
             middle_touches = self._find_bollinger_middle_touches(df, middle)
 
@@ -535,6 +596,14 @@ class KLineChart:
         save_path = os.path.join(self.charts_dir, f"{safe_title}.png")
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
         logger.info(f"K线图已保存至: {save_path}")
+
+        # 如果需要保存信号，并且有信号被添加
+        if save_signals and len(self.signal_summary.signals) > 0:
+            signal_file = self.signal_summary.save_to_markdown()
+            if signal_file:
+                logger.info(f"信号汇总已保存到: {signal_file}")
+            # 清空已保存的信号
+            self.signal_summary.clear_signals()
 
         return fig
 

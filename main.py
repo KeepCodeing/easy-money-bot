@@ -13,6 +13,8 @@ import argparse
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 import re
+import pandas as pd
+import numpy as np
 
 from src.crawler.spider import CS2MarketSpider
 from src.storage.database import DatabaseManager
@@ -180,9 +182,111 @@ def load_market_data(filename: Optional[str] = None) -> dict:
         return {}
 
 
-def test_chart_from_local(item_id: str = "525873303", 
-                         filename: Optional[str] = None,
-                         indicator: str = "all"):
+def process_kline_data(kline_data: List[List], signal_type: str = None) -> List[List]:
+    """
+    处理K线数据，添加可能触发信号的数据点
+    
+    Args:
+        kline_data: 原始K线数据
+        signal_type: 指定生成的信号类型，可选 'buy' 或 'sell'，默认随机选择
+        
+    Returns:
+        处理后的K线数据
+    """
+    try:
+        if not kline_data:
+            return []
+            
+        # 转换为DataFrame
+        df = pd.DataFrame(
+            kline_data,
+            columns=['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
+        )
+        
+        # 转换时间戳为datetime
+        df['Time'] = pd.to_datetime(df['Time'].astype(int), unit='s')
+        
+        # 用0填充NaN和None
+        df = df.fillna(0)
+        
+        # 确保数值类型正确
+        numeric_columns = ['Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
+        for col in numeric_columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+        
+        # 按时间升序排序
+        df = df.sort_values('Time')
+        
+        # 获取最新数据用于计算布林带
+        latest_data = df.tail(settings.BOLLINGER_PERIOD)
+        mean_price = latest_data['Close'].mean()
+        std_price = latest_data['Close'].std()
+        
+        # 计算布林带
+        upper_band = mean_price + (std_price * settings.BOLLINGER_STD)
+        lower_band = mean_price - (std_price * settings.BOLLINGER_STD)
+        
+        # 决定信号类型
+        if signal_type is None:
+            signal_type = np.random.choice(['buy', 'sell'])
+        
+        # 生成新的数据点
+        latest_time = df['Time'].max() + pd.Timedelta(days=1)
+        
+        if signal_type == 'buy':
+            # 创建买入信号：价格接近下轨
+            target_price = lower_band * (1 + settings.BOLL_TOLERANCE / 2)
+            new_point = {
+                'Time': latest_time,
+                'Open': target_price * 1.02,
+                'Close': target_price * 0.98,
+                'Low': target_price * 0.95,
+                'High': target_price * 1.03,
+                'Volume': latest_data['Volume'].mean(),
+                'Amount': latest_data['Amount'].mean()
+            }
+        else:
+            # 创建卖出信号：价格接近上轨
+            target_price = upper_band * (1 - settings.BOLL_TOLERANCE / 2)
+            new_point = {
+                'Time': latest_time,
+                'Open': target_price * 0.98,
+                'Close': target_price,
+                'Low': target_price * 0.97,
+                'High': target_price * 1.02,
+                'Volume': latest_data['Volume'].mean(),
+                'Amount': latest_data['Amount'].mean()
+            }
+        
+        # 添加新数据点
+        df = pd.concat([df, pd.DataFrame([new_point])], ignore_index=True)
+        
+        # 转换回列表格式
+        processed_data = []
+        for _, row in df.iterrows():
+            processed_data.append([
+                int(row['Time'].timestamp()),
+                float(row['Open']),
+                float(row['Close']),
+                float(row['High']),
+                float(row['Low']),
+                float(row['Volume']),
+                float(row['Amount'])
+            ])
+        
+        return processed_data
+        
+    except Exception as e:
+        logger.error(f"处理K线数据时出错: {e}")
+        return kline_data
+
+
+def test_chart_from_local(
+    item_id: str = "525873303", 
+    filename: Optional[str] = None,
+    indicator: str = "all",
+    signal_type: Optional[str] = None
+):
     """从本地JSON文件读取数据并绘制K线图"""
     try:
         # 加载数据
@@ -204,6 +308,9 @@ def test_chart_from_local(item_id: str = "525873303",
         # 清理数据
         cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
         
+        # 处理数据，添加信号触发点
+        processed_data = process_kline_data(cleaned_data, signal_type)
+        
         # 确定要显示的指标类型
         indicator_type = IndicatorType.ALL
         if indicator.lower() == "boll":
@@ -212,10 +319,10 @@ def test_chart_from_local(item_id: str = "525873303",
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart(days_to_show=300)
+        chart = KLineChart(days_to_show=30)
         chart.plot_candlestick(
             item_id=item_id,
-            raw_data=cleaned_data,
+            raw_data=processed_data,
             title=name,
             indicator_type=indicator_type
         )
@@ -229,7 +336,8 @@ def test_chart_by_date_range(
     filename: Optional[str] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    indicator: str = "all"
+    indicator: str = "all",
+    signal_type: Optional[str] = None
 ):
     """
     显示指定时间段的K线图
@@ -240,6 +348,7 @@ def test_chart_by_date_range(
         start_date: 开始日期，格式：YYYY-MM-DD
         end_date: 结束日期，格式：YYYY-MM-DD
         indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
+        signal_type: 指定生成的信号类型，可选 'buy' 或 'sell'
     """
     try:
         # 加载数据
@@ -261,6 +370,9 @@ def test_chart_by_date_range(
         # 清理数据
         cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
         
+        # 处理数据，添加信号触发点
+        processed_data = process_kline_data(cleaned_data, signal_type)
+        
         # 确定要显示的指标类型
         indicator_type = IndicatorType.ALL
         if indicator.lower() == "boll":
@@ -272,7 +384,7 @@ def test_chart_by_date_range(
         chart = KLineChart()
         chart.plot_candlestick(
             item_id=item_id,
-            raw_data=cleaned_data,
+            raw_data=processed_data,
             title=name,
             indicator_type=indicator_type,
             start_date=start_date,
@@ -287,7 +399,8 @@ def generate_all_charts(
     filename: Optional[str] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
-    indicator: str = "all"
+    indicator: str = "all",
+    signal_type: Optional[str] = None
 ):
     """为所有收藏商品生成图表"""
     try:
@@ -311,13 +424,15 @@ def generate_all_charts(
                     filename=filename,
                     start_date=start_date,
                     end_date=end_date,
-                    indicator=indicator
+                    indicator=indicator,
+                    signal_type=signal_type
                 )
             else:
                 test_chart_from_local(
                     item_id=item_id,
                     filename=filename,
-                    indicator=indicator
+                    indicator=indicator,
+                    signal_type=signal_type
                 )
             
     except Exception as e:
@@ -437,6 +552,8 @@ def main():
                        default="all", help="指定要显示的技术指标")
     parser.add_argument("--start-date", type=str, help="开始日期 (YYYY-MM-DD)")
     parser.add_argument("--end-date", type=str, help="结束日期 (YYYY-MM-DD)")
+    parser.add_argument("--signal", type=str, choices=["buy", "sell"],
+                       help="指定要生成的信号类型（可选，默认随机）")
     args = parser.parse_args()
     
     if args.crawl:
@@ -447,7 +564,8 @@ def main():
         test_chart_from_local(
             item_id=args.item_id,
             filename=args.data_file,
-            indicator=args.indicator
+            indicator=args.indicator,
+            signal_type=args.signal
         )
     elif args.date_range:
         # 按日期范围显示图表
@@ -456,7 +574,8 @@ def main():
             filename=args.data_file,
             start_date=args.start_date,
             end_date=args.end_date,
-            indicator=args.indicator
+            indicator=args.indicator,
+            signal_type=args.signal
         )
     elif args.all:
         # 生成所有收藏商品的图表
@@ -464,7 +583,8 @@ def main():
             filename=args.data_file,
             start_date=args.start_date,
             end_date=args.end_date,
-            indicator=args.indicator
+            indicator=args.indicator,
+            signal_type=args.signal
         )
     else:
         parser.print_help()
