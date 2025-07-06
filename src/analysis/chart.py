@@ -258,33 +258,33 @@ class KLineChart:
         """
         middle_touches = []
         tolerance = 0.005  # 0.5%的容差范围
-        
+
         logger.debug(f"开始检测布林线中轨回落点，数据长度：{len(df)}")
-        
+
         # 需要至少2个数据点来判断趋势
         for i in range(1, len(df)):
-            prev_idx = df.index[i-1]
+            prev_idx = df.index[i - 1]
             curr_idx = df.index[i]
-            
+
             prev_close = df.loc[prev_idx, "Close"]
             curr_close = df.loc[curr_idx, "Close"]
             curr_middle = middle[curr_idx]
-            
+
             # 判断是否从上方回落到中轨
             # 1. 前一个收盘价在中轨上方
             # 2. 当前收盘价接近中轨
-            if (prev_close > middle[prev_idx] and 
-                abs(curr_close - curr_middle) <= curr_middle * tolerance):
-                middle_touches.append({
-                    "index": curr_idx,
-                    "price": curr_close,
-                    "position": "middle"
-                })
+            if (
+                prev_close > middle[prev_idx]
+                and abs(curr_close - curr_middle) <= curr_middle * tolerance
+            ):
+                middle_touches.append(
+                    {"index": curr_idx, "price": curr_close, "position": "middle"}
+                )
                 logger.debug(
                     f"检测到中轨回落点: 日期={curr_idx}, "
                     f"价格={curr_close:.2f}, 中轨={curr_middle:.2f}"
                 )
-        
+
         logger.info(f"中轨回落点检测完成，共发现 {len(middle_touches)} 个触碰点")
         return middle_touches
 
@@ -413,18 +413,14 @@ class KLineChart:
             )
 
             # 查找布林带触点
-            bollinger_touches = self._find_bollinger_touches(
-                df, upper, lower
-            )
+            bollinger_touches = self._find_bollinger_touches(df, upper, lower)
             # 查找中轨回落点
-            middle_touches = self._find_bollinger_middle_touches(
-                df, middle
-            )
-            
+            middle_touches = self._find_bollinger_middle_touches(df, middle)
+
             # 分类存储触点
             upper_touches = [t for t in bollinger_touches if t["position"] == "upper"]
             lower_touches = [t for t in bollinger_touches if t["position"] == "lower"]
-            
+
             # 收集最新的触点
             if upper_touches:
                 latest_touches.append(upper_touches[-1])
@@ -484,10 +480,10 @@ class KLineChart:
             position = touch["position"]
             price = touch["price"]
             date = touch["index"]
-            
+
             # 获取日期在数据中的位置索引
             date_idx = df.index.get_loc(date)
-            
+
             # 根据位置确定标注文本和位置
             if position == "upper":
                 text = f"¥{price:.2f}"  # 简化文本，只显示价格
@@ -498,7 +494,7 @@ class KLineChart:
             else:  # middle
                 text = f"¥{price:.2f}"
                 y_offset = price * 0.01
-            
+
             # 添加标注
             axes[0].annotate(
                 text,
@@ -508,9 +504,7 @@ class KLineChart:
                 ha="center",
                 va="bottom" if y_offset > 0 else "top",
                 bbox=None,  # 移除边框
-                fontproperties=(
-                    font if "font" in globals() else None
-                ),
+                fontproperties=(font if "font" in globals() else None),
                 arrowprops=dict(
                     arrowstyle="-",  # 简化箭头样式
                     connectionstyle="arc3,rad=0",
@@ -525,9 +519,7 @@ class KLineChart:
             title,
             fontsize=12,
             fontweight="bold",
-            fontproperties=(
-                font if "font" in globals() else None
-            ),
+            fontproperties=(font if "font" in globals() else None),
         )
 
         # 调整布局

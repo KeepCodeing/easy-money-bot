@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 from .indicators import TechnicalIndicators
+from .indicators import IndicatorType  # 添加IndicatorType导入
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,8 @@ class BollingerStrategy:
         self,
         lookback_days: int = 100,
         cooldown_days: int = 8,
-        tolerance: float = 0.03  # 修改默认容差为3%
+        tolerance: float = 0.03,  # 修改默认容差为3%
+        show_days: int = 30  # 添加图表显示天数参数
     ):
         """
         初始化布林线策略回测器
@@ -30,10 +32,12 @@ class BollingerStrategy:
             lookback_days: 回测时间窗口（天）
             cooldown_days: 买入后的冷却期（天）
             tolerance: 触碰判定的容差范围（默认3%）
+            show_days: 图表显示的天数（默认30天）
         """
         self.lookback_days = lookback_days
         self.cooldown_days = cooldown_days
         self.tolerance = tolerance
+        self.show_days = show_days  # 保存显示天数
         self.indicators = TechnicalIndicators()
 
     def prepare_data(self, raw_data: List[List]) -> pd.DataFrame:
@@ -124,6 +128,8 @@ class BollingerStrategy:
             # 检查是否在冷却期
             in_cooldown = False
             if in_position and buy_date:
+                if isinstance(buy_date, pd.Timestamp):
+                    buy_date = buy_date.to_pydatetime()
                 days_since_buy = (current_date - buy_date).days
                 in_cooldown = days_since_buy < self.cooldown_days
             
@@ -176,10 +182,25 @@ class BollingerStrategy:
         current_trade = None
         in_position = False
         buy_date = None
+        raw_data = []  # 保存原始数据用于绘图
         
         # 获取回测范围
         total_days = len(df)
         start_idx = max(0, total_days - self.lookback_days)
+        
+        # 保存原始数据
+        for idx in range(start_idx, total_days):
+            row = df.iloc[idx]
+            timestamp = int(pd.Timestamp(df.index[idx]).timestamp())
+            raw_data.append([
+                timestamp,
+                float(row['Open']),
+                float(row['Close']),
+                float(row['High']),
+                float(row['Low']),
+                float(row.get('Volume', 0)),
+                float(row.get('Amount', 0))
+            ])
         
         # 遍历每一天
         for i in range(start_idx, total_days):
@@ -227,7 +248,8 @@ class BollingerStrategy:
         
         return {
             'trades': trades,
-            'stats': stats
+            'stats': stats,
+            'raw_data': raw_data  # 添加原始数据用于绘图
         }
 
     def _calculate_stats(self, trades: List[Dict]) -> Dict:
@@ -285,34 +307,132 @@ class BollingerStrategy:
         Args:
             results: 回测结果
         """
-        trades = results['trades']
         stats = results['stats']
+        trades = results['trades']
         
-        print("\n=== 布林线策略回测结果 ===")
-        print(f"\n交易明细 (共{stats['total_trades']}笔):")
-        print("-" * 80)
-        for trade in trades:
-            print(
-                f"买入: {trade['buy_date'].strftime('%Y-%m-%d %H:%M:%S')} "
-                f"价格: {trade['buy_price']:.2f}"
-            )
-            print(
-                f"卖出: {trade['sell_date'].strftime('%Y-%m-%d %H:%M:%S')} "
-                f"价格: {trade['sell_price']:.2f}"
-            )
-            print(
-                f"收益: {trade['profit']:.2f} ({trade['profit_percent']:.2f}%)"
-            )
-            print("-" * 80)
-        
-        print("\n统计信息:")
+        print("\n=== 回测结果统计 ===")
         print(f"总交易次数: {stats['total_trades']}")
-        print(f"胜率: {stats['win_rate']:.2f}%")
-        print(f"平均收益率: {stats['avg_profit']:.2f}%")
+        print(f"胜率: {stats['win_rate']:.1f}%")
         print(f"总收益: {stats['total_profit']:.2f}")
-        print(f"最大单笔收益: {stats['max_profit']:.2f}%")
-        print(f"最大单笔亏损: {stats['max_loss']:.2f}%")
+        print(f"最大收益: {stats['max_profit']:.2f}")
+        print(f"最大亏损: {stats['max_loss']:.2f}")
+        print(f"平均收益: {stats['avg_profit']:.2f}")
         print(f"平均持仓天数: {stats['avg_hold_days']:.1f}天")
+        
+        # 如果有交易记录，绘制图表
+        if trades:
+            try:
+                from .chart import KLineChart
+                chart = KLineChart(days_to_show=self.show_days)  # 使用设置的显示天数
+                chart.plot_candlestick(
+                    item_id=str(stats.get('item_id', 'unknown')),
+                    raw_data=results.get('raw_data', []),
+                    title=f"布林线策略回测 - {stats.get('name', '')}",
+                    indicator_type=IndicatorType.BOLL
+                )
+            except Exception as e:
+                logger.error(f"绘制图表失败: {e}")
+
+class BollingerMidlineStrategy(BollingerStrategy):
+    """布林线中轨触碰计分策略"""
+
+    def __init__(self, *args, **kwargs):
+        """初始化中轨触碰计分策略"""
+        super().__init__(*args, **kwargs)
+        self.midline_score = 0  # 中轨触碰计分
+        self.touched_midline = False  # 是否触碰过中轨
+        self.midline_touch_price = 0.0  # 触碰中轨时的价格
+
+    def detect_midline_touch(self, df: pd.DataFrame, end_idx: int) -> None:
+        """
+        检测中轨触碰和上轨得分情况
+
+        Args:
+            df: 数据
+            end_idx: 当前位置
+        """
+        try:
+            current_data = df.iloc[end_idx]
+            
+            # 获取当前价格和布林线值
+            close_price = float(current_data['Close'])
+            middle_band = float(current_data['middle'])
+            upper_band = float(current_data['upper'])
+            
+            # 计算中轨的容差范围
+            mid_lower = middle_band * (1 - self.tolerance)
+            mid_upper = middle_band * (1 + self.tolerance)
+            
+            # 如果还没有触碰过中轨，检查是否触碰
+            if not self.touched_midline:
+                if mid_lower <= close_price <= mid_upper:
+                    self.touched_midline = True
+                    self.midline_touch_price = close_price
+                    logger.debug(f"检测到中轨触碰: 价格={close_price:.2f}, 中轨={middle_band:.2f}")
+            
+            # 如果已经触碰过中轨，检查是否达到上轨
+            elif self.touched_midline:
+                upper_threshold = upper_band * (1 - self.tolerance)
+                if close_price >= upper_threshold:
+                    # 计算得分（1分）
+                    self.midline_score += 1
+                    logger.info(
+                        f"得分! 中轨触碰价格={self.midline_touch_price:.2f}, "
+                        f"上轨触碰价格={close_price:.2f}"
+                    )
+                    # 重置状态，开始下一轮计分
+                    self.touched_midline = False
+                    self.midline_touch_price = 0.0
+                
+                # 如果价格低于中轨，重置状态（不得分）
+                elif close_price < middle_band:
+                    self.touched_midline = False
+                    self.midline_touch_price = 0.0
+                    logger.debug("价格低于中轨，重置状态")
+                    
+        except Exception as e:
+            logger.error(f"中轨触碰检测失败: {e}")
+
+    def run_backtest(self, df: pd.DataFrame) -> Dict:
+        """
+        运行回测，包括原有的布林线策略和中轨触碰计分
+
+        Args:
+            df: 包含技术指标的数据
+
+        Returns:
+            回测结果统计
+        """
+        # 运行原有的布林线策略回测
+        results = super().run_backtest(df)
+        
+        # 重置计分状态
+        self.midline_score = 0
+        self.touched_midline = False
+        self.midline_touch_price = 0.0
+        
+        # 获取回测范围
+        total_days = len(df)
+        start_idx = max(0, total_days - self.lookback_days)
+        
+        # 遍历每一天进行计分
+        for i in range(start_idx, total_days):
+            self.detect_midline_touch(df, i)
+        
+        # 将计分结果添加到统计信息中
+        results['stats']['midline_score'] = self.midline_score
+        
+        return results
+
+    def print_results(self, results: Dict):
+        """
+        打印回测结果，包括中轨触碰计分
+
+        Args:
+            results: 回测结果
+        """
+        super().print_results(results)
+        print(f"\n中轨触碰计分: {results['stats']['midline_score']}")
 
 class VegasStrategy:
     """维加斯通道策略回测"""
