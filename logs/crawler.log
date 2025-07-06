@@ -3880,3 +3880,803 @@
 2025-07-06 01:14:09,232 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-05 16:00:27, 价格=29879.50
 2025-07-06 01:14:09,235 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-22 16:00:00, 价格=28300.00
 2025-07-06 01:14:10,214 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\553370941_candlestick.png
+2025-07-06 12:02:18,106 - src.analysis.chart - INFO - 成功加载微软雅黑字体
+2025-07-06 12:02:18,114 - main - INFO - 开始执行爬虫任务
+2025-07-06 12:02:18,125 - crawler - INFO - 成功初始化UserAgent
+2025-07-06 12:02:18,125 - crawler - INFO - 正在获取收藏夹 1415633294154125312 的商品信息
+2025-07-06 12:02:18,126 - crawler - INFO - 发送请求:
+2025-07-06 12:02:18,126 - crawler - INFO - Method: POST
+2025-07-06 12:02:18,127 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:18,131 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/collect/skin/v1/page?timestamp=1751774538126
+2025-07-06 12:02:18,132 - crawler - INFO - JSON Data: {'pageSize': 50, 'pageNum': 1, 'folder': {'folderId': '1415633294154125312', 'expected': ''}, 'platform': 'YOUPIN'}
+2025-07-06 12:02:18,435 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:18,435 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:19 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '9a64870c307496954b1a75d9d5308eb0', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '7dc549b6d8a62793c2c3eafeb1e19a1b', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:18,437 - crawler - INFO - Response Body: {"success":true,"data":{"pageNum":"1","pageSize":"50","total":"1","list":[{"collectId":"1415633301524107264","itemId":"1399839642715082753","name":"印花 | Vitality（闪亮）| 2025年奥斯汀锦标赛","marketHashName":"Sticker | Vitality (Foil) | Austin 2025","imageUrl":"https://img.zbt.com/e/steam/item/730/U3RpY2tlciB8IFZpdGFsaXR5IChGb2lsKSB8IEF1c3RpbiAyMDI1.png","platform":"youpin","sellPrice":1.05,"collectPrice":0.97,"expectPrice":null,"diff1DaysPrice":-0.05,"diff1DaysRate":-4.55,"before1DaysPrice":1.10,"diffPrice":0.08,"diffRate":8.25,"remark":null,"expectUpdown":null,"collectTime":"1751726842","achieved":null}],"totalPrice":1.05,"totalChangePrice":0.08},"errorCode":0,"errorMsg":null,"errorData":null,"errorCodeStr":null}...
+2025-07-06 12:02:18,441 - crawler - INFO - 已到达最后一页（当前第1页，共1页）
+2025-07-06 12:02:18,441 - crawler - INFO - 等待 7.9 秒后继续...
+2025-07-06 12:02:26,395 - crawler - INFO - 正在获取收藏夹 1399916930512928768 的商品信息
+2025-07-06 12:02:26,395 - crawler - INFO - 发送请求:
+2025-07-06 12:02:26,396 - crawler - INFO - Method: POST
+2025-07-06 12:02:26,396 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:26,397 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/collect/skin/v1/page?timestamp=1751774546395
+2025-07-06 12:02:26,398 - crawler - INFO - JSON Data: {'pageSize': 50, 'pageNum': 1, 'folder': {'folderId': '1399916930512928768', 'expected': ''}, 'platform': 'YOUPIN'}
+2025-07-06 12:02:26,637 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:26,637 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:27 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '88a0cdd9741b9936f4e013b84cb58c33', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '7685492f66365c7669058092b72a59b4', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:26,638 - crawler - INFO - Response Body: {"success":true,"data":{"pageNum":"1","pageSize":"50","total":"8","list":[{"collectId":"1399916930647146503","itemId":"22779","name":"蝴蝶刀（★）","marketHashName":"★ Butterfly Knife","imageUrl":"https://img.zbt.com/e/steam/item/730/4piFIEJ1dHRlcmZseSBLbmlmZQ==.png","platform":"youpin","sellPrice":21115.00,"collectPrice":19800.00,"expectPrice":null,"diff1DaysPrice":-23.50,"diff1DaysRate":-0.11,"before1DaysPrice":21138.50,"diffPrice":1315.00,"diffRate":6.64,"remark":null,"expectUpdown":null,"collectTime":"1747921935","achieved":null},{"collectId":"1399916930647146502","itemId":"525873303","name":"运动手套（★） | 树篱迷宫 (久经沙场)","marketHashName":"★ Sport Gloves | Hedge Maze (Field-Tested)","imageUrl":"https://img.zbt.com/e/steam/item/730/4piFIFNwb3J0IEdsb3ZlcyB8IEhlZGdlIE1hemUgKEZpZWxkLVRlc3RlZCk=.png","platform":"youpin","sellPrice":67600.00,"collectPrice":68887.50,"expectPrice":null,"diff1DaysPrice":-100.00,"diff1DaysRate":-0.15,"before1DaysPrice":67700.00,"diffPrice":-1287.50,"diffRate":-1.87,"rema...
+2025-07-06 12:02:26,641 - crawler - INFO - 已到达最后一页（当前第1页，共1页）
+2025-07-06 12:02:26,641 - crawler - INFO - 共获取到 9 个商品信息
+2025-07-06 12:02:26,642 - crawler - INFO - 开始爬取 9 个商品的数据
+2025-07-06 12:02:26,643 - crawler - INFO - 创建数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:02:26,643 - crawler - INFO - 开始获取商品 [印花 | Vitality（闪亮）| 2025年奥斯汀锦标赛](1399839642715082753) 的数据
+2025-07-06 12:02:26,644 - crawler - INFO - 开始获取商品 1399839642715082753 的历史数据，目标天数: 360
+2025-07-06 12:02:26,644 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:02:26,645 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774546
+2025-07-06 12:02:26,647 - crawler - INFO - 开始获取商品 1399839642715082753 的数据，maxTime=1751774546
+2025-07-06 12:02:26,647 - crawler - INFO - 发送请求:
+2025-07-06 12:02:26,647 - crawler - INFO - Method: GET
+2025-07-06 12:02:26,648 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:26,650 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774546647&type=2&maxTime=1751774546&typeVal=1399839642715082753&platform=YOUPIN&specialStyle=
+2025-07-06 12:02:26,838 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:26,839 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:27 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '0296a5f0795492a29cdf236f63e09c2f', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '717b8f0f56d0baf690b64d191735cb8c', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:26,845 - crawler - INFO - Response Body: {"success":true,"data":[["1749657600",42.90,33.80,42.90,33.80,523,18702.99],["1749744000",33.80,26.70,35.50,22.80,465,12508.04],["1749830400",26.70,8.66,26.70,7.19,493,6817.70],["1749916800",8.66,4.29,12.00,4.29,392,2302.85],["1750003200",4.29,9.18,9.59,4.29,300,1663.16],["1750089600",9.18,6.30,9.18,6.30,290,1809.68],["1750176000",6.30,5.57,6.94,4.70,192,1048.17],["1750262400",5.57,4.67,5.88,3.95,248,1447.93],["1750348800",4.67,4.36,4.88,4.20,261,1148.11],["1750435200",4.36,4.26,4.69,3.78,284,1504.16],["1750521600",4.26,3.35,4.80,2.65,320,2454.25],["1750608000",3.35,1.29,3.35,1.00,1505,9612.18],["1750694400",1.29,1.92,2.24,1.29,421,1233.70],["1750780800",1.92,1.96,2.27,1.82,293,970.74],["1750867200",1.96,1.65,2.00,1.65,178,504.68],["1750953600",1.65,1.47,1.73,1.47,206,463.86],["1751040000",1.47,1.22,1.47,1.22,171,360.62],["1751126400",1.22,1.25,1.30,1.17,150,298.28],["1751212800",1.25,1.32,1.32,1.03,247,452.20],["1751299200",1.32,1.18,1.67,1.18,248,372.78],["1751385600",1.18,1.06,1.18,...
+2025-07-06 12:02:26,849 - crawler - INFO - 成功获取商品 1399839642715082753 的数据
+2025-07-06 12:02:26,849 - crawler - INFO - 获取到 25 条数据
+2025-07-06 12:02:26,850 - crawler - INFO - 等待 5.2 秒后继续...
+2025-07-06 12:02:32,072 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998546
+2025-07-06 12:02:32,072 - crawler - INFO - 开始获取商品 1399839642715082753 的数据，maxTime=1743998546
+2025-07-06 12:02:32,073 - crawler - INFO - 发送请求:
+2025-07-06 12:02:32,073 - crawler - INFO - Method: GET
+2025-07-06 12:02:32,074 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:32,076 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774552072&type=2&maxTime=1743998546&typeVal=1399839642715082753&platform=YOUPIN&specialStyle=
+2025-07-06 12:02:32,238 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:32,239 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:33 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '5f97d8cbd2548c84d9050ccabbed043b', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '0348fbe3d9ca962fe8e8d4d27f3fa8de', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:32,240 - crawler - INFO - Response Body: {"success":true,"data":[],"errorCode":0,"errorMsg":null,"errorData":null,"errorCodeStr":null}...
+2025-07-06 12:02:32,242 - crawler - INFO - 成功获取商品 1399839642715082753 的数据
+2025-07-06 12:02:32,242 - crawler - WARNING - 时间戳 1743998546 没有获取到数据，由于是按时间顺序请求，终止后续请求
+2025-07-06 12:02:32,242 - crawler - INFO - 商品 1399839642715082753 的历史数据获取完成，共获取 25 条数据
+2025-07-06 12:02:32,244 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\印花  Vitality闪亮 2025年奥斯汀锦标赛.json
+2025-07-06 12:02:32,245 - crawler - INFO - 成功获取并保存商品 [印花 | Vitality（闪亮）| 2025年奥斯汀锦标赛](1399839642715082753) 的数据
+2025-07-06 12:02:32,246 - crawler - INFO - 等待 5.8 秒后继续...
+2025-07-06 12:02:38,004 - crawler - INFO - 开始获取商品 [蝴蝶刀（★）](22779) 的数据
+2025-07-06 12:02:38,006 - crawler - INFO - 开始获取商品 22779 的历史数据，目标天数: 360
+2025-07-06 12:02:38,007 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:02:38,007 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774558
+2025-07-06 12:02:38,008 - crawler - INFO - 开始获取商品 22779 的数据，maxTime=1751774558
+2025-07-06 12:02:38,008 - crawler - INFO - 发送请求:
+2025-07-06 12:02:38,008 - crawler - INFO - Method: GET
+2025-07-06 12:02:38,009 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:38,010 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774558008&type=2&maxTime=1751774558&typeVal=22779&platform=YOUPIN&specialStyle=
+2025-07-06 12:02:38,197 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:38,198 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:39 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '0cd6b928faebf13676dbec0e86bbeac7', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'caf4139478b7f47373a8af265975f51c', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:38,199 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",17400.00,17797.00,17797.00,17400.00,24,428590.15],["1744041600",17797.00,17995.00,18000.00,17500.00,19,342909.96],["1744128000",17995.00,18440.00,18485.00,17800.00,11,203580.07],["1744214400",18440.00,18997.50,19666.66,16370.00,18,342709.48],["1744300800",18997.50,19160.00,19389.50,18500.00,6,112774.00],["1744387200",19160.00,19349.00,19366.66,18725.00,6,120112.71],["1744473600",19349.00,19779.00,20000.00,19000.00,10,202030.36],["1744560000",19779.00,19680.00,19900.00,18825.00,11,222439.67],["1744646400",19680.00,18450.00,19680.00,18000.00,17,317012.00],["1744732800",18450.00,18987.50,19279.00,18450.00,16,308307.82],["1744819200",18987.50,19170.00,19170.00,18650.00,9,179045.12],["1744905600",19170.00,19350.00,19400.00,19010.00,7,145289.11],["1744992000",19350.00,19388.00,19400.00,19180.00,14,292426.39],["1745078400",19388.00,19779.00,19998.50,18886.00,14,273079.62],["1745164800",19779.00,20333.00,20588.00,19600.00,23,461119.00],["1745251200",20333....
+2025-07-06 12:02:38,202 - crawler - INFO - 成功获取商品 22779 的数据
+2025-07-06 12:02:38,204 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:02:38,205 - crawler - INFO - 等待 7.3 秒后继续...
+2025-07-06 12:02:45,497 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998558
+2025-07-06 12:02:45,498 - crawler - INFO - 开始获取商品 22779 的数据，maxTime=1743998558
+2025-07-06 12:02:45,498 - crawler - INFO - 发送请求:
+2025-07-06 12:02:45,499 - crawler - INFO - Method: GET
+2025-07-06 12:02:45,499 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:45,501 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774565498&type=2&maxTime=1743998558&typeVal=22779&platform=YOUPIN&specialStyle=
+2025-07-06 12:02:45,701 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:45,701 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:46 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '38a3782069df06a8f8873b7da5c3cd68', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '6083d232b5fb7a4320e27452a05ff785', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:45,702 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",13728.00,13760.00,13766.00,12888.00,2,27888.38],["1736265600",13760.00,13689.49,13770.00,13680.00,4,55727.78],["1736352000",13689.49,13718.00,13718.00,13585.00,8,112002.60],["1736438400",13718.00,13787.99,13787.99,13699.50,6,83212.55],["1736524800",13787.99,13798.50,13799.00,13646.00,3,41593.50],["1736611200",13798.50,13888.00,13888.00,13790.00,7,97450.98],["1736697600",13888.00,13874.50,13888.00,13800.00,5,71278.59],["1736784000",13874.50,13979.50,13980.00,13800.00,4,55763.50],["1736870400",13979.50,13960.00,13998.00,13918.00,8,111773.87],["1736956800",13960.00,13997.00,13997.00,13450.00,8,113666.64],["1737043200",13997.00,14249.00,14249.00,13997.00,4,56211.99],["1737129600",14249.00,14350.00,14350.00,14245.00,5,71936.39],["1737216000",14350.00,14630.00,14665.00,14350.00,5,72580.58],["1737302400",14630.00,14399.99,14770.00,13750.00,3,44012.00],["1737388800",14399.99,14030.00,14400.00,14020.00,5,70494.47],["1737475200",14030.00,14238.50,14300.00,13...
+2025-07-06 12:02:45,705 - crawler - INFO - 成功获取商品 22779 的数据
+2025-07-06 12:02:45,705 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:02:45,706 - crawler - INFO - 等待 6.6 秒后继续...
+2025-07-06 12:02:52,339 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222558
+2025-07-06 12:02:52,340 - crawler - INFO - 开始获取商品 22779 的数据，maxTime=1736222558
+2025-07-06 12:02:52,340 - crawler - INFO - 发送请求:
+2025-07-06 12:02:52,341 - crawler - INFO - Method: GET
+2025-07-06 12:02:52,341 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:02:52,342 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774572340&type=2&maxTime=1736222558&typeVal=22779&platform=YOUPIN&specialStyle=
+2025-07-06 12:02:52,502 - crawler - INFO - Response Status: 200
+2025-07-06 12:02:52,502 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:02:53 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '46d8273343ca242c8a547a978a005dc6', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '253d869939912e8912dd103ec2f5b245', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:02:52,503 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",12739.00,12700.00,12749.50,12630.00,20,256872.77],["1728489600",12700.00,12738.00,12738.00,12500.00,15,191054.00],["1728576000",12738.00,12728.50,12750.00,12715.00,19,242576.38],["1728662400",12728.50,12799.00,12799.00,12719.50,17,218677.34],["1728748800",12799.00,12780.00,12819.50,12749.00,23,303218.62],["1728835200",12780.00,12770.00,12790.00,12740.00,8,102536.50],["1728921600",12770.00,12795.50,12799.90,12765.00,25,329850.63],["1729008000",12795.50,12815.00,12815.00,12769.99,16,205320.31],["1729094400",12815.00,12820.00,12830.00,12780.00,20,260542.01],["1729180800",12820.00,12830.00,12848.00,12790.00,20,261531.25],["1729267200",12830.00,12835.00,12846.00,12820.00,11,141620.88],["1729353600",12835.00,12839.50,12840.00,12810.00,10,128947.50],["1729440000",12839.50,12839.90,12840.00,12800.00,11,144424.97],["1729526400",12839.90,12839.00,12840.00,12810.00,18,235561.68],["1729612800",12839.00,12840.00,12847.00,12815.00,25,322197.50],["1729699200",128...
+2025-07-06 12:02:52,505 - crawler - INFO - 成功获取商品 22779 的数据
+2025-07-06 12:02:52,506 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:02:52,506 - crawler - INFO - 等待 7.8 秒后继续...
+2025-07-06 12:03:00,313 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446558
+2025-07-06 12:03:00,314 - crawler - INFO - 开始获取商品 22779 的数据，maxTime=1728446558
+2025-07-06 12:03:00,314 - crawler - INFO - 发送请求:
+2025-07-06 12:03:00,315 - crawler - INFO - Method: GET
+2025-07-06 12:03:00,315 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:00,316 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774580314&type=2&maxTime=1728446558&typeVal=22779&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:00,512 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:00,513 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:01 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'ef66202ce30b29c640212d23b26ebbbd', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '6a7d67733b68246706edf5f1ff95ff51', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:00,513 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",12450.00,12445.00,12475.00,12400.00,63,783468.76],["1720713600",12445.00,12460.00,12474.00,12430.00,62,772095.14],["1720800000",12460.00,12450.00,12468.00,11580.00,54,672177.41],["1720886400",12450.00,12450.00,12470.00,12248.00,63,782861.52],["1720972800",12450.00,12473.00,12495.00,11580.00,61,761845.81],["1721059200",12473.00,12496.00,12498.99,11700.00,72,898236.72],["1721145600",12496.00,12518.50,12520.00,11650.00,79,986589.10],["1721232000",12518.50,12525.00,12545.00,12500.00,89,1112772.40],["1721318400",12525.00,12488.00,12537.00,12469.00,64,799478.81],["1721404800",12488.00,12500.00,12520.00,12479.00,77,962512.57],["1721491200",12500.00,12517.50,12530.00,12489.00,59,737631.41],["1721577600",12517.50,12534.99,12535.00,12488.00,60,749861.40],["1721664000",12534.99,12519.50,12548.50,12500.00,76,951855.48],["1721750400",12519.50,12555.00,12555.00,12499.00,74,926543.63],["1721836800",12555.00,12555.00,12566.00,12520.00,65,813156.50],["1721923200",1...
+2025-07-06 12:03:00,516 - crawler - INFO - 成功获取商品 22779 的数据
+2025-07-06 12:03:00,517 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:00,517 - crawler - INFO - 商品 22779 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:03:00,529 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\蝴蝶刀.json
+2025-07-06 12:03:00,529 - crawler - INFO - 成功获取并保存商品 [蝴蝶刀（★）](22779) 的数据
+2025-07-06 12:03:00,530 - crawler - INFO - 等待 9.4 秒后继续...
+2025-07-06 12:03:09,953 - crawler - INFO - 开始获取商品 [运动手套（★） | 树篱迷宫 (久经沙场)](525873303) 的数据
+2025-07-06 12:03:09,954 - crawler - INFO - 开始获取商品 525873303 的历史数据，目标天数: 360
+2025-07-06 12:03:09,954 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:03:09,955 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774589
+2025-07-06 12:03:09,955 - crawler - INFO - 开始获取商品 525873303 的数据，maxTime=1751774589
+2025-07-06 12:03:09,955 - crawler - INFO - 发送请求:
+2025-07-06 12:03:09,956 - crawler - INFO - Method: GET
+2025-07-06 12:03:09,956 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:09,957 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774589955&type=2&maxTime=1751774589&typeVal=525873303&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:10,128 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:10,128 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:11 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'e03a5346b20525d811d270506afe12a0', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '1acbac9ecc4f3fe9360cf3fc0190a63e', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:10,129 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",48000.00,50500.00,50500.00,48000.00,15,736791.00],["1744041600",50500.00,51995.00,53777.00,50000.00,29,1493988.50],["1744128000",51995.00,53599.00,53770.00,51500.00,36,1916072.50],["1744214400",53599.00,54277.00,54580.00,45350.00,27,1472020.16],["1744300800",54277.00,53590.00,54650.00,53350.00,10,543455.50],["1744387200",53590.00,55588.00,55588.00,53199.00,3,162020.00],["1744473600",55588.00,59500.00,59566.00,54000.00,3,175554.00],["1744560000",59500.00,58277.00,59500.00,56749.50,8,474436.00],["1744646400",58277.00,55000.00,58400.00,52000.00,5,288486.50],["1744732800",55000.00,56500.00,57655.00,54000.00,9,513684.00],["1744819200",56500.00,57999.00,58500.00,55850.00,2,114818.00],["1744905600",57999.00,59000.00,59298.00,56666.00,7,400782.00],["1744992000",59000.00,58600.00,59049.50,57300.00,6,305953.63],["1745078400",58600.00,59999.00,61000.00,57888.00,6,355806.86],["1745164800",59999.00,62200.00,62222.00,59499.00,6,367003.78],["1745251200",62200.00,...
+2025-07-06 12:03:10,131 - crawler - INFO - 成功获取商品 525873303 的数据
+2025-07-06 12:03:10,132 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:10,132 - crawler - INFO - 等待 6.1 秒后继续...
+2025-07-06 12:03:16,208 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998589
+2025-07-06 12:03:16,209 - crawler - INFO - 开始获取商品 525873303 的数据，maxTime=1743998589
+2025-07-06 12:03:16,209 - crawler - INFO - 发送请求:
+2025-07-06 12:03:16,210 - crawler - INFO - Method: GET
+2025-07-06 12:03:16,210 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:16,212 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774596209&type=2&maxTime=1743998589&typeVal=525873303&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:16,417 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:16,417 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:17 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'ac3ffbb846f7b66a304854d0db9bb5f8', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '8312fb059452b839bcb7c04c2eef3eee', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:16,418 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",28349.00,28275.50,28400.00,27900.00,2,56959.50],["1736265600",28275.50,28253.88,28275.50,26500.00,3,86676.00],["1736352000",28253.88,28242.00,28253.88,28179.50,2,56738.50],["1736438400",28242.00,28350.00,28350.00,28190.00,5,142425.00],["1736524800",28350.00,28624.00,28629.50,28350.00,3,85674.50],["1736611200",28624.00,28549.50,28624.00,28549.50,2,68820.53],["1736697600",28549.50,28749.00,28750.00,28518.00,4,116293.50],["1736784000",28749.00,29459.50,29500.00,28748.00,5,145842.50],["1736870400",29459.50,29100.00,29475.00,29100.00,1,29978.50],["1736956800",29100.00,28800.00,29100.00,28750.00,2,59106.50],["1737043200",28800.00,29188.00,29399.00,28260.00,5,148716.50],["1737129600",29188.00,29949.40,29954.00,29188.00,3,89249.50],["1737216000",29949.40,30494.00,30886.00,29900.00,5,150522.00],["1737302400",30494.00,31200.00,31869.00,30494.00,5,156798.00],["1737388800",31200.00,29999.50,31400.00,29950.00,null,null],["1737475200",29999.50,30845.00,30980.00,...
+2025-07-06 12:03:16,421 - crawler - INFO - 成功获取商品 525873303 的数据
+2025-07-06 12:03:16,421 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:16,421 - crawler - INFO - 等待 5.8 秒后继续...
+2025-07-06 12:03:22,260 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222589
+2025-07-06 12:03:22,261 - crawler - INFO - 开始获取商品 525873303 的数据，maxTime=1736222589
+2025-07-06 12:03:22,261 - crawler - INFO - 发送请求:
+2025-07-06 12:03:22,262 - crawler - INFO - Method: GET
+2025-07-06 12:03:22,262 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:22,264 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774602261&type=2&maxTime=1736222589&typeVal=525873303&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:22,449 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:22,450 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:23 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'fc838718aad69f9bb4b112794a0d98e9', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '07d8b7e1dd5b3f3534ce6b1f3b980853', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:22,451 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",25588.50,25578.50,25588.50,25400.00,4,102938.00],["1728489600",25578.50,26385.00,26449.50,25578.50,14,351594.38],["1728576000",26385.00,26350.00,26388.00,26250.00,11,292820.33],["1728662400",26350.00,26280.00,26350.00,26278.00,9,241825.88],["1728748800",26280.00,26258.00,26325.00,26210.00,10,264220.00],["1728835200",26258.00,26120.00,26258.00,26120.00,4,106548.00],["1728921600",26120.00,26090.00,26130.00,25970.00,5,132102.98],["1729008000",26090.00,26325.00,26325.00,26060.00,1,26139.90],["1729094400",26325.00,27030.00,27030.00,26300.00,13,345932.00],["1729180800",27030.00,26850.00,27098.00,25799.00,5,136252.00],["1729267200",26850.00,26630.00,26859.50,26630.00,7,188249.40],["1729353600",26630.00,26634.50,26645.00,26620.00,3,79894.50],["1729440000",26634.50,26589.50,26635.50,26550.00,4,106829.00],["1729526400",26589.50,26539.50,26589.50,26519.00,9,239905.00],["1729612800",26539.50,26490.00,26539.50,26490.00,6,160453.00],["1729699200",26490.00,26770....
+2025-07-06 12:03:22,453 - crawler - INFO - 成功获取商品 525873303 的数据
+2025-07-06 12:03:22,454 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:22,454 - crawler - INFO - 等待 6.2 秒后继续...
+2025-07-06 12:03:28,676 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446589
+2025-07-06 12:03:28,677 - crawler - INFO - 开始获取商品 525873303 的数据，maxTime=1728446589
+2025-07-06 12:03:28,677 - crawler - INFO - 发送请求:
+2025-07-06 12:03:28,677 - crawler - INFO - Method: GET
+2025-07-06 12:03:28,677 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:28,679 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774608677&type=2&maxTime=1728446589&typeVal=525873303&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:28,866 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:28,866 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:29 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '05c0e17e53bc478130d994c72fd163dd', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'f3ca1b88e09784cd1f3d02fec3691f7f', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:28,867 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",26045.00,25999.00,26200.00,25999.00,20,614196.50],["1720713600",25999.00,26030.00,26100.00,25900.00,26,752509.00],["1720800000",26030.00,26043.50,26043.50,25980.00,26,751265.50],["1720886400",26043.50,26119.00,26120.00,26040.00,24,741902.61],["1720972800",26119.00,26298.00,26298.00,26040.00,27,804746.50],["1721059200",26298.00,26300.00,26345.00,26200.00,23,665178.00],["1721145600",26300.00,26297.50,26328.00,26268.00,32,923678.79],["1721232000",26297.50,26326.50,26328.50,26297.50,32,930842.38],["1721318400",26326.50,26303.50,26425.00,26260.00,36,1071552.49],["1721404800",26303.50,26099.00,26303.50,26080.00,45,1296424.81],["1721491200",26099.00,26245.00,26247.00,26079.50,24,714587.00],["1721577600",26245.00,26380.00,26419.90,24688.00,26,779526.58],["1721664000",26380.00,26498.00,26500.00,26380.00,34,1024079.25],["1721750400",26498.00,26700.00,26799.00,26480.00,27,792600.49],["1721836800",26700.00,26799.00,26799.00,26575.00,33,946851.99],["1721923200"...
+2025-07-06 12:03:28,870 - crawler - INFO - 成功获取商品 525873303 的数据
+2025-07-06 12:03:28,870 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:28,871 - crawler - INFO - 商品 525873303 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:03:28,883 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\运动手套  树篱迷宫 久经沙场.json
+2025-07-06 12:03:28,884 - crawler - INFO - 成功获取并保存商品 [运动手套（★） | 树篱迷宫 (久经沙场)](525873303) 的数据
+2025-07-06 12:03:28,884 - crawler - INFO - 等待 8.1 秒后继续...
+2025-07-06 12:03:36,997 - crawler - INFO - 开始获取商品 [运动手套（★） | 潘多拉之盒 (久经沙场)](495302338) 的数据
+2025-07-06 12:03:36,998 - crawler - INFO - 开始获取商品 495302338 的历史数据，目标天数: 360
+2025-07-06 12:03:36,998 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:03:36,999 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774616
+2025-07-06 12:03:36,999 - crawler - INFO - 开始获取商品 495302338 的数据，maxTime=1751774616
+2025-07-06 12:03:37,000 - crawler - INFO - 发送请求:
+2025-07-06 12:03:37,000 - crawler - INFO - Method: GET
+2025-07-06 12:03:37,000 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:37,003 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774616999&type=2&maxTime=1751774616&typeVal=495302338&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:37,181 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:37,181 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:38 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '656c7a3462cd7f8c8e4ec1551ef84c5b', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '376191f2772022e689d5c4b30d214922', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:37,182 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",48388.00,49398.00,49398.00,37888.00,15,734782.00],["1744041600",49398.00,51390.00,52500.00,48999.00,21,1078919.05],["1744128000",51390.00,52499.00,52520.00,49000.00,20,1056723.58],["1744214400",52499.00,54350.00,55000.00,49000.00,20,1086209.39],["1744300800",54350.00,53300.00,54400.00,52200.00,10,538399.50],["1744387200",53300.00,54666.00,54990.00,52800.00,5,275029.06],["1744473600",54666.00,56400.00,56499.00,54000.00,6,345758.44],["1744560000",56400.00,55885.50,56400.00,55000.00,10,567798.99],["1744646400",55885.50,53000.00,55885.50,52800.00,7,390649.50],["1744732800",53000.00,53850.00,54798.00,52000.00,2,106900.00],["1744819200",53850.00,54498.00,54500.00,53000.00,8,438387.00],["1744905600",54498.00,55590.00,55599.00,54200.00,7,382449.00],["1744992000",55590.00,55300.00,55590.00,54600.00,2,116355.00],["1745078400",55300.00,58299.00,58500.00,55300.00,7,408332.72],["1745164800",58299.00,59500.00,59500.00,55489.50,10,583671.50],["1745251200",59500.0...
+2025-07-06 12:03:37,185 - crawler - INFO - 成功获取商品 495302338 的数据
+2025-07-06 12:03:37,186 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:37,186 - crawler - INFO - 等待 5.6 秒后继续...
+2025-07-06 12:03:42,812 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998616
+2025-07-06 12:03:42,813 - crawler - INFO - 开始获取商品 495302338 的数据，maxTime=1743998616
+2025-07-06 12:03:42,813 - crawler - INFO - 发送请求:
+2025-07-06 12:03:42,814 - crawler - INFO - Method: GET
+2025-07-06 12:03:42,815 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:42,816 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774622813&type=2&maxTime=1743998616&typeVal=495302338&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:42,991 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:42,992 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:44 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '0044f91d9f6ee597e5331e2fda9e0a0e', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'c675b18875a73e8148673031296c8978', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:42,993 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",37470.00,37498.50,37499.00,37450.00,6,226971.00],["1736265600",37498.50,37789.50,37800.00,37498.50,3,113798.50],["1736352000",37789.50,37730.00,37789.50,37499.00,3,113885.50],["1736438400",37730.00,37710.00,37748.00,37710.00,3,119589.90],["1736524800",37710.00,37950.00,37950.00,37710.00,4,152697.50],["1736611200",37950.00,37994.50,37999.00,37938.88,2,76554.50],["1736697600",37994.50,37966.00,37996.00,37890.00,3,115943.00],["1736784000",37966.00,37958.50,37980.00,37899.00,2,77025.00],["1736870400",37958.50,37848.50,37958.50,37750.00,5,193175.00],["1736956800",37848.50,37999.00,37999.00,37800.00,2,81811.56],["1737043200",37999.00,38185.00,38185.00,37800.00,1,39888.00],["1737129600",38185.00,38439.50,38485.00,38185.00,2,76460.00],["1737216000",38439.50,38998.00,38999.00,38439.50,3,124199.00],["1737302400",38998.00,39000.00,39000.00,38580.00,3,117687.99],["1737388800",39000.00,38489.50,39000.00,38349.50,4,162436.66],["1737475200",38489.50,38299.00,3848...
+2025-07-06 12:03:42,996 - crawler - INFO - 成功获取商品 495302338 的数据
+2025-07-06 12:03:42,996 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:42,997 - crawler - INFO - 等待 5.9 秒后继续...
+2025-07-06 12:03:48,866 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222616
+2025-07-06 12:03:48,867 - crawler - INFO - 开始获取商品 495302338 的数据，maxTime=1736222616
+2025-07-06 12:03:48,867 - crawler - INFO - 发送请求:
+2025-07-06 12:03:48,868 - crawler - INFO - Method: GET
+2025-07-06 12:03:48,868 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:48,870 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774628867&type=2&maxTime=1736222616&typeVal=495302338&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:49,049 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:49,050 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:50 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'adfa28bd8a464b2dbc77bf3ef1c1271f', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '6239029d522be078b033b7a83b495037', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:49,050 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",35400.00,35238.88,35480.00,35195.00,3,106450.00],["1728489600",35238.88,35350.00,35400.00,35199.00,6,214505.00],["1728576000",35350.00,35664.00,35664.50,35240.00,7,250573.90],["1728662400",35664.00,35884.50,35885.00,35600.00,10,359272.78],["1728748800",35884.50,35998.00,35998.00,35750.00,9,324209.50],["1728835200",35998.00,35885.00,35998.50,33960.00,2,74198.50],["1728921600",35885.00,35950.00,35979.50,35861.00,5,182629.50],["1729008000",35950.00,35999.00,35999.00,35850.00,2,72648.50],["1729094400",35999.00,36500.00,36500.00,35999.00,4,146003.00],["1729180800",36500.00,36598.00,36599.00,36499.50,4,147750.00],["1729267200",36598.00,36495.00,36598.00,36390.00,4,147351.50],["1729353600",36495.00,36200.00,36495.00,36200.00,5,182087.98],["1729440000",36200.00,36148.00,36200.00,35800.00,7,254028.00],["1729526400",36148.00,36134.00,36148.00,36000.00,8,290146.50],["1729612800",36134.00,36128.00,36200.00,36000.00,2,72269.00],["1729699200",36128.00,36200.00,3...
+2025-07-06 12:03:49,053 - crawler - INFO - 成功获取商品 495302338 的数据
+2025-07-06 12:03:49,054 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:49,054 - crawler - INFO - 等待 6.8 秒后继续...
+2025-07-06 12:03:55,836 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446616
+2025-07-06 12:03:55,837 - crawler - INFO - 开始获取商品 495302338 的数据，maxTime=1728446616
+2025-07-06 12:03:55,837 - crawler - INFO - 发送请求:
+2025-07-06 12:03:55,837 - crawler - INFO - Method: GET
+2025-07-06 12:03:55,838 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:03:55,839 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774635837&type=2&maxTime=1728446616&typeVal=495302338&platform=YOUPIN&specialStyle=
+2025-07-06 12:03:56,012 - crawler - INFO - Response Status: 200
+2025-07-06 12:03:56,012 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:03:57 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '4e923c2502e2b9d3d7af08206351e509', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '91f283e1ff16300e81054fc1e969dc71', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:03:56,013 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",35830.00,36270.00,36287.00,35830.00,12,466189.00],["1720713600",36270.00,36070.00,36270.00,36040.00,10,370848.00],["1720800000",36070.00,36050.00,36100.00,35930.00,10,383596.00],["1720886400",36050.00,36220.00,36300.00,36050.00,17,698604.00],["1720972800",36220.00,36330.00,36399.00,36199.40,17,650052.00],["1721059200",36330.00,36440.00,36450.00,36259.00,15,564145.00],["1721145600",36440.00,36398.50,36440.00,36000.00,13,485280.00],["1721232000",36398.50,36466.16,36480.00,36390.00,7,266428.98],["1721318400",36466.16,36399.50,36466.66,36349.50,21,800280.55],["1721404800",36399.50,36280.00,36399.50,36279.50,13,504835.58],["1721491200",36280.00,36319.50,36319.50,35750.00,22,854864.99],["1721577600",36319.50,36592.00,36600.00,36319.50,25,961790.00],["1721664000",36592.00,36749.00,36750.00,36570.00,23,907109.72],["1721750400",36749.00,36719.50,36770.00,36666.00,17,680893.50],["1721836800",36719.50,36750.00,36750.00,36640.00,18,735738.60],["1721923200",367...
+2025-07-06 12:03:56,016 - crawler - INFO - 成功获取商品 495302338 的数据
+2025-07-06 12:03:56,016 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:03:56,016 - crawler - INFO - 商品 495302338 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:03:56,027 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\运动手套  潘多拉之盒 久经沙场.json
+2025-07-06 12:03:56,028 - crawler - INFO - 成功获取并保存商品 [运动手套（★） | 潘多拉之盒 (久经沙场)](495302338) 的数据
+2025-07-06 12:03:56,028 - crawler - INFO - 等待 8.2 秒后继续...
+2025-07-06 12:04:04,218 - crawler - INFO - 开始获取商品 [M4A1 消音型 | 赤红新星 (崭新出厂)](24693) 的数据
+2025-07-06 12:04:04,218 - crawler - INFO - 开始获取商品 24693 的历史数据，目标天数: 360
+2025-07-06 12:04:04,218 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:04:04,219 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774644
+2025-07-06 12:04:04,219 - crawler - INFO - 开始获取商品 24693 的数据，maxTime=1751774644
+2025-07-06 12:04:04,219 - crawler - INFO - 发送请求:
+2025-07-06 12:04:04,220 - crawler - INFO - Method: GET
+2025-07-06 12:04:04,220 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:04,221 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774644219&type=2&maxTime=1751774644&typeVal=24693&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:04,372 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:04,372 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:05 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'c5015fde07ee50ecef6996a01686f108', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'abf0fb52ee29ea6a71ceacb8904affc6', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:04,373 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",8020.00,8350.00,8350.00,7979.49,21,172204.32],["1744041600",8350.00,8647.00,8720.00,8200.00,40,343666.81],["1744128000",8647.00,8590.00,8647.50,8400.00,19,164352.50],["1744214400",8590.00,9100.00,9180.00,8590.00,18,165057.10],["1744300800",9100.00,8798.50,9120.00,8709.50,11,103717.13],["1744387200",8798.50,9098.90,9100.00,6474.00,8,72716.80],["1744473600",9098.90,9360.00,9500.00,9098.90,12,114309.87],["1744560000",9360.00,8888.00,9400.00,8181.00,7,64474.14],["1744646400",8888.00,8300.00,8913.88,8300.00,6,53525.03],["1744732800",8300.00,8780.00,8887.00,8300.00,12,104072.50],["1744819200",8780.00,8749.40,8800.00,8630.00,15,139969.48],["1744905600",8749.40,9091.00,9169.00,8749.40,12,111871.27],["1744992000",9091.00,8929.00,9091.00,8820.00,10,95161.18],["1745078400",8929.00,9348.88,9649.00,8925.00,14,136695.52],["1745164800",9348.88,9570.00,9700.00,9200.00,10,99420.40],["1745251200",9570.00,9687.99,9698.00,9199.00,13,122637.05],["1745337600",9687.99,96...
+2025-07-06 12:04:04,376 - crawler - INFO - 成功获取商品 24693 的数据
+2025-07-06 12:04:04,377 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:04,377 - crawler - INFO - 等待 7.3 秒后继续...
+2025-07-06 12:04:11,678 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998644
+2025-07-06 12:04:11,679 - crawler - INFO - 开始获取商品 24693 的数据，maxTime=1743998644
+2025-07-06 12:04:11,680 - crawler - INFO - 发送请求:
+2025-07-06 12:04:11,680 - crawler - INFO - Method: GET
+2025-07-06 12:04:11,681 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:11,683 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774651679&type=2&maxTime=1743998644&typeVal=24693&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:11,882 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:11,882 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:12 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '155fd874c7ca9f92ff4981717f4619d4', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '3e529bd6542ba24fa6789661f35e3c84', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:11,883 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",6340.00,6329.50,6347.00,6300.00,4,28236.90],["1736265600",6329.50,6369.50,6390.00,6300.00,2,15568.55],["1736352000",6369.50,6380.00,6395.00,6367.00,1,9366.90],["1736438400",6380.00,6345.00,6388.34,6345.00,2,13752.55],["1736524800",6345.00,6358.38,6359.90,6200.00,7,46681.28],["1736611200",6358.38,6367.50,6370.00,6339.00,10,73854.68],["1736697600",6367.50,6376.50,6378.00,6349.50,5,32756.89],["1736784000",6376.50,6347.00,6376.50,6347.00,4,33040.68],["1736870400",6347.00,6351.50,6355.00,6343.50,3,20162.15],["1736956800",6351.50,6331.50,6352.00,6310.00,12,83506.43],["1737043200",6331.50,6370.00,6370.00,6330.00,6,41967.20],["1737129600",6370.00,6398.50,6400.00,6368.00,null,null],["1737216000",6398.50,6474.00,6490.00,6398.50,5,37945.18],["1737302400",6474.00,6420.00,6474.00,6399.00,3,20836.76],["1737388800",6420.00,6400.00,6450.00,6399.00,6,43756.98],["1737475200",6400.00,6400.00,6449.00,6370.00,3,21626.47],["1737561600",6400.00,6400.00,6418.00,6390.00,8,...
+2025-07-06 12:04:11,886 - crawler - INFO - 成功获取商品 24693 的数据
+2025-07-06 12:04:11,886 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:11,887 - crawler - INFO - 等待 5.3 秒后继续...
+2025-07-06 12:04:17,156 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222644
+2025-07-06 12:04:17,157 - crawler - INFO - 开始获取商品 24693 的数据，maxTime=1736222644
+2025-07-06 12:04:17,157 - crawler - INFO - 发送请求:
+2025-07-06 12:04:17,158 - crawler - INFO - Method: GET
+2025-07-06 12:04:17,158 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:17,159 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774657157&type=2&maxTime=1736222644&typeVal=24693&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:17,356 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:17,357 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:18 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'fbefdeb6cd8dddda1f8538e2c9de544d', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'e581526e5df88be680dcd904036ae208', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:17,358 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",6079.46,6018.97,6080.00,6000.00,4,28289.74],["1728489600",6018.97,6038.92,6040.00,6010.00,3,20578.40],["1728576000",6038.92,6125.00,6138.00,6038.92,7,47893.50],["1728662400",6125.00,6195.00,6195.00,6120.00,5,35493.34],["1728748800",6195.00,6180.00,6195.00,6118.38,5,33503.31],["1728835200",6180.00,6160.00,6180.00,6155.00,3,20909.18],["1728921600",6160.00,6150.00,6160.00,6145.00,7,49214.63],["1729008000",6150.00,6197.40,6197.40,6150.00,2,13962.96],["1729094400",6197.40,6387.99,6388.00,6197.00,1,6165.72],["1729180800",6387.99,6279.99,6387.99,6279.49,2,13700.22],["1729267200",6279.99,6277.00,6300.00,6250.00,2,13864.75],["1729353600",6277.00,6278.00,6279.50,6200.00,5,36801.85],["1729440000",6278.00,6229.00,6278.00,6228.50,1,9816.99],["1729526400",6229.00,6190.00,6229.00,6190.00,2,13262.40],["1729612800",6190.00,6168.00,6190.00,6100.00,1,6150.00],["1729699200",6168.00,6209.50,6250.00,6168.00,3,20302.27],["1729785600",6209.50,6166.00,6209.50,6150.00,5,344...
+2025-07-06 12:04:17,360 - crawler - INFO - 成功获取商品 24693 的数据
+2025-07-06 12:04:17,361 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:17,361 - crawler - INFO - 等待 7.5 秒后继续...
+2025-07-06 12:04:24,914 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446644
+2025-07-06 12:04:24,914 - crawler - INFO - 开始获取商品 24693 的数据，maxTime=1728446644
+2025-07-06 12:04:24,915 - crawler - INFO - 发送请求:
+2025-07-06 12:04:24,915 - crawler - INFO - Method: GET
+2025-07-06 12:04:24,915 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:24,916 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774664914&type=2&maxTime=1728446644&typeVal=24693&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:25,101 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:25,101 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:26 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '2bae7adf34a81a924eb1500d41d9e8ae', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '31f387960b174508c22bbad7e4519ce0', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:25,103 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",5950.00,5964.50,5965.00,5950.00,21,125734.65],["1720713600",5964.50,6000.00,6100.00,5964.50,22,133859.93],["1720800000",6000.00,6020.00,6060.00,5992.00,11,66694.00],["1720886400",6020.00,6060.00,6065.00,6020.00,17,103876.35],["1720972800",6060.00,6036.00,6060.00,6020.00,24,151106.45],["1721059200",6036.00,6030.00,6050.00,6030.00,11,68218.00],["1721145600",6030.00,6060.00,6060.00,5999.00,16,97890.30],["1721232000",6060.00,6064.00,6070.00,6035.00,27,165851.31],["1721318400",6064.00,6059.00,6080.00,6050.00,25,153310.73],["1721404800",6059.00,6069.50,6070.00,6040.00,25,153655.33],["1721491200",6069.50,6100.00,6120.00,6040.00,30,188125.85],["1721577600",6100.00,6120.00,6139.00,6100.00,26,164149.14],["1721664000",6120.00,6175.00,6180.00,6110.00,30,185422.56],["1721750400",6175.00,6168.00,6180.00,6120.00,17,116309.85],["1721836800",6168.00,6163.50,6175.00,6100.00,24,149523.50],["1721923200",6163.50,6294.00,6299.90,6162.00,40,253144.39],["1722009600",6294....
+2025-07-06 12:04:25,106 - crawler - INFO - 成功获取商品 24693 的数据
+2025-07-06 12:04:25,106 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:25,107 - crawler - INFO - 商品 24693 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:04:25,123 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\M4A1 消音型  赤红新星 崭新出厂.json
+2025-07-06 12:04:25,123 - crawler - INFO - 成功获取并保存商品 [M4A1 消音型 | 赤红新星 (崭新出厂)](24693) 的数据
+2025-07-06 12:04:25,124 - crawler - INFO - 等待 7.6 秒后继续...
+2025-07-06 12:04:32,741 - crawler - INFO - 开始获取商品 [AK-47 | 水栽竹 (崭新出厂)](26422) 的数据
+2025-07-06 12:04:32,742 - crawler - INFO - 开始获取商品 26422 的历史数据，目标天数: 360
+2025-07-06 12:04:32,742 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:04:32,743 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774672
+2025-07-06 12:04:32,743 - crawler - INFO - 开始获取商品 26422 的数据，maxTime=1751774672
+2025-07-06 12:04:32,743 - crawler - INFO - 发送请求:
+2025-07-06 12:04:32,744 - crawler - INFO - Method: GET
+2025-07-06 12:04:32,744 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:32,745 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774672743&type=2&maxTime=1751774672&typeVal=26422&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:32,909 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:32,909 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:33 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'df680af2cd57c050f7ae68b46740e44b', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '431190eaf16c26d06f8c327df5cd900f', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:32,910 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",16340.00,16599.00,16600.00,16300.00,23,377830.00],["1744041600",16599.00,16662.00,16900.00,16560.00,35,587678.92],["1744128000",16662.00,16999.00,16999.00,16600.00,34,576237.44],["1744214400",16999.00,18449.50,18666.00,16838.00,64,1129617.06],["1744300800",18449.50,17999.00,18449.50,16760.00,16,293567.90],["1744387200",17999.00,18665.00,18665.00,17899.00,1,17999.00],["1744473600",18665.00,19688.00,19728.00,18400.00,13,247740.50],["1744560000",19688.00,18849.00,19750.00,18188.00,12,232580.62],["1744646400",18849.00,17799.50,18880.00,17300.00,20,363410.50],["1744732800",17799.50,17698.00,18200.00,17550.00,9,159357.50],["1744819200",17698.00,18100.00,18199.50,17600.00,5,93552.16],["1744905600",18100.00,18815.00,18900.00,18100.00,11,204981.49],["1744992000",18815.00,18488.00,18815.00,17998.50,8,151927.39],["1745078400",18488.00,19799.50,21400.00,18488.00,13,253082.09],["1745164800",19799.50,21487.00,21988.00,19799.50,27,563269.36],["1745251200",21487.0...
+2025-07-06 12:04:32,912 - crawler - INFO - 成功获取商品 26422 的数据
+2025-07-06 12:04:32,913 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:32,913 - crawler - INFO - 等待 6.5 秒后继续...
+2025-07-06 12:04:39,388 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998672
+2025-07-06 12:04:39,388 - crawler - INFO - 开始获取商品 26422 的数据，maxTime=1743998672
+2025-07-06 12:04:39,389 - crawler - INFO - 发送请求:
+2025-07-06 12:04:39,389 - crawler - INFO - Method: GET
+2025-07-06 12:04:39,390 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:39,391 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774679388&type=2&maxTime=1743998672&typeVal=26422&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:39,568 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:39,568 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:40 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'b1f7b6b5922ac9764f13c351bebf0879', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '60e903fac532c2975e7977be28d0726e', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:39,569 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",13327.00,13325.00,13327.00,13320.00,4,57116.52],["1736265600",13325.00,13319.50,13325.00,13300.00,4,60822.45],["1736352000",13319.50,13286.00,13320.00,13280.00,null,null],["1736438400",13286.00,13219.50,13286.00,13200.00,null,null],["1736524800",13219.50,13274.00,13274.50,13200.00,1,13478.50],["1736611200",13274.00,13329.99,13330.00,13274.00,1,13855.00],["1736697600",13329.99,13267.50,13329.99,13220.00,null,null],["1736784000",13267.50,13249.50,13298.50,13224.00,1,15063.86],["1736870400",13249.50,13249.00,13290.00,13235.00,2,26597.34],["1736956800",13249.00,13298.00,13298.00,13249.00,2,26730.50],["1737043200",13298.00,13393.71,13393.71,13250.00,2,26721.50],["1737129600",13393.71,13750.00,13750.00,13298.50,2,27200.50],["1737216000",13750.00,13729.50,13870.00,13700.00,2,27660.00],["1737302400",13729.50,13720.00,13780.00,13700.00,2,29352.87],["1737388800",13720.00,13499.00,13720.00,13350.00,1,13380.00],["1737475200",13499.00,13469.00,13499.00,13400.00...
+2025-07-06 12:04:39,572 - crawler - INFO - 成功获取商品 26422 的数据
+2025-07-06 12:04:39,573 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:39,573 - crawler - INFO - 等待 6.8 秒后继续...
+2025-07-06 12:04:46,380 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222672
+2025-07-06 12:04:46,380 - crawler - INFO - 开始获取商品 26422 的数据，maxTime=1736222672
+2025-07-06 12:04:46,380 - crawler - INFO - 发送请求:
+2025-07-06 12:04:46,381 - crawler - INFO - Method: GET
+2025-07-06 12:04:46,381 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:46,382 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774686380&type=2&maxTime=1736222672&typeVal=26422&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:46,582 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:46,583 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:47 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '774d761c33a0db8755908bba127cca22', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '14ea0aebb275861b12d4ad137af4d9c0', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:46,584 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",13130.00,13143.00,13145.00,12940.00,null,null],["1728489600",13143.00,13550.00,13640.00,13099.50,1,13307.00],["1728576000",13550.00,13399.49,13610.00,13399.49,1,13686.50],["1728662400",13399.49,13360.00,13399.49,13199.50,1,12725.00],["1728748800",13360.00,13499.50,13518.00,13360.00,3,42682.00],["1728835200",13499.50,13380.00,13505.50,13375.00,null,null],["1728921600",13380.00,13320.00,13385.00,13200.00,2,26307.84],["1729008000",13320.00,13490.00,13499.00,13000.00,1,14818.30],["1729094400",13490.00,14020.00,14070.00,13490.00,4,56717.53],["1729180800",14020.00,13793.00,14020.00,13719.50,null,null],["1729267200",13793.00,13799.00,13820.00,13590.00,null,null],["1729353600",13799.00,13708.50,13799.00,13699.00,null,null],["1729440000",13708.50,13649.00,13709.00,13610.00,2,29245.12],["1729526400",13649.00,13559.50,13649.00,13498.00,1,13798.00],["1729612800",13559.50,13500.00,13590.00,13480.00,null,null],["1729699200",13500.00,13740.00,13794.50,13500.00,1,...
+2025-07-06 12:04:46,587 - crawler - INFO - 成功获取商品 26422 的数据
+2025-07-06 12:04:46,587 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:46,587 - crawler - INFO - 等待 6.2 秒后继续...
+2025-07-06 12:04:52,816 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446672
+2025-07-06 12:04:52,817 - crawler - INFO - 开始获取商品 26422 的数据，maxTime=1728446672
+2025-07-06 12:04:52,818 - crawler - INFO - 发送请求:
+2025-07-06 12:04:52,820 - crawler - INFO - Method: GET
+2025-07-06 12:04:52,820 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:04:52,821 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774692817&type=2&maxTime=1728446672&typeVal=26422&platform=YOUPIN&specialStyle=
+2025-07-06 12:04:53,021 - crawler - INFO - Response Status: 200
+2025-07-06 12:04:53,021 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:04:54 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '5e58f01f7a9b6933949d94f6553c9db1', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'de21e13a7bf878a5a26bd1e39e6ebdb2', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:04:53,022 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",13499.00,13495.00,13579.00,13388.90,17,238712.50],["1720713600",13495.00,13468.50,13520.00,13449.00,14,187755.98],["1720800000",13468.50,13459.50,13470.00,13420.00,24,345800.50],["1720886400",13459.50,13439.00,13499.00,13420.00,12,169447.66],["1720972800",13439.00,13587.50,13590.00,13439.00,18,243023.99],["1721059200",13587.50,13540.00,13620.00,13540.00,10,135692.97],["1721145600",13540.00,13640.00,13650.00,13540.00,16,217937.39],["1721232000",13640.00,13648.00,13699.00,13600.00,23,336953.40],["1721318400",13648.00,13545.50,13648.00,13520.00,27,366328.30],["1721404800",13545.50,13498.50,13557.00,13467.50,21,283103.38],["1721491200",13498.50,13557.00,13557.00,13444.50,30,406501.17],["1721577600",13557.00,13642.50,13666.00,13555.00,23,315385.00],["1721664000",13642.50,13799.00,13799.00,13642.50,19,262766.50],["1721750400",13799.00,13679.50,13800.00,13679.50,34,488438.69],["1721836800",13679.50,13960.00,13966.00,13675.00,35,508666.66],["1721923200",13...
+2025-07-06 12:04:53,026 - crawler - INFO - 成功获取商品 26422 的数据
+2025-07-06 12:04:53,026 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:04:53,027 - crawler - INFO - 商品 26422 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:04:53,042 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\AK-47  水栽竹 崭新出厂.json
+2025-07-06 12:04:53,043 - crawler - INFO - 成功获取并保存商品 [AK-47 | 水栽竹 (崭新出厂)](26422) 的数据
+2025-07-06 12:04:53,043 - crawler - INFO - 等待 7.9 秒后继续...
+2025-07-06 12:05:00,986 - crawler - INFO - 开始获取商品 [M9 刺刀（★） | 伽玛多普勒 (崭新出厂)](50942855) 的数据
+2025-07-06 12:05:00,987 - crawler - INFO - 开始获取商品 50942855 的历史数据，目标天数: 360
+2025-07-06 12:05:00,987 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:05:00,988 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774700
+2025-07-06 12:05:00,988 - crawler - INFO - 开始获取商品 50942855 的数据，maxTime=1751774700
+2025-07-06 12:05:00,988 - crawler - INFO - 发送请求:
+2025-07-06 12:05:00,988 - crawler - INFO - Method: GET
+2025-07-06 12:05:00,989 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:00,990 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774700988&type=2&maxTime=1751774700&typeVal=50942855&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:01,191 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:01,192 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:02 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'ac08c04d3926089d4002e920da935ec5', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '78144496a762ba5728c4d88dc3ae8fe0', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:01,193 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",16497.00,16587.00,16587.00,16450.00,22,457658.28],["1744041600",16587.00,16978.00,16998.00,16550.00,42,728346.26],["1744128000",16978.00,16930.00,16978.00,16390.00,24,409108.46],["1744214400",16930.00,17777.00,17866.00,16928.00,39,704015.87],["1744300800",17777.00,17666.00,17855.00,17450.00,25,455540.50],["1744387200",17666.00,17997.00,17997.00,16600.00,9,163188.01],["1744473600",17997.00,18880.00,18880.00,17800.00,12,220146.49],["1744560000",18880.00,18701.00,19399.00,18650.00,13,260255.94],["1744646400",18701.00,17499.00,18800.00,17300.00,12,208484.01],["1744732800",17499.00,17979.00,17980.00,17180.00,10,182247.33],["1744819200",17979.00,17940.00,18050.00,17502.00,5,99817.42],["1744905600",17940.00,18350.00,18350.00,17900.00,14,272833.28],["1744992000",18350.00,18375.88,18500.00,18300.00,12,226472.28],["1745078400",18375.88,18999.00,18999.00,18375.88,20,384946.50],["1745164800",18999.00,19699.00,19999.00,18870.00,19,381737.54],["1745251200",19699...
+2025-07-06 12:05:01,195 - crawler - INFO - 成功获取商品 50942855 的数据
+2025-07-06 12:05:01,196 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:01,196 - crawler - INFO - 等待 6.1 秒后继续...
+2025-07-06 12:05:07,267 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998700
+2025-07-06 12:05:07,267 - crawler - INFO - 开始获取商品 50942855 的数据，maxTime=1743998700
+2025-07-06 12:05:07,267 - crawler - INFO - 发送请求:
+2025-07-06 12:05:07,268 - crawler - INFO - Method: GET
+2025-07-06 12:05:07,268 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:07,269 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774707267&type=2&maxTime=1743998700&typeVal=50942855&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:07,470 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:07,470 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:08 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '86cffbbbaba279471eed30430b53bce0', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '5521713e393c5be2732cc73857433c92', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:07,471 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",13224.50,13255.00,13255.00,13200.00,8,107346.64],["1736265600",13255.00,13289.00,13289.50,13250.00,11,147566.93],["1736352000",13289.00,13290.00,13290.00,13250.00,5,74210.86],["1736438400",13290.00,13264.50,13290.00,13250.00,4,53448.50],["1736524800",13264.50,13274.00,13279.50,12900.00,2,26648.00],["1736611200",13274.00,13299.00,13299.00,12299.00,2,28514.73],["1736697600",13299.00,13288.38,13299.00,13280.00,3,40263.00],["1736784000",13288.38,13300.00,13300.00,13260.00,6,86292.88],["1736870400",13300.00,13400.00,13400.00,13289.50,6,82733.59],["1736956800",13400.00,13425.00,13446.00,13375.00,4,55719.42],["1737043200",13425.00,13466.00,13466.00,13400.00,9,123786.50],["1737129600",13466.00,13788.00,13788.00,13466.00,7,97598.24],["1737216000",13788.00,13840.00,13850.00,13499.00,4,55364.00],["1737302400",13840.00,13787.00,13866.00,13612.50,5,71056.39],["1737388800",13787.00,13474.00,13787.00,13400.00,5,71177.83],["1737475200",13474.00,13379.00,13484.50,1...
+2025-07-06 12:05:07,475 - crawler - INFO - 成功获取商品 50942855 的数据
+2025-07-06 12:05:07,476 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:07,476 - crawler - INFO - 等待 7.4 秒后继续...
+2025-07-06 12:05:14,871 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222700
+2025-07-06 12:05:14,872 - crawler - INFO - 开始获取商品 50942855 的数据，maxTime=1736222700
+2025-07-06 12:05:14,872 - crawler - INFO - 发送请求:
+2025-07-06 12:05:14,873 - crawler - INFO - Method: GET
+2025-07-06 12:05:14,873 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:14,876 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774714872&type=2&maxTime=1736222700&typeVal=50942855&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:15,047 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:15,047 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:16 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '007e48c5c99bba81ca2598e39e6bf8f4', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '96ebec9c13af33c7f899622274b1c86a', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:15,048 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",12535.00,12490.00,12539.50,12388.00,11,140076.41],["1728489600",12490.00,12497.00,12500.00,12400.00,15,190282.34],["1728576000",12497.00,12518.00,12530.00,12497.00,10,128181.79],["1728662400",12518.00,12679.00,12679.50,12518.00,11,142250.63],["1728748800",12679.00,12722.98,12730.00,12674.00,10,129459.15],["1728835200",12722.98,12698.00,12722.98,12697.00,8,103736.57],["1728921600",12698.00,12648.50,12698.50,12635.00,9,115307.90],["1729008000",12648.50,12718.00,12734.50,12648.50,14,185989.48],["1729094400",12718.00,12783.50,12788.00,12718.00,11,141544.99],["1729180800",12783.50,12783.50,12784.00,12760.00,9,115693.90],["1729267200",12783.50,12783.00,12783.50,12760.00,5,64285.90],["1729353600",12783.00,12750.00,12800.00,12750.00,11,143123.57],["1729440000",12750.00,12849.00,12849.00,12750.00,12,158302.21],["1729526400",12849.00,12846.00,12849.00,12789.00,10,129673.49],["1729612800",12846.00,12855.00,12855.00,12835.00,17,221786.65],["1729699200",12855.0...
+2025-07-06 12:05:15,051 - crawler - INFO - 成功获取商品 50942855 的数据
+2025-07-06 12:05:15,052 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:15,052 - crawler - INFO - 等待 5.5 秒后继续...
+2025-07-06 12:05:20,518 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446700
+2025-07-06 12:05:20,518 - crawler - INFO - 开始获取商品 50942855 的数据，maxTime=1728446700
+2025-07-06 12:05:20,518 - crawler - INFO - 发送请求:
+2025-07-06 12:05:20,519 - crawler - INFO - Method: GET
+2025-07-06 12:05:20,519 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:20,520 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774720518&type=2&maxTime=1728446700&typeVal=50942855&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:20,683 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:20,684 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:21 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '71ab4eefba3f7526942569365b6eb883', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'e4e4231e6309a85054eaa84c72db6a29', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:20,686 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",12580.00,12588.00,12596.50,12549.00,30,580782.49],["1720713600",12588.00,12650.00,12650.00,12500.00,41,720056.19],["1720800000",12650.00,12633.50,12650.00,12070.00,36,705923.00],["1720886400",12633.50,12586.50,12633.50,12500.00,26,451211.48],["1720972800",12586.50,12549.50,12586.50,12500.00,37,725771.69],["1721059200",12549.50,12640.00,12650.00,12520.00,49,1048627.00],["1721145600",12640.00,12666.66,12680.00,12600.00,35,661422.45],["1721232000",12666.66,12677.70,12700.00,12540.00,46,939545.49],["1721318400",12677.70,12690.00,12698.00,12595.00,41,776836.59],["1721404800",12690.00,12649.50,12698.00,12600.00,49,800404.00],["1721491200",12649.50,12630.00,12649.50,12590.00,53,1036473.80],["1721577600",12630.00,12645.00,12648.00,12580.00,35,679411.34],["1721664000",12645.00,12740.00,12740.00,12640.00,78,1480657.50],["1721750400",12740.00,12700.00,12747.50,12670.00,49,952099.38],["1721836800",12700.00,12695.00,12700.00,12670.00,59,1400191.28],["1721923200...
+2025-07-06 12:05:20,689 - crawler - INFO - 成功获取商品 50942855 的数据
+2025-07-06 12:05:20,689 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:20,690 - crawler - INFO - 商品 50942855 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:05:20,698 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\M9 刺刀  伽玛多普勒 崭新出厂.json
+2025-07-06 12:05:20,700 - crawler - INFO - 成功获取并保存商品 [M9 刺刀（★） | 伽玛多普勒 (崭新出厂)](50942855) 的数据
+2025-07-06 12:05:20,701 - crawler - INFO - 等待 5.2 秒后继续...
+2025-07-06 12:05:25,912 - crawler - INFO - 开始获取商品 [爪子刀（★） | 伽玛多普勒 (崭新出厂)](5534979) 的数据
+2025-07-06 12:05:25,912 - crawler - INFO - 开始获取商品 5534979 的历史数据，目标天数: 360
+2025-07-06 12:05:25,913 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:05:25,913 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774725
+2025-07-06 12:05:25,914 - crawler - INFO - 开始获取商品 5534979 的数据，maxTime=1751774725
+2025-07-06 12:05:25,914 - crawler - INFO - 发送请求:
+2025-07-06 12:05:25,914 - crawler - INFO - Method: GET
+2025-07-06 12:05:25,914 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:25,917 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774725914&type=2&maxTime=1751774725&typeVal=5534979&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:26,083 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:26,084 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:27 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '0c7c58ac9bd7fc3efb5b614367544277', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'f838433470707d4452a123a4a97ea1e0', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:26,085 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",23388.00,24487.50,24487.50,23340.00,24,589965.50],["1744041600",24487.50,24250.00,24500.00,23599.50,37,911743.50],["1744128000",24250.00,24800.00,24800.00,24187.00,26,661303.50],["1744214400",24800.00,26000.00,26396.00,22499.00,21,543505.50],["1744300800",26000.00,25750.00,26100.00,25500.00,25,652105.88],["1744387200",25750.00,26380.00,26397.99,25750.00,5,133958.14],["1744473600",26380.00,27296.00,27300.00,26380.00,9,254727.79],["1744560000",27296.00,26100.00,27296.00,25998.00,7,186989.50],["1744646400",26100.00,25100.00,26200.00,24777.00,7,200538.35],["1744732800",25100.00,25500.00,25768.00,24766.00,4,101553.00],["1744819200",25500.00,26260.00,26260.00,25350.00,6,158487.31],["1744905600",26260.00,26850.00,26888.00,26200.00,6,158328.00],["1744992000",26850.00,26798.50,26850.00,26549.00,5,138630.48],["1745078400",26798.50,27988.00,28200.00,26798.50,14,415965.00],["1745164800",27988.00,29888.00,29900.00,27988.00,7,204498.00],["1745251200",29888.00,29...
+2025-07-06 12:05:26,089 - crawler - INFO - 成功获取商品 5534979 的数据
+2025-07-06 12:05:26,089 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:26,090 - crawler - INFO - 等待 7.7 秒后继续...
+2025-07-06 12:05:33,757 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998725
+2025-07-06 12:05:33,757 - crawler - INFO - 开始获取商品 5534979 的数据，maxTime=1743998725
+2025-07-06 12:05:33,758 - crawler - INFO - 发送请求:
+2025-07-06 12:05:33,758 - crawler - INFO - Method: GET
+2025-07-06 12:05:33,759 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:33,760 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774733757&type=2&maxTime=1743998725&typeVal=5534979&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:33,935 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:33,935 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:35 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '7cffe1a1ea9a8723b5a87892ddf27a72', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'f58194e775a6d329ca9040eedfcc0ffa', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:33,936 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",15788.80,15839.00,15880.00,15750.00,2,34134.13],["1736265600",15839.00,15998.00,15999.00,15839.00,5,84136.62],["1736352000",15998.00,15985.00,15999.00,15979.50,4,66434.71],["1736438400",15985.00,16088.00,16088.00,15959.00,8,133202.59],["1736524800",16088.00,16077.00,16088.00,16060.00,5,84769.23],["1736611200",16077.00,16298.50,16298.50,16077.00,7,115188.00],["1736697600",16298.50,16319.50,16400.00,16298.50,1,18324.51],["1736784000",16319.50,16288.00,16350.00,16270.00,7,114379.00],["1736870400",16288.00,16276.50,16345.00,16200.00,7,108981.90],["1736956800",16276.50,16348.00,16349.50,16207.00,4,66377.40],["1737043200",16348.00,16430.00,16430.00,16300.00,5,83470.60],["1737129600",16430.00,16665.80,16666.00,16430.00,7,122799.59],["1737216000",16665.80,16899.00,16899.00,16660.00,4,67987.50],["1737302400",16899.00,16820.00,16949.00,16700.00,6,111326.52],["1737388800",16820.00,16400.00,16820.00,16350.00,2,33805.60],["1737475200",16400.00,16369.99,16400.00...
+2025-07-06 12:05:33,940 - crawler - INFO - 成功获取商品 5534979 的数据
+2025-07-06 12:05:33,941 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:33,941 - crawler - INFO - 等待 5.6 秒后继续...
+2025-07-06 12:05:39,523 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222725
+2025-07-06 12:05:39,523 - crawler - INFO - 开始获取商品 5534979 的数据，maxTime=1736222725
+2025-07-06 12:05:39,523 - crawler - INFO - 发送请求:
+2025-07-06 12:05:39,524 - crawler - INFO - Method: GET
+2025-07-06 12:05:39,524 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:39,525 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774739523&type=2&maxTime=1736222725&typeVal=5534979&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:39,731 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:39,731 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:40 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '27b9e0fca13bcb39f02aad0a004bbba8', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '2b9a33000058a54e3768bdddcf6a5787', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:39,732 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",14949.99,14800.00,14949.99,14766.00,5,75488.50],["1728489600",14800.00,14878.00,14878.00,14780.00,8,119789.48],["1728576000",14878.00,14890.00,14899.50,14829.00,7,110525.79],["1728662400",14890.00,15049.99,15049.99,14890.00,9,138783.72],["1728748800",15049.99,15000.00,15075.00,15000.00,7,105733.97],["1728835200",15000.00,15060.00,15074.00,15000.00,11,166996.00],["1728921600",15060.00,15130.00,15130.00,15050.00,4,61210.00],["1729008000",15130.00,15135.00,15199.00,15120.00,10,156821.32],["1729094400",15135.00,15253.00,15253.00,15135.00,7,107835.00],["1729180800",15253.00,15355.00,15355.00,15253.00,8,125088.24],["1729267200",15355.00,15400.00,15449.50,15300.00,7,107705.48],["1729353600",15400.00,15345.00,15400.00,15318.00,5,79218.67],["1729440000",15345.00,15320.00,15345.00,15298.90,3,46275.00],["1729526400",15320.00,15222.00,15345.00,15195.00,10,155992.34],["1729612800",15222.00,15265.00,15268.00,15188.00,14,219349.87],["1729699200",15265.00,15248.50...
+2025-07-06 12:05:39,735 - crawler - INFO - 成功获取商品 5534979 的数据
+2025-07-06 12:05:39,735 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:39,736 - crawler - INFO - 等待 7.0 秒后继续...
+2025-07-06 12:05:46,757 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446725
+2025-07-06 12:05:46,758 - crawler - INFO - 开始获取商品 5534979 的数据，maxTime=1728446725
+2025-07-06 12:05:46,758 - crawler - INFO - 发送请求:
+2025-07-06 12:05:46,759 - crawler - INFO - Method: GET
+2025-07-06 12:05:46,759 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:46,761 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774746758&type=2&maxTime=1728446725&typeVal=5534979&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:46,941 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:46,941 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:48 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '5082ff06df368c020d3262ff1b96514f', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '7f14d2b181b0c2c078fc2f9b894b40dc', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:46,942 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",14844.00,15079.00,15098.50,14500.00,32,698726.87],["1720713600",15079.00,15050.00,15079.00,15000.00,28,602158.25],["1720800000",15050.00,15050.00,15069.50,15000.00,35,627494.88],["1720886400",15050.00,15032.00,15050.00,14999.00,29,630084.77],["1720972800",15032.00,15014.50,15037.50,14100.00,36,806998.00],["1721059200",15014.50,15000.00,15014.50,14990.00,28,596513.00],["1721145600",15000.00,15014.00,15032.00,14998.00,37,711771.90],["1721232000",15014.00,15013.50,15050.00,14950.00,36,765237.49],["1721318400",15013.50,15080.00,15086.00,15013.50,18,382225.53],["1721404800",15080.00,15038.00,15080.00,15000.00,31,820299.50],["1721491200",15038.00,15015.00,15038.00,14950.00,40,940498.38],["1721577600",15015.00,15030.00,15035.00,15000.00,35,877110.28],["1721664000",15030.00,14979.00,15035.00,14950.00,36,942404.99],["1721750400",14979.00,15033.00,15034.50,14979.00,30,688401.50],["1721836800",15033.00,15100.00,15100.00,15030.00,35,683127.58],["1721923200",15...
+2025-07-06 12:05:46,945 - crawler - INFO - 成功获取商品 5534979 的数据
+2025-07-06 12:05:46,946 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:46,946 - crawler - INFO - 商品 5534979 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:05:46,953 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\爪子刀  伽玛多普勒 崭新出厂.json
+2025-07-06 12:05:46,954 - crawler - INFO - 成功获取并保存商品 [爪子刀（★） | 伽玛多普勒 (崭新出厂)](5534979) 的数据
+2025-07-06 12:05:46,954 - crawler - INFO - 等待 6.7 秒后继续...
+2025-07-06 12:05:53,634 - crawler - INFO - 开始获取商品 [蝴蝶刀（★） | 多普勒 (崭新出厂)](553370941) 的数据
+2025-07-06 12:05:53,634 - crawler - INFO - 开始获取商品 553370941 的历史数据，目标天数: 360
+2025-07-06 12:05:53,635 - crawler - INFO - 生成了 4 个时间戳，间隔90天
+2025-07-06 12:05:53,635 - crawler - INFO - 获取第 1/4 批数据，时间戳: 1751774753
+2025-07-06 12:05:53,636 - crawler - INFO - 开始获取商品 553370941 的数据，maxTime=1751774753
+2025-07-06 12:05:53,636 - crawler - INFO - 发送请求:
+2025-07-06 12:05:53,636 - crawler - INFO - Method: GET
+2025-07-06 12:05:53,637 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:53,638 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774753636&type=2&maxTime=1751774753&typeVal=553370941&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:53,814 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:53,814 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:05:54 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'e09a43d105067ba1292552b13e4b9516', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'fb61f6f3edcbba21414375d1598874f6', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:53,815 - crawler - INFO - Response Body: {"success":true,"data":[["1743955200",24527.50,24996.00,24996.00,23920.00,22,619492.40],["1744041600",24996.00,25100.00,25222.00,24800.00,18,471459.15],["1744128000",25100.00,25247.00,25247.00,24610.00,22,630918.96],["1744214400",25247.00,25580.00,25888.00,25240.00,20,572971.28],["1744300800",25580.00,25350.00,25750.00,25300.00,19,517190.16],["1744387200",25350.00,25800.00,25800.00,22788.00,8,276914.45],["1744473600",25800.00,27450.00,28999.00,25799.50,13,446365.77],["1744560000",27450.00,26710.00,27450.00,26600.00,7,194949.50],["1744646400",26710.00,25569.50,26710.00,25550.00,3,80603.00],["1744732800",25569.50,25999.50,26000.00,25400.00,5,134264.50],["1744819200",25999.50,26096.99,26250.00,25999.50,5,136434.93],["1744905600",26096.99,26800.00,26800.00,25999.00,7,196243.63],["1744992000",26800.00,26799.50,26800.00,26400.00,4,106205.00],["1745078400",26799.50,27919.00,28000.00,26799.50,7,371615.00],["1745164800",27919.00,27900.00,28288.00,27650.00,12,382351.00],["1745251200",27900.00,27...
+2025-07-06 12:05:53,817 - crawler - INFO - 成功获取商品 553370941 的数据
+2025-07-06 12:05:53,818 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:53,818 - crawler - INFO - 等待 5.1 秒后继续...
+2025-07-06 12:05:58,924 - crawler - INFO - 获取第 2/4 批数据，时间戳: 1743998753
+2025-07-06 12:05:58,925 - crawler - INFO - 开始获取商品 553370941 的数据，maxTime=1743998753
+2025-07-06 12:05:58,925 - crawler - INFO - 发送请求:
+2025-07-06 12:05:58,926 - crawler - INFO - Method: GET
+2025-07-06 12:05:58,926 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:05:58,928 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774758925&type=2&maxTime=1743998753&typeVal=553370941&platform=YOUPIN&specialStyle=
+2025-07-06 12:05:59,127 - crawler - INFO - Response Status: 200
+2025-07-06 12:05:59,127 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:06:00 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': '54545bd5b606bce541095f524ecb88e3', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'b6f81bdf1d62c0bcab5c7156058e11a4', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:05:59,128 - crawler - INFO - Response Body: {"success":true,"data":[["1736179200",18120.00,17880.00,18120.00,17840.00,1,18120.00],["1736265600",17880.00,17898.00,17950.00,17850.00,3,53818.50],["1736352000",17898.00,17840.00,17898.00,17840.00,6,108658.78],["1736438400",17840.00,17739.00,17840.00,17739.00,3,53701.48],["1736524800",17739.00,17790.00,17795.00,17710.00,8,145255.97],["1736611200",17790.00,17990.00,18000.00,17790.00,7,132485.06],["1736697600",17990.00,17949.00,18000.00,17930.00,4,68772.55],["1736784000",17949.00,18000.00,18000.00,17920.00,2,56899.47],["1736870400",18000.00,18039.50,18100.00,17999.00,3,55358.49],["1736956800",18039.50,18290.00,18299.50,18012.00,4,75670.58],["1737043200",18290.00,18575.00,18600.00,18000.00,7,202354.85],["1737129600",18575.00,18880.00,18880.00,18555.00,7,135625.05],["1737216000",18880.00,18997.00,19300.00,18880.00,2,39234.50],["1737302400",18997.00,18700.00,18997.00,18700.00,4,76838.00],["1737388800",18700.00,18349.50,18700.00,18200.00,4,69939.26],["1737475200",18349.50,18160.00,18349.50,...
+2025-07-06 12:05:59,130 - crawler - INFO - 成功获取商品 553370941 的数据
+2025-07-06 12:05:59,130 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:05:59,131 - crawler - INFO - 等待 5.6 秒后继续...
+2025-07-06 12:06:04,695 - crawler - INFO - 获取第 3/4 批数据，时间戳: 1736222753
+2025-07-06 12:06:04,695 - crawler - INFO - 开始获取商品 553370941 的数据，maxTime=1736222753
+2025-07-06 12:06:04,696 - crawler - INFO - 发送请求:
+2025-07-06 12:06:04,696 - crawler - INFO - Method: GET
+2025-07-06 12:06:04,696 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:06:04,697 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774764695&type=2&maxTime=1736222753&typeVal=553370941&platform=YOUPIN&specialStyle=
+2025-07-06 12:06:04,874 - crawler - INFO - Response Status: 200
+2025-07-06 12:06:04,875 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:06:05 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'b21a24d3ab30a22f95b2dd157ea0d818', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': 'ecdc2aa5ce6601718ae2dee13000a3d1', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:06:04,876 - crawler - INFO - Response Body: {"success":true,"data":[["1728403200",16700.00,16628.50,16700.00,16599.00,7,119031.50],["1728489600",16628.50,16677.50,16685.00,16600.00,7,117262.40],["1728576000",16677.50,16670.00,16690.00,16600.00,4,70799.55],["1728662400",16670.00,16690.00,16690.00,16628.50,7,119586.50],["1728748800",16690.00,16787.50,16787.50,16648.00,7,120470.22],["1728835200",16787.50,16737.50,16787.50,16708.00,8,150828.00],["1728921600",16737.50,16830.00,16830.00,16730.00,7,121056.50],["1729008000",16830.00,16888.88,16895.00,16780.00,6,100016.04],["1729094400",16888.88,16900.00,16900.00,16860.00,14,241363.68],["1729180800",16900.00,16980.00,16980.00,16900.00,10,189108.99],["1729267200",16980.00,16900.00,16980.00,16888.00,5,86392.99],["1729353600",16900.00,16898.99,16900.00,16888.00,4,72631.50],["1729440000",16898.99,16868.88,16899.49,16868.88,4,67919.00],["1729526400",16868.88,16885.00,16891.50,16868.88,11,195273.85],["1729612800",16885.00,16870.00,16888.00,16860.00,12,211446.80],["1729699200",16870.00,16810.00...
+2025-07-06 12:06:04,878 - crawler - INFO - 成功获取商品 553370941 的数据
+2025-07-06 12:06:04,879 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:06:04,879 - crawler - INFO - 等待 7.0 秒后继续...
+2025-07-06 12:06:11,850 - crawler - INFO - 获取第 4/4 批数据，时间戳: 1728446753
+2025-07-06 12:06:11,851 - crawler - INFO - 开始获取商品 553370941 的数据，maxTime=1728446753
+2025-07-06 12:06:11,852 - crawler - INFO - 发送请求:
+2025-07-06 12:06:11,852 - crawler - INFO - Method: GET
+2025-07-06 12:06:11,853 - crawler - INFO - Headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0', 'Accept': 'application/json', 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6', 'Accept-Encoding': 'gzip, deflate, br, zstd', 'Content-Type': 'application/json', 'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', 'Origin': 'https://steamdt.com', 'Referer': 'https://steamdt.com/', 'Connection': 'keep-alive', 'x-app-version': '1.0.0', 'x-currency': 'CNY', 'x-device': '1', 'x-device-id': 'c98ca51c-7431-430a-b198-7c11ca0a74df', 'language': 'zh_CN', 'DNT': '1', 'Sec-Fetch-Dest': 'empty', 'Sec-Fetch-Mode': 'cors', 'Sec-Fetch-Site': 'cross-site', 'sec-ch-ua': '"Microsoft Edge";v="129", "Not=A?Brand";v="8", "Chromium";v="129"', 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"'}
+2025-07-06 12:06:11,855 - crawler - INFO - 完整URL: https://sdt-api.ok-skins.com/user/steam/category/v1/kline?timestamp=1751774771851&type=2&maxTime=1728446753&typeVal=553370941&platform=YOUPIN&specialStyle=
+2025-07-06 12:06:12,021 - crawler - INFO - Response Status: 200
+2025-07-06 12:06:12,022 - crawler - INFO - Response Headers: {'Date': 'Sun, 06 Jul 2025 04:06:13 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'eagleeye-traceid': 'a6f80bab956253ff0dc55f832d396b5c', 'Strict-Transport-Security': 'max-age=15724800; includeSubDomains', 'Request-Id': '9a251bb2db98e3f224ddabaf4a20fa13', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type,X-App-Version,X-Device,X-Device-Id,Access-Token,X-Currency,Language', 'Access-Control-Max-Age': '1728000', 'Content-Encoding': 'gzip'}
+2025-07-06 12:06:12,023 - crawler - INFO - Response Body: {"success":true,"data":[["1720627200",16320.00,16699.00,16699.00,16299.50,32,979502.37],["1720713600",16699.00,16599.00,16699.00,16513.00,34,1214429.00],["1720800000",16599.00,16549.50,16600.00,16500.00,25,955595.84],["1720886400",16549.50,16599.88,16599.88,16498.50,26,910451.80],["1720972800",16599.88,16599.00,16599.99,16250.00,30,936774.50],["1721059200",16599.00,16630.00,16630.00,15800.00,29,1082146.46],["1721145600",16630.00,16630.00,16630.00,16600.00,20,649339.60],["1721232000",16630.00,16580.00,16649.00,16553.40,41,1149232.68],["1721318400",16580.00,16599.00,16645.00,16550.00,29,845703.91],["1721404800",16599.00,16575.00,16599.50,16570.00,32,765164.97],["1721491200",16575.00,16600.00,16600.00,16550.00,33,1037960.00],["1721577600",16600.00,16599.50,16647.50,16599.50,33,1091813.16],["1721664000",16599.50,16638.50,16639.50,16599.00,39,1286680.77],["1721750400",16638.50,16598.50,16647.00,16580.00,30,916277.76],["1721836800",16598.50,16595.00,16599.00,16585.00,28,1112110.00],["1721923...
+2025-07-06 12:06:12,025 - crawler - INFO - 成功获取商品 553370941 的数据
+2025-07-06 12:06:12,026 - crawler - INFO - 获取到 91 条数据
+2025-07-06 12:06:12,026 - crawler - INFO - 商品 553370941 的历史数据获取完成，共获取 364 条数据
+2025-07-06 12:06:12,037 - crawler - INFO - 成功保存商品数据到文件: D:\works\easy-money-bot\data\1751774546\蝴蝶刀  多普勒 崭新出厂.json
+2025-07-06 12:06:12,037 - crawler - INFO - 成功获取并保存商品 [蝴蝶刀（★） | 多普勒 (崭新出厂)](553370941) 的数据
+2025-07-06 12:06:12,038 - crawler - INFO - 所有商品数据爬取完成，成功获取 9 个商品的数据
+2025-07-06 12:06:12,103 - main - INFO - 已保存市场数据到 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json
+2025-07-06 12:08:13,772 - src.analysis.chart - INFO - 成功加载微软雅黑字体
+2025-07-06 12:08:13,797 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:13,799 - main - INFO - 正在生成商品 [印花 | Vitality（闪亮）| 2025年奥斯汀锦标赛] 的K线图
+2025-07-06 12:08:13,834 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:14,887 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：25，布林线上轨长度：25，布林线下轨长度：25
+2025-07-06 12:08:14,891 - src.analysis.chart - INFO - 触碰点检测完成，共发现 0 个触碰点
+2025-07-06 12:08:14,892 - src.analysis.chart - INFO - 检测到 0 个布林线触点
+2025-07-06 12:08:15,761 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1399839642715082753_candlestick.png
+2025-07-06 12:08:15,762 - main - INFO - 正在生成商品 [蝴蝶刀（★）] 的K线图
+2025-07-06 12:08:15,773 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:15,938 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:15,940 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=20148.00, 布林下轨=20140.26
+2025-07-06 12:08:15,940 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=20148.00, 布林下轨=20146.30
+2025-07-06 12:08:15,942 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=20298.50, 布林下轨=20140.66
+2025-07-06 12:08:15,942 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=20290.00, 布林下轨=20154.10
+2025-07-06 12:08:15,943 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-22 16:00:00, 实体低点=20279.00, 布林下轨=20111.65
+2025-07-06 12:08:15,944 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-25 16:00:00, 最高价=20850.00, 布林上轨=21027.62
+2025-07-06 12:08:15,945 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-26 16:00:00, 最高价=20875.00, 布林上轨=21022.66
+2025-07-06 12:08:15,946 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=20870.00, 布林上轨=21036.39
+2025-07-06 12:08:15,947 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=20950.00, 布林上轨=21026.39
+2025-07-06 12:08:15,947 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=20935.00, 布林上轨=21044.51
+2025-07-06 12:08:15,949 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=21290.00, 布林上轨=21157.82
+2025-07-06 12:08:15,953 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=21388.00, 布林上轨=21219.91
+2025-07-06 12:08:15,954 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=21100.00, 布林上轨=21269.45
+2025-07-06 12:08:15,956 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=21188.88, 布林上轨=21336.21
+2025-07-06 12:08:15,959 - src.analysis.chart - INFO - 触碰点检测完成，共发现 14 个触碰点
+2025-07-06 12:08:15,960 - src.analysis.chart - INFO - 检测到 14 个布林线触点
+2025-07-06 12:08:15,961 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=21188.88
+2025-07-06 12:08:15,962 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-22 16:00:00, 价格=20279.00
+2025-07-06 12:08:16,885 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\22779_candlestick.png
+2025-07-06 12:08:16,885 - main - INFO - 正在生成商品 [运动手套（★） | 树篱迷宫 (久经沙场)] 的K线图
+2025-07-06 12:08:16,898 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:17,054 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:17,056 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-09 16:00:00, 实体低点=67700.00, 布林下轨=67299.52
+2025-07-06 12:08:17,056 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-10 16:00:00, 实体低点=67600.00, 布林下轨=66992.87
+2025-07-06 12:08:17,057 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=63666.00, 布林下轨=63856.18
+2025-07-06 12:08:17,058 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=63666.00, 布林下轨=63671.88
+2025-07-06 12:08:17,060 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=68865.50, 布林上轨=68803.06
+2025-07-06 12:08:17,060 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=68500.00, 布林上轨=68803.06
+2025-07-06 12:08:17,062 - src.analysis.chart - INFO - 触碰点检测完成，共发现 6 个触碰点
+2025-07-06 12:08:17,063 - src.analysis.chart - INFO - 检测到 6 个布林线触点
+2025-07-06 12:08:17,063 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-01 16:00:00, 价格=68500.00
+2025-07-06 12:08:17,064 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-17 16:00:00, 价格=63666.00
+2025-07-06 12:08:17,973 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-06 12:08:17,974 - main - INFO - 正在生成商品 [运动手套（★） | 潘多拉之盒 (久经沙场)] 的K线图
+2025-07-06 12:08:17,986 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:18,188 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:18,189 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-09 16:00:00, 实体低点=60900.00, 布林下轨=60761.17
+2025-07-06 12:08:18,190 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-10 16:00:00, 实体低点=60700.00, 布林下轨=60389.47
+2025-07-06 12:08:18,191 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-11 16:00:00, 实体低点=60700.00, 布林下轨=60108.08
+2025-07-06 12:08:18,192 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=58288.00, 布林下轨=58505.94
+2025-07-06 12:08:18,192 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=58288.00, 布林下轨=58408.20
+2025-07-06 12:08:18,194 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=62000.00, 布林上轨=62295.79
+2025-07-06 12:08:18,195 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=62199.50, 布林上轨=62238.01
+2025-07-06 12:08:18,196 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=61849.50, 布林上轨=62354.73
+2025-07-06 12:08:18,196 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=63000.00, 布林上轨=62799.39
+2025-07-06 12:08:18,197 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=63200.00, 布林上轨=63114.95
+2025-07-06 12:08:18,198 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=62739.00, 布林上轨=63355.58
+2025-07-06 12:08:18,199 - src.analysis.chart - INFO - 触碰点检测完成，共发现 11 个触碰点
+2025-07-06 12:08:18,199 - src.analysis.chart - INFO - 检测到 11 个布林线触点
+2025-07-06 12:08:18,199 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-02 16:00:00, 价格=62739.00
+2025-07-06 12:08:18,201 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-17 16:00:00, 价格=58288.00
+2025-07-06 12:08:19,075 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\495302338_candlestick.png
+2025-07-06 12:08:19,076 - main - INFO - 正在生成商品 [M4A1 消音型 | 赤红新星 (崭新出厂)] 的K线图
+2025-07-06 12:08:19,086 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:19,242 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:19,243 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-11 16:00:00, 最高价=17499.50, 布林上轨=17327.95
+2025-07-06 12:08:19,244 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-12 16:00:00, 最高价=17500.00, 布林上轨=17465.03
+2025-07-06 12:08:19,245 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-13 16:00:00, 最高价=17699.00, 布林上轨=17606.75
+2025-07-06 12:08:19,246 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-14 16:00:00, 最高价=17599.50, 布林上轨=17660.42
+2025-07-06 12:08:19,248 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=17850.00, 布林上轨=17977.07
+2025-07-06 12:08:19,248 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=17998.00, 布林上轨=18110.37
+2025-07-06 12:08:19,250 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=18199.99, 布林上轨=18262.02
+2025-07-06 12:08:19,251 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=18480.00, 布林上轨=18487.14
+2025-07-06 12:08:19,252 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=18425.00, 布林上轨=18607.78
+2025-07-06 12:08:19,253 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=18877.00, 布林上轨=18857.19
+2025-07-06 12:08:19,254 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=19288.00, 布林上轨=19171.35
+2025-07-06 12:08:19,257 - src.analysis.chart - INFO - 触碰点检测完成，共发现 11 个触碰点
+2025-07-06 12:08:19,258 - src.analysis.chart - INFO - 检测到 11 个布林线触点
+2025-07-06 12:08:19,258 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=19288.00
+2025-07-06 12:08:20,148 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\24693_candlestick.png
+2025-07-06 12:08:20,149 - main - INFO - 正在生成商品 [AK-47 | 水栽竹 (崭新出厂)] 的K线图
+2025-07-06 12:08:20,158 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:20,313 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:20,315 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=29150.00, 布林下轨=29564.04
+2025-07-06 12:08:20,316 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=29150.00, 布林下轨=29446.93
+2025-07-06 12:08:20,317 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=28997.00, 布林下轨=28729.70
+2025-07-06 12:08:20,317 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=28699.00, 布林下轨=28431.71
+2025-07-06 12:08:20,319 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=32299.00, 布林上轨=32305.67
+2025-07-06 12:08:20,320 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=32666.00, 布林上轨=32567.97
+2025-07-06 12:08:20,321 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=32698.99, 布林上轨=32671.75
+2025-07-06 12:08:20,322 - src.analysis.chart - INFO - 触碰点检测完成，共发现 7 个触碰点
+2025-07-06 12:08:20,322 - src.analysis.chart - INFO - 检测到 7 个布林线触点
+2025-07-06 12:08:20,322 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=32698.99
+2025-07-06 12:08:20,323 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-20 16:00:00, 价格=28699.00
+2025-07-06 12:08:21,272 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\26422_candlestick.png
+2025-07-06 12:08:21,272 - main - INFO - 正在生成商品 [M9 刺刀（★） | 伽玛多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:08:21,282 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:21,494 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:21,496 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-12 16:00:00, 最高价=26333.00, 布林上轨=26550.76
+2025-07-06 12:08:21,497 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-13 16:00:00, 最高价=26487.00, 布林上轨=26586.09
+2025-07-06 12:08:21,498 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=23548.00, 布林下轨=23612.28
+2025-07-06 12:08:21,499 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=23270.00, 布林下轨=23321.87
+2025-07-06 12:08:21,500 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=23270.00, 布林下轨=23123.23
+2025-07-06 12:08:21,507 - src.analysis.chart - INFO - 触碰点检测完成，共发现 5 个触碰点
+2025-07-06 12:08:21,507 - src.analysis.chart - INFO - 检测到 5 个布林线触点
+2025-07-06 12:08:21,508 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-06-13 16:00:00, 价格=26487.00
+2025-07-06 12:08:21,508 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-21 16:00:00, 价格=23270.00
+2025-07-06 12:08:22,428 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\50942855_candlestick.png
+2025-07-06 12:08:22,428 - main - INFO - 正在生成商品 [爪子刀（★） | 伽玛多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:08:22,439 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:22,602 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:22,604 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=34187.50, 布林下轨=34503.02
+2025-07-06 12:08:22,605 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=34187.50, 布林下轨=34336.91
+2025-07-06 12:08:22,605 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=34150.00, 布林下轨=33889.36
+2025-07-06 12:08:22,606 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=33499.00, 布林下轨=33674.01
+2025-07-06 12:08:22,607 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=33499.00, 布林下轨=33517.26
+2025-07-06 12:08:22,609 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=36866.00, 布林上轨=37217.26
+2025-07-06 12:08:22,610 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=37200.00, 布林上轨=37475.75
+2025-07-06 12:08:22,612 - src.analysis.chart - INFO - 触碰点检测完成，共发现 7 个触碰点
+2025-07-06 12:08:22,612 - src.analysis.chart - INFO - 检测到 7 个布林线触点
+2025-07-06 12:08:22,613 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-02 16:00:00, 价格=37200.00
+2025-07-06 12:08:22,613 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-21 16:00:00, 价格=33499.00
+2025-07-06 12:08:23,509 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\5534979_candlestick.png
+2025-07-06 12:08:23,510 - main - INFO - 正在生成商品 [蝴蝶刀（★） | 多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:08:23,595 - main - INFO - 已从 D:\works\easy-money-bot\data\印花_Vitality（闪亮）_2025年奥斯汀锦标赛-20250706_120612.json 加载市场数据
+2025-07-06 12:08:23,740 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:08:23,742 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=28486.50, 布林下轨=28461.38
+2025-07-06 12:08:23,743 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=28486.50, 布林下轨=28441.37
+2025-07-06 12:08:23,744 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=28300.00, 布林下轨=28384.91
+2025-07-06 12:08:23,744 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-22 16:00:00, 实体低点=28300.00, 布林下轨=28306.63
+2025-07-06 12:08:23,745 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=29500.00, 布林上轨=29745.93
+2025-07-06 12:08:23,746 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=29488.28, 布林上轨=29713.74
+2025-07-06 12:08:23,747 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=29500.00, 布林上轨=29757.14
+2025-07-06 12:08:23,748 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=29650.00, 布林上轨=29774.96
+2025-07-06 12:08:23,749 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=29650.00, 布林上轨=29827.95
+2025-07-06 12:08:23,751 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=29950.00, 布林上轨=29920.76
+2025-07-06 12:08:23,754 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-04 16:00:00, 最高价=29879.50, 布林上轨=30035.04
+2025-07-06 12:08:23,755 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-06 04:03:36, 最高价=29879.50, 布林上轨=30134.53
+2025-07-06 12:08:23,756 - src.analysis.chart - INFO - 触碰点检测完成，共发现 12 个触碰点
+2025-07-06 12:08:23,756 - src.analysis.chart - INFO - 检测到 12 个布林线触点
+2025-07-06 12:08:23,756 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-06 04:03:36, 价格=29879.50
+2025-07-06 12:08:23,757 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-22 16:00:00, 价格=28300.00
+2025-07-06 12:08:24,672 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\553370941_candlestick.png
+2025-07-06 12:09:07,868 - src.analysis.chart - INFO - 成功加载微软雅黑字体
+2025-07-06 12:09:07,875 - main - ERROR - 批量生成图表时出错: 未找到任何数据文件
+2025-07-06 12:12:53,657 - src.analysis.chart - INFO - 成功加载微软雅黑字体
+2025-07-06 12:12:53,664 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:53,664 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:53,683 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:53,683 - main - INFO - 正在生成商品 [AK-47 | 水栽竹 (崭新出厂)] 的K线图
+2025-07-06 12:12:53,684 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:53,685 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:53,695 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:53,990 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:12:53,993 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=29150.00, 布林下轨=29564.04
+2025-07-06 12:12:53,993 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=29150.00, 布林下轨=29446.93
+2025-07-06 12:12:53,994 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=28997.00, 布林下轨=28729.70
+2025-07-06 12:12:53,995 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=28699.00, 布林下轨=28431.71
+2025-07-06 12:12:53,996 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=32299.00, 布林上轨=32305.67
+2025-07-06 12:12:53,997 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=32666.00, 布林上轨=32567.97
+2025-07-06 12:12:53,998 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=32698.99, 布林上轨=32671.75
+2025-07-06 12:12:53,999 - src.analysis.chart - INFO - 触碰点检测完成，共发现 7 个触碰点
+2025-07-06 12:12:53,999 - src.analysis.chart - INFO - 检测到 7 个布林线触点
+2025-07-06 12:12:54,000 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=32698.99
+2025-07-06 12:12:54,001 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-20 16:00:00, 价格=28699.00
+2025-07-06 12:12:55,387 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\26422_candlestick.png
+2025-07-06 12:12:55,388 - main - INFO - 正在生成商品 [M4A1 消音型 | 赤红新星 (崭新出厂)] 的K线图
+2025-07-06 12:12:55,389 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:55,389 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:55,400 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:55,558 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:12:55,559 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-11 16:00:00, 最高价=17499.50, 布林上轨=17327.95
+2025-07-06 12:12:55,560 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-12 16:00:00, 最高价=17500.00, 布林上轨=17465.03
+2025-07-06 12:12:55,561 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-13 16:00:00, 最高价=17699.00, 布林上轨=17606.75
+2025-07-06 12:12:55,561 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-14 16:00:00, 最高价=17599.50, 布林上轨=17660.42
+2025-07-06 12:12:55,563 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=17850.00, 布林上轨=17977.07
+2025-07-06 12:12:55,564 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=17998.00, 布林上轨=18110.37
+2025-07-06 12:12:55,565 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=18199.99, 布林上轨=18262.02
+2025-07-06 12:12:55,566 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=18480.00, 布林上轨=18487.14
+2025-07-06 12:12:55,567 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=18425.00, 布林上轨=18607.78
+2025-07-06 12:12:55,569 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=18877.00, 布林上轨=18857.19
+2025-07-06 12:12:55,571 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=19288.00, 布林上轨=19171.35
+2025-07-06 12:12:55,574 - src.analysis.chart - INFO - 触碰点检测完成，共发现 11 个触碰点
+2025-07-06 12:12:55,574 - src.analysis.chart - INFO - 检测到 11 个布林线触点
+2025-07-06 12:12:55,577 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=19288.00
+2025-07-06 12:12:56,613 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\24693_candlestick.png
+2025-07-06 12:12:56,614 - main - INFO - 正在生成商品 [M9 刺刀（★） | 伽玛多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:12:56,615 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:56,615 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:56,627 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:56,791 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:12:56,794 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-12 16:00:00, 最高价=26333.00, 布林上轨=26550.76
+2025-07-06 12:12:56,796 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-13 16:00:00, 最高价=26487.00, 布林上轨=26586.09
+2025-07-06 12:12:56,798 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=23548.00, 布林下轨=23612.28
+2025-07-06 12:12:56,801 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=23270.00, 布林下轨=23321.87
+2025-07-06 12:12:56,802 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=23270.00, 布林下轨=23123.23
+2025-07-06 12:12:56,806 - src.analysis.chart - INFO - 触碰点检测完成，共发现 5 个触碰点
+2025-07-06 12:12:56,807 - src.analysis.chart - INFO - 检测到 5 个布林线触点
+2025-07-06 12:12:56,808 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-06-13 16:00:00, 价格=26487.00
+2025-07-06 12:12:56,808 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-21 16:00:00, 价格=23270.00
+2025-07-06 12:12:57,745 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\50942855_candlestick.png
+2025-07-06 12:12:57,746 - main - INFO - 正在生成商品 [印花 | Vitality（闪亮）| 2025年奥斯汀锦标赛] 的K线图
+2025-07-06 12:12:57,746 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:57,747 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:57,756 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:57,949 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：25，布林线上轨长度：25，布林线下轨长度：25
+2025-07-06 12:12:57,953 - src.analysis.chart - INFO - 触碰点检测完成，共发现 0 个触碰点
+2025-07-06 12:12:57,953 - src.analysis.chart - INFO - 检测到 0 个布林线触点
+2025-07-06 12:12:58,731 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\1399839642715082753_candlestick.png
+2025-07-06 12:12:58,732 - main - INFO - 正在生成商品 [爪子刀（★） | 伽玛多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:12:58,733 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:58,734 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:58,743 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:58,903 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:12:58,905 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=34187.50, 布林下轨=34503.02
+2025-07-06 12:12:58,905 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=34187.50, 布林下轨=34336.91
+2025-07-06 12:12:58,906 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-19 16:00:00, 实体低点=34150.00, 布林下轨=33889.36
+2025-07-06 12:12:58,907 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=33499.00, 布林下轨=33674.01
+2025-07-06 12:12:58,907 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=33499.00, 布林下轨=33517.26
+2025-07-06 12:12:58,912 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=36866.00, 布林上轨=37217.26
+2025-07-06 12:12:58,913 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=37200.00, 布林上轨=37475.75
+2025-07-06 12:12:58,917 - src.analysis.chart - INFO - 触碰点检测完成，共发现 7 个触碰点
+2025-07-06 12:12:58,917 - src.analysis.chart - INFO - 检测到 7 个布林线触点
+2025-07-06 12:12:58,918 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-02 16:00:00, 价格=37200.00
+2025-07-06 12:12:58,918 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-21 16:00:00, 价格=33499.00
+2025-07-06 12:12:59,803 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\5534979_candlestick.png
+2025-07-06 12:12:59,804 - main - INFO - 正在生成商品 [蝴蝶刀（★） | 多普勒 (崭新出厂)] 的K线图
+2025-07-06 12:12:59,805 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:12:59,806 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:12:59,819 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:12:59,970 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:12:59,972 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=28486.50, 布林下轨=28461.38
+2025-07-06 12:12:59,972 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=28486.50, 布林下轨=28441.37
+2025-07-06 12:12:59,973 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=28300.00, 布林下轨=28384.91
+2025-07-06 12:12:59,974 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-22 16:00:00, 实体低点=28300.00, 布林下轨=28306.63
+2025-07-06 12:12:59,975 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=29500.00, 布林上轨=29745.93
+2025-07-06 12:12:59,976 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=29488.28, 布林上轨=29713.74
+2025-07-06 12:12:59,977 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=29500.00, 布林上轨=29757.14
+2025-07-06 12:12:59,978 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=29650.00, 布林上轨=29774.96
+2025-07-06 12:12:59,979 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=29650.00, 布林上轨=29827.95
+2025-07-06 12:12:59,980 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=29950.00, 布林上轨=29920.76
+2025-07-06 12:12:59,983 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-04 16:00:00, 最高价=29879.50, 布林上轨=30035.04
+2025-07-06 12:12:59,985 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-06 04:03:36, 最高价=29879.50, 布林上轨=30134.53
+2025-07-06 12:12:59,986 - src.analysis.chart - INFO - 触碰点检测完成，共发现 12 个触碰点
+2025-07-06 12:12:59,986 - src.analysis.chart - INFO - 检测到 12 个布林线触点
+2025-07-06 12:12:59,986 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-06 04:03:36, 价格=29879.50
+2025-07-06 12:12:59,987 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-22 16:00:00, 价格=28300.00
+2025-07-06 12:13:00,891 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\553370941_candlestick.png
+2025-07-06 12:13:00,892 - main - INFO - 正在生成商品 [蝴蝶刀（★）] 的K线图
+2025-07-06 12:13:00,893 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:13:00,894 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:13:00,904 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:13:01,064 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:13:01,065 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=20148.00, 布林下轨=20140.26
+2025-07-06 12:13:01,066 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=20148.00, 布林下轨=20146.30
+2025-07-06 12:13:01,067 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-20 16:00:00, 实体低点=20298.50, 布林下轨=20140.66
+2025-07-06 12:13:01,068 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-21 16:00:00, 实体低点=20290.00, 布林下轨=20154.10
+2025-07-06 12:13:01,068 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-22 16:00:00, 实体低点=20279.00, 布林下轨=20111.65
+2025-07-06 12:13:01,069 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-25 16:00:00, 最高价=20850.00, 布林上轨=21027.62
+2025-07-06 12:13:01,070 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-26 16:00:00, 最高价=20875.00, 布林上轨=21022.66
+2025-07-06 12:13:01,073 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=20870.00, 布林上轨=21036.39
+2025-07-06 12:13:01,075 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=20950.00, 布林上轨=21026.39
+2025-07-06 12:13:01,076 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=20935.00, 布林上轨=21044.51
+2025-07-06 12:13:01,080 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=21290.00, 布林上轨=21157.82
+2025-07-06 12:13:01,081 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=21388.00, 布林上轨=21219.91
+2025-07-06 12:13:01,082 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=21100.00, 布林上轨=21269.45
+2025-07-06 12:13:01,083 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-03 16:00:00, 最高价=21188.88, 布林上轨=21336.21
+2025-07-06 12:13:01,083 - src.analysis.chart - INFO - 触碰点检测完成，共发现 14 个触碰点
+2025-07-06 12:13:01,084 - src.analysis.chart - INFO - 检测到 14 个布林线触点
+2025-07-06 12:13:01,084 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-03 16:00:00, 价格=21188.88
+2025-07-06 12:13:01,085 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-22 16:00:00, 价格=20279.00
+2025-07-06 12:13:01,978 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\22779_candlestick.png
+2025-07-06 12:13:01,979 - main - INFO - 正在生成商品 [运动手套（★） | 树篱迷宫 (久经沙场)] 的K线图
+2025-07-06 12:13:01,980 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:13:01,981 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:13:01,990 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:13:02,147 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:13:02,148 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-09 16:00:00, 实体低点=67700.00, 布林下轨=67299.52
+2025-07-06 12:13:02,148 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-10 16:00:00, 实体低点=67600.00, 布林下轨=66992.87
+2025-07-06 12:13:02,149 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=63666.00, 布林下轨=63856.18
+2025-07-06 12:13:02,150 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=63666.00, 布林下轨=63671.88
+2025-07-06 12:13:02,152 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=68865.50, 布林上轨=68803.06
+2025-07-06 12:13:02,153 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=68500.00, 布林上轨=68803.06
+2025-07-06 12:13:02,154 - src.analysis.chart - INFO - 触碰点检测完成，共发现 6 个触碰点
+2025-07-06 12:13:02,155 - src.analysis.chart - INFO - 检测到 6 个布林线触点
+2025-07-06 12:13:02,155 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-01 16:00:00, 价格=68500.00
+2025-07-06 12:13:02,156 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-17 16:00:00, 价格=63666.00
+2025-07-06 12:13:03,043 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\525873303_candlestick.png
+2025-07-06 12:13:03,044 - main - INFO - 正在生成商品 [运动手套（★） | 潘多拉之盒 (久经沙场)] 的K线图
+2025-07-06 12:13:03,045 - main - INFO - 找到最新的数据文件夹: D:\works\easy-money-bot\data\1751774546
+2025-07-06 12:13:03,046 - main - INFO - 开始加载 9 个JSON文件
+2025-07-06 12:13:03,056 - main - INFO - 成功加载 9 个商品的数据
+2025-07-06 12:13:03,272 - src.analysis.chart - INFO - 开始检测触碰点，数据长度：30，布林线上轨长度：30，布林线下轨长度：30
+2025-07-06 12:13:03,273 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-09 16:00:00, 实体低点=60900.00, 布林下轨=60761.17
+2025-07-06 12:13:03,274 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-10 16:00:00, 实体低点=60700.00, 布林下轨=60389.47
+2025-07-06 12:13:03,274 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-11 16:00:00, 实体低点=60700.00, 布林下轨=60108.08
+2025-07-06 12:13:03,275 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-16 16:00:00, 实体低点=58288.00, 布林下轨=58505.94
+2025-07-06 12:13:03,276 - src.analysis.chart - INFO - 检测到下轨触碰点: 日期=2025-06-17 16:00:00, 实体低点=58288.00, 布林下轨=58408.20
+2025-07-06 12:13:03,277 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-27 16:00:00, 最高价=62000.00, 布林上轨=62295.79
+2025-07-06 12:13:03,277 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-28 16:00:00, 最高价=62199.50, 布林上轨=62238.01
+2025-07-06 12:13:03,279 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-29 16:00:00, 最高价=61849.50, 布林上轨=62354.73
+2025-07-06 12:13:03,280 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-06-30 16:00:00, 最高价=63000.00, 布林上轨=62799.39
+2025-07-06 12:13:03,281 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-01 16:00:00, 最高价=63200.00, 布林上轨=63114.95
+2025-07-06 12:13:03,282 - src.analysis.chart - INFO - 检测到上轨触碰点: 日期=2025-07-02 16:00:00, 最高价=62739.00, 布林上轨=63355.58
+2025-07-06 12:13:03,284 - src.analysis.chart - INFO - 触碰点检测完成，共发现 11 个触碰点
+2025-07-06 12:13:03,286 - src.analysis.chart - INFO - 检测到 11 个布林线触点
+2025-07-06 12:13:03,288 - src.analysis.chart - INFO - 将显示最新上轨触点: 日期=2025-07-02 16:00:00, 价格=62739.00
+2025-07-06 12:13:03,288 - src.analysis.chart - INFO - 将显示最新下轨触点: 日期=2025-06-17 16:00:00, 价格=58288.00
+2025-07-06 12:13:04,155 - src.analysis.chart - INFO - K线图已保存至: D:\works\easy-money-bot\data\charts\495302338_candlestick.png

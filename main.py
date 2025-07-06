@@ -11,7 +11,7 @@ import json
 import logging
 import argparse
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import re
 
 from src.crawler.spider import CS2MarketSpider
@@ -80,34 +80,124 @@ def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> s
     return save_path
 
 
-def load_market_data(filename: Optional[str] = None) -> dict:
+def get_latest_data_folder() -> Optional[str]:
     """
-    从JSON文件加载市场数据
+    获取最新的数据文件夹（时间戳文件夹）
+    
+    Returns:
+        最新数据文件夹的完整路径，如果没有找到则返回 None
+    """
+    try:
+        # 获取数据目录下的所有文件夹
+        folders = [f for f in os.listdir(settings.DATA_DIR) 
+                  if os.path.isdir(os.path.join(settings.DATA_DIR, f))]
+        
+        if not folders:
+            logger.warning("未找到任何数据文件夹")
+            return None
+        
+        # 过滤出时间戳文件夹（确保文件夹名是数字）
+        timestamp_folders = [f for f in folders if f.isdigit()]
+        
+        if not timestamp_folders:
+            logger.warning("未找到任何时间戳文件夹")
+            return None
+        
+        # 按时间戳排序，获取最新的文件夹
+        latest_folder = max(timestamp_folders, key=lambda x: int(x))
+        latest_path = os.path.join(settings.DATA_DIR, latest_folder)
+        
+        logger.info(f"找到最新的数据文件夹: {latest_path}")
+        return latest_path
+        
+    except Exception as e:
+        logger.error(f"获取最新数据文件夹时出错: {e}")
+        return None
+
+
+def load_json_from_folder(folder_path: str) -> Dict[str, Dict]:
+    """
+    从指定文件夹加载所有JSON文件
     
     Args:
-        filename: 可选的文件名，如果不提供则加载最新的数据文件
+        folder_path: 文件夹路径
+        
+    Returns:
+        合并后的数据字典，格式与原来的market_data相同
+    """
+    result = {}
+    
+    try:
+        # 获取文件夹中的所有JSON文件
+        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        
+        if not json_files:
+            logger.warning(f"文件夹 {folder_path} 中未找到任何JSON文件")
+            return result
+        
+        logger.info(f"开始加载 {len(json_files)} 个JSON文件")
+        
+        # 加载每个JSON文件
+        for json_file in json_files:
+            file_path = os.path.join(folder_path, json_file)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    item_data = json.load(f)
+                    
+                # 提取商品ID和数据
+                item_id = item_data.get('item_id')
+                if item_id:
+                    result[item_id] = {
+                        'name': item_data.get('name', f'Item-{item_id}'),
+                        'data': item_data.get('data', [])
+                    }
+                    logger.debug(f"成功加载商品数据: {item_data.get('name', item_id)}")
+            except Exception as e:
+                logger.error(f"加载文件 {json_file} 时出错: {e}")
+                continue
+        
+        logger.info(f"成功加载 {len(result)} 个商品的数据")
+        return result
+        
+    except Exception as e:
+        logger.error(f"从文件夹加载JSON数据时出错: {e}")
+        return result
+
+
+def load_market_data(filename: Optional[str] = None) -> dict:
+    """
+    加载市场数据，优先从时间戳文件夹中加载所有JSON文件
+    
+    Args:
+        filename: 可选的文件名，如果提供则从指定文件加载（向后兼容）
         
     Returns:
         加载的市场数据
     """
-    if not filename:
-        # 获取数据目录下所有的JSON文件
-        json_files = [f for f in os.listdir(settings.DATA_DIR) if f.endswith('.json')]
-        if not json_files:
-            raise FileNotFoundError("未找到任何数据文件")
+    try:
+        if filename:
+            # 如果提供了具体文件名，使用旧的加载方式（向后兼容）
+            load_path = os.path.join(settings.DATA_DIR, filename)
+            with open(load_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info(f"已从指定文件 {load_path} 加载市场数据")
+            return data
         
-        # 按文件修改时间排序，获取最新的文件
-        latest_file = max(
-            json_files,
-            key=lambda f: os.path.getmtime(os.path.join(settings.DATA_DIR, f))
-        )
-        filename = latest_file
-    
-    load_path = os.path.join(settings.DATA_DIR, filename)
-    with open(load_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    logger.info(f"已从 {load_path} 加载市场数据")
-    return data
+        # 获取最新的数据文件夹
+        latest_folder = get_latest_data_folder()
+        if not latest_folder:
+            raise FileNotFoundError("未找到任何数据文件夹")
+        
+        # 从文件夹中加载所有JSON文件
+        data = load_json_from_folder(latest_folder)
+        if not data:
+            raise FileNotFoundError(f"在文件夹 {latest_folder} 中未找到任何有效的商品数据")
+        
+        return data
+        
+    except Exception as e:
+        logger.error(f"加载市场数据时出错: {e}")
+        return {}
 
 
 def test_chart_from_local(item_id: str = "525873303", 

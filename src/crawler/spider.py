@@ -5,7 +5,9 @@
 爬虫核心模块，负责从API获取数据
 """
 
+import os
 import time
+import json
 import random
 import logging
 import requests
@@ -67,6 +69,7 @@ class CS2MarketSpider:
         self.retry_delay = settings.RETRY_DELAY
         self.CATEGORY_MONTH = settings.CATEGORY_MONTH
         self.CATEGORY_DAYS = settings.CATEGORY_DAYS
+        self.data_dir = settings.DATA_DIR  # 数据存储目录
         
         # 尝试使用fake-useragent，如果失败则使用配置中的用户代理列表
         try:
@@ -340,9 +343,67 @@ class CS2MarketSpider:
             
         return all_data
     
+    def _create_timestamp_folder(self) -> str:
+        """
+        创建以当前时间戳命名的文件夹
+        
+        Returns:
+            str: 创建的文件夹路径
+        """
+        timestamp = int(time.time())
+        folder_path = os.path.join(self.data_dir, str(timestamp))
+        
+        try:
+            os.makedirs(folder_path, exist_ok=True)
+            logger.info(f"创建数据文件夹: {folder_path}")
+            return folder_path
+        except Exception as e:
+            logger.error(f"创建数据文件夹失败: {e}")
+            raise
+    
+    def _save_item_to_json(self, folder_path: str, item_id: str, name: str, data: List[Dict]) -> bool:
+        """
+        将单个商品数据保存为JSON文件
+        
+        Args:
+            folder_path: 保存文件夹路径
+            item_id: 商品ID
+            name: 商品名称
+            data: 商品数据
+            
+        Returns:
+            bool: 是否保存成功
+        """
+        try:
+            # 构建文件名（使用商品名称，去除不合法字符）
+            safe_name = "".join(c for c in name if c.isalnum() or c in (' ', '-', '_')).strip()
+            if not safe_name:  # 如果名称都是不合法字符，使用item_id
+                safe_name = f"item_{item_id}"
+            
+            file_path = os.path.join(folder_path, f"{safe_name}.json")
+            
+            # 准备数据
+            json_data = {
+                'item_id': item_id,
+                'name': name,
+                'timestamp': int(time.time()),
+                'data': data
+            }
+            
+            # 保存为JSON文件
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(json_data, f, ensure_ascii=False, indent=2)
+            
+            logger.info(f"成功保存商品数据到文件: {file_path}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"保存商品 [{name}]({item_id}) 数据到JSON文件失败: {e}")
+            return False
+    
     def crawl_all_items(self) -> Dict[str, Dict]:
         """
-        爬取所有收藏商品的数据
+        爬取所有收藏商品的数据并保存为独立的JSON文件
         
         Returns:
             包含所有商品数据的字典，格式为：
@@ -356,30 +417,47 @@ class CS2MarketSpider:
         result = {}
         items = self.get_favorite_items()
         
+        if not items:
+            logger.warning("没有获取到任何收藏商品信息")
+            return result
+        
         logger.info(f"开始爬取 {len(items)} 个商品的数据")
         
-        for item in items:
-            item_id = item['item_id']
-            name = item['name']
-            logger.info(f"开始获取商品 [{name}]({item_id}) 的数据")
+        try:
+            # 创建时间戳文件夹
+            folder_path = self._create_timestamp_folder()
             
-            item_data = self.get_item_history(item_id)
-            if item_data:
-                result[item_id] = {
-                    'name': name,
-                    'data': item_data
-                }
-                logger.info(f"成功获取商品 [{name}]({item_id}) 的数据")
-            else:
-                logger.warning(f"获取商品 [{name}]({item_id}) 的数据失败")
+            for item in items:
+                item_id = item['item_id']
+                name = item['name']
+                logger.info(f"开始获取商品 [{name}]({item_id}) 的数据")
+                
+                item_data = self.get_item_history(item_id)
+                if item_data:
+                    # 保存到内存中的结果字典
+                    result[item_id] = {
+                        'name': name,
+                        'data': item_data
+                    }
+                    
+                    # 保存为独立的JSON文件
+                    self._save_item_to_json(folder_path, item_id, name, item_data)
+                    logger.info(f"成功获取并保存商品 [{name}]({item_id}) 的数据")
+                else:
+                    logger.warning(f"获取商品 [{name}]({item_id}) 的数据失败")
+                
+                # 添加随机延迟，避免请求过于频繁
+                if item != items[-1]:  # 如果不是最后一个商品
+                    delay = random.uniform(5, 10)  # 随机延迟5-10秒
+                    logger.info(f"等待 {delay:.1f} 秒后继续...")
+                    time.sleep(delay)
             
-            # 添加随机延迟，避免请求过于频繁
-            delay = random.uniform(5, 10)  # 随机延迟5-10秒
-            logger.info(f"等待 {delay:.1f} 秒后继续...")
-            time.sleep(delay)
-        
-        logger.info(f"所有商品数据爬取完成，成功获取 {len(result)} 个商品的数据")
-        return result
+            logger.info(f"所有商品数据爬取完成，成功获取 {len(result)} 个商品的数据")
+            return result
+            
+        except Exception as e:
+            logger.error(f"爬取过程中发生错误: {e}")
+            return result
 
 
 if __name__ == "__main__":
