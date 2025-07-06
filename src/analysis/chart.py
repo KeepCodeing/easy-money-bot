@@ -20,11 +20,11 @@ from src.utils.file_utils import clean_filename
 # 配置日志
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(f"{settings.LOG_DIR}/analysis.log", encoding='utf-8'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler(f"{settings.LOG_DIR}/analysis.log", encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -32,12 +32,18 @@ logger = logging.getLogger(__name__)
 try:
     # 尝试使用微软雅黑（Windows）
     font = FontProperties(fname=r"C:\Windows\Fonts\msyh.ttc")
-    plt.rcParams['font.family'] = ['Microsoft YaHei']
+    plt.rcParams["font.family"] = ["Microsoft YaHei"]
     logger.info("成功加载微软雅黑字体")
 except Exception as e:
     try:
         # 尝试使用其他中文字体（Linux/macOS）
-        plt.rcParams['font.family'] = ['Heiti TC', 'Heiti SC', 'STHeiti', 'SimHei', 'sans-serif']
+        plt.rcParams["font.family"] = [
+            "Heiti TC",
+            "Heiti SC",
+            "STHeiti",
+            "SimHei",
+            "sans-serif",
+        ]
         logger.info("成功加载系统中文字体")
     except Exception as e:
         logger.warning(f"加载中文字体失败: {e}，将使用系统默认字体")
@@ -72,7 +78,7 @@ class KLineChart:
                 ohlc="inherit",
             ),
             rc={
-                'font.family': plt.rcParams['font.family'],  # 使用全局字体设置
+                "font.family": plt.rcParams["font.family"],  # 使用全局字体设置
                 "axes.labelsize": 10,
                 "axes.titlesize": 12,
                 "xtick.labelsize": 8,
@@ -108,42 +114,50 @@ class KLineChart:
         # 分别存储上下轨的触碰点
         upper_touches = []
         lower_touches = []
-        
+
         # 定义容差范围（1%）
         tolerance = 0.01
-        
-        logger.info(f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}")
-        
+
+        logger.info(
+            f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}"
+        )
+
         for idx in df.index:
             high_price = df.loc[idx, "High"]
             open_price = df.loc[idx, "Open"]
             close_price = df.loc[idx, "Close"]
             upper_band = upper[idx]
             lower_band = lower[idx]
-            
+
             # 获取实体的较低价格（开盘价和收盘价中的较小值）
             body_low_price = min(open_price, close_price)
-            
+
             logger.debug(f"检查日期 {idx}:")
             logger.debug(f"  最高价：{high_price:.2f}, 布林上轨：{upper_band:.2f}")
-            logger.debug(f"  实体低点：{body_low_price:.2f}, 布林下轨：{lower_band:.2f}")
-            
+            logger.debug(
+                f"  实体低点：{body_low_price:.2f}, 布林下轨：{lower_band:.2f}"
+            )
+
             # 检查上轨（保持不变，使用最高价）
             upper_threshold = upper_band * (1 - tolerance)
             if high_price >= upper_threshold:
                 upper_touches.append(
                     {"index": idx, "price": high_price, "position": "upper"}
                 )
-                logger.info(f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}")
-            
+                logger.info(
+                    f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
+                )
+
             # 检查下轨（只使用实体价格）
             lower_threshold = lower_band * (1 + tolerance)
             if body_low_price <= lower_threshold:
                 lower_touches.append(
                     {"index": idx, "price": body_low_price, "position": "lower"}
                 )
-                logger.info(f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}")
-        
+                logger.info(
+                    f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}"
+                )
+
         # 返回所有触碰点
         touches = upper_touches + lower_touches
         logger.info(f"触碰点检测完成，共发现 {len(touches)} 个触碰点")
@@ -172,57 +186,114 @@ class KLineChart:
         # 分别存储买入和卖出信号
         buy_signals = []
         sell_signals = []
-        
+
         # 定义容差范围（0.5%）
         tolerance = 0.005
-        
+
         logger.debug(f"开始检测Vegas通道触碰点，数据长度：{len(df)}")
-        
+
         for idx in df.index:
             open_price = df.loc[idx, "Open"]
             close_price = df.loc[idx, "Close"]
             low_price = df.loc[idx, "Low"]
-            
+
             # 获取实体的较低价格（开盘价和收盘价中的较小值）
             body_low_price = min(open_price, close_price)
-            
+
             # 获取当前的通道值
             filter_line = ema3[idx]  # 过滤线
-            
+
             # 检查买入信号（实体低点触碰通道）
             if body_low_price <= filter_line * (1 + tolerance):
-                buy_signals.append({
-                    "index": idx,
-                    "price": body_low_price,
-                    "signal": "buy"
-                })
-                logger.debug(f"检测到买入信号: 日期={idx}, 价格={body_low_price:.2f}, 过滤线={filter_line:.2f}")
-            
+                buy_signals.append(
+                    {"index": idx, "price": body_low_price, "signal": "buy"}
+                )
+                logger.debug(
+                    f"检测到买入信号: 日期={idx}, 价格={body_low_price:.2f}, 过滤线={filter_line:.2f}"
+                )
+
             # 检查卖出信号（最低价下穿过滤线）
             if low_price < filter_line * (1 - tolerance):
-                sell_signals.append({
-                    "index": idx,
-                    "price": low_price,
-                    "signal": "sell"
-                })
-                logger.debug(f"检测到卖出信号: 日期={idx}, 价格={low_price:.2f}, 过滤线={filter_line:.2f}")
-        
+                sell_signals.append(
+                    {"index": idx, "price": low_price, "signal": "sell"}
+                )
+                logger.debug(
+                    f"检测到卖出信号: 日期={idx}, 价格={low_price:.2f}, 过滤线={filter_line:.2f}"
+                )
+
         # 只保留最新的信号
         signals = []
         if buy_signals:
             latest_buy = buy_signals[-1]
             signals.append(latest_buy)
-            logger.info(f"选择最新买入信号: 日期={latest_buy['index']}, 价格={latest_buy['price']:.2f}")
-            
+            logger.info(
+                f"选择最新买入信号: 日期={latest_buy['index']}, 价格={latest_buy['price']:.2f}"
+            )
+
         if sell_signals:
             latest_sell = sell_signals[-1]
             signals.append(latest_sell)
-            logger.info(f"选择最新卖出信号: 日期={latest_sell['index']}, 价格={latest_sell['price']:.2f}")
-        
+            logger.info(
+                f"选择最新卖出信号: 日期={latest_sell['index']}, 价格={latest_sell['price']:.2f}"
+            )
+
         logger.info(f"Vegas通道触碰点检测完成，保留 {len(signals)} 个最新信号")
         return signals
 
-    def _filter_date_range(self, df: pd.DataFrame, start_date: Optional[str] = None, end_date: Optional[str] = None) -> pd.DataFrame:
+    def _find_bollinger_middle_touches(
+        self, df: pd.DataFrame, middle: pd.Series
+    ) -> List[Dict]:
+        """
+        查找从上方回落到布林线中轨的点
+
+        Args:
+            df: K线数据
+            middle: 布林线中轨
+
+        Returns:
+            触碰点列表，每个点包含：
+            - index: 时间索引
+            - price: 价格
+            - position: 'middle'
+        """
+        middle_touches = []
+        tolerance = 0.005  # 0.5%的容差范围
+        
+        logger.debug(f"开始检测布林线中轨回落点，数据长度：{len(df)}")
+        
+        # 需要至少2个数据点来判断趋势
+        for i in range(1, len(df)):
+            prev_idx = df.index[i-1]
+            curr_idx = df.index[i]
+            
+            prev_close = df.loc[prev_idx, "Close"]
+            curr_close = df.loc[curr_idx, "Close"]
+            curr_middle = middle[curr_idx]
+            
+            # 判断是否从上方回落到中轨
+            # 1. 前一个收盘价在中轨上方
+            # 2. 当前收盘价接近中轨
+            if (prev_close > middle[prev_idx] and 
+                abs(curr_close - curr_middle) <= curr_middle * tolerance):
+                middle_touches.append({
+                    "index": curr_idx,
+                    "price": curr_close,
+                    "position": "middle"
+                })
+                logger.debug(
+                    f"检测到中轨回落点: 日期={curr_idx}, "
+                    f"价格={curr_close:.2f}, 中轨={curr_middle:.2f}"
+                )
+        
+        logger.info(f"中轨回落点检测完成，共发现 {len(middle_touches)} 个触碰点")
+        return middle_touches
+
+    def _filter_date_range(
+        self,
+        df: pd.DataFrame,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+    ) -> pd.DataFrame:
         """
         按日期范围筛选数据
 
@@ -237,7 +308,9 @@ class KLineChart:
         try:
             filtered_df = df.copy()
             if start_date:
-                filtered_df = filtered_df[filtered_df.index >= pd.to_datetime(start_date)]
+                filtered_df = filtered_df[
+                    filtered_df.index >= pd.to_datetime(start_date)
+                ]
             if end_date:
                 filtered_df = filtered_df[filtered_df.index <= pd.to_datetime(end_date)]
             return filtered_df
@@ -303,6 +376,8 @@ class KLineChart:
 
         # 准备技术指标数据（确保与显示数据长度匹配）
         addplots = []
+        latest_touches = []  # 存储所有类型的最新触点
+
         if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
             # 添加布林带（使用与df相同的时间范围）
             middle = middle[df.index]
@@ -337,6 +412,39 @@ class KLineChart:
                 ]
             )
 
+            # 查找布林带触点
+            bollinger_touches = self._find_bollinger_touches(
+                df, upper, lower
+            )
+            # 查找中轨回落点
+            middle_touches = self._find_bollinger_middle_touches(
+                df, middle
+            )
+            
+            # 分类存储触点
+            upper_touches = [t for t in bollinger_touches if t["position"] == "upper"]
+            lower_touches = [t for t in bollinger_touches if t["position"] == "lower"]
+            
+            # 收集最新的触点
+            if upper_touches:
+                latest_touches.append(upper_touches[-1])
+                logger.info(
+                    f"将显示最新上轨触点: 日期={upper_touches[-1]['index']}, "
+                    f"价格={upper_touches[-1]['price']:.2f}"
+                )
+            if lower_touches:
+                latest_touches.append(lower_touches[-1])
+                logger.info(
+                    f"将显示最新下轨触点: 日期={lower_touches[-1]['index']}, "
+                    f"价格={lower_touches[-1]['price']:.2f}"
+                )
+            if middle_touches:
+                latest_touches.append(middle_touches[-1])
+                logger.info(
+                    f"将显示最新中轨回落点: 日期={middle_touches[-1]['index']}, "
+                    f"价格={middle_touches[-1]['price']:.2f}"
+                )
+
         if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
             # 添加维加斯通道（使用与df相同的时间范围）
             ema1 = ema1[df.index]
@@ -356,149 +464,79 @@ class KLineChart:
                 ]
             )
 
-        # 创建子图，为技术指标预留空间
+        # 绘制K线图
         fig, axes = mpf.plot(
             df,
             type="candle",
             style=self.chart_style,
             volume=True,
-            volume_alpha=0.5,
-            figsize=(12, 8),
-            panel_ratios=(5, 1),  # 调整主图和成交量图的比例为5:1
             addplot=addplots,
             returnfig=True,
-            tight_layout=False,  # 关闭自动布局以手动调整标题
-            show_nontrading=False,
-            datetime_format="%m/%d",  # 设置日期格式为MM/DD
+            figsize=(15, 10),
+            panel_ratios=(3, 1),
+            datetime_format="%m/%d",  # 修改日期格式为 MM/DD
+            volume_alpha=0.5,
+            title=title,
         )
 
-        # 获取主图对象
-        ax = axes[0]
-
-        # 添加布林线触点标注
-        if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
-            # 查找布林线触碰点
-            touches = self._find_bollinger_touches(df, upper, lower)
-            logger.info(f"检测到 {len(touches)} 个布林线触点")
-
-            # 获取y轴范围
-            y_min, y_max = ax.get_ylim()
-            y_range = y_max - y_min
-
-            # 分离上下轨触点
-            upper_touches = [t for t in touches if t["position"] == "upper"]
-            lower_touches = [t for t in touches if t["position"] == "lower"]
-
-            # 只获取最后一个上轨和下轨触点
-            latest_touches = []
-            if upper_touches:
-                latest_touches.append(upper_touches[-1])
-                logger.info(f"将显示最新上轨触点: 日期={upper_touches[-1]['index']}, 价格={upper_touches[-1]['price']:.2f}")
-            if lower_touches:
-                latest_touches.append(lower_touches[-1])
-                logger.info(f"将显示最新下轨触点: 日期={lower_touches[-1]['index']}, 价格={lower_touches[-1]['price']:.2f}")
-
-            # 添加最新触点标注
-            for touch in latest_touches:
-                idx = touch["index"]
-                price = touch["price"]
-                position = touch["position"]
-                
-                # 获取x轴位置
-                x_pos = df.index.get_loc(idx)
-                
-                # 根据触点位置调整标注位置和样式
-                if position == "upper":
-                    y_offset = y_range * 0.02  # 上方偏移2%
-                    va = "bottom"
-                else:
-                    y_offset = -y_range * 0.02  # 下方偏移2%
-                    va = "top"
-                
-                # 添加价格标注
-                ax.annotate(
-                    f"{price:,.0f}",
-                    xy=(x_pos, price),
-                    xytext=(x_pos, price + y_offset),
-                    fontsize=8,
-                    color="black",
-                    va=va,
-                    ha="center",
-                    bbox=None,  # 移除背景框
-                    fontproperties=font if 'font' in globals() else None,  # 使用中文字体（如果可用）
-                    arrowprops=dict(
-                        arrowstyle="->",
-                        color="black",
-                        alpha=0.6,
-                        connectionstyle="arc3,rad=0"
-                    ),
-                    zorder=100
-                )
-
-        # 添加Vegas通道触碰点标注
-        if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
-            # 获取y轴范围
-            y_min, y_max = ax.get_ylim()
-            y_range = y_max - y_min
+        # 添加所有收集到的触点标注
+        for touch in latest_touches:
+            position = touch["position"]
+            price = touch["price"]
+            date = touch["index"]
             
-            # 查找触碰点
-            touches = self._find_vegas_touches(df, ema1, ema2, ema3)
-            logger.info(f"准备添加 {len(touches)} 个Vegas通道信号标注")
-
-            for touch in touches:
-                idx = touch["index"]
-                price = touch["price"]
-                signal = touch["signal"]
-                
-                # 获取x轴位置
-                x_pos = df.index.get_loc(idx)
-                
-                # 根据信号类型调整标注位置和样式
-                if signal == "buy":
-                    y_offset = -y_range * 0.02  # 下方偏移2%
-                    va = "top"
-                    text = f"{price:,.0f}"  # 只显示价格
-                else:
-                    y_offset = -y_range * 0.02  # 下方偏移2%
-                    va = "top"
-                    text = f"{price:,.0f}"  # 只显示价格
-                
-                # 添加价格标注
-                ax.annotate(
-                    text,
-                    xy=(x_pos, price),
-                    xytext=(x_pos, price + y_offset),
-                    fontsize=8,
-                    color="black",
-                    va=va,
-                    ha="center",
-                    bbox=None,  # 移除背景框
-                    fontproperties=font if 'font' in globals() else None,  # 使用中文字体（如果可用）
-                    arrowprops=dict(
-                        arrowstyle="->",
-                        color="black",
-                        alpha=0.6,
-                        connectionstyle="arc3,rad=0"
-                    ),
-                    zorder=100
-                )
+            # 获取日期在数据中的位置索引
+            date_idx = df.index.get_loc(date)
+            
+            # 根据位置确定标注文本和位置
+            if position == "upper":
+                text = f"¥{price:.2f}"  # 简化文本，只显示价格
+                y_offset = price * 0.01  # 减小偏移量到1%
+            elif position == "lower":
+                text = f"¥{price:.2f}"
+                y_offset = -price * 0.01
+            else:  # middle
+                text = f"¥{price:.2f}"
+                y_offset = price * 0.01
+            
+            # 添加标注
+            axes[0].annotate(
+                text,
+                xy=(date_idx, price),
+                xytext=(date_idx, price + y_offset),
+                textcoords="data",
+                ha="center",
+                va="bottom" if y_offset > 0 else "top",
+                bbox=None,  # 移除边框
+                fontproperties=(
+                    font if "font" in globals() else None
+                ),
+                arrowprops=dict(
+                    arrowstyle="-",  # 简化箭头样式
+                    connectionstyle="arc3,rad=0",
+                    color="gray",
+                    alpha=0.6,  # 降低箭头透明度
+                ),
+                zorder=100,
+            )
 
         # 设置标题
         fig.suptitle(
             title,
-            y=0.95,  # 调整标题位置
             fontsize=12,
             fontweight="bold",
-            fontproperties=font if 'font' in globals() else None  # 使用中文字体（如果可用）
+            fontproperties=(
+                font if "font" in globals() else None
+            ),
         )
 
         # 调整布局
         fig.subplots_adjust(
-            top=0.90,      # 为标题留出空间
-            bottom=0.1,    # 底部边距
-            right=0.95,    # 右边距
-            left=0.1,      # 左边距
-            hspace=0.1     # 子图间距
+            top=0.90,  # 为标题留出空间
+            bottom=0.1,  # 底部边距
+            right=0.95,  # 右边距
+            left=0.1,  # 左边距
+            hspace=0.1,  # 子图间距
         )
 
         # 保存图表
