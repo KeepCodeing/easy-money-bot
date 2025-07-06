@@ -48,7 +48,7 @@ CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 4))  # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv("CATEGORY_DAYS", 90))  # 360天
 BOLLINGER_PERIOD = int(os.getenv("BOLLINGER_PERIOD", 20))  # 布林线周期
 BOLLINGER_STD = int(os.getenv("BOLLINGER_STD", 2))  # 布林线标准差
-BOLL_TOLERANCE = float(os.getenv("BOLL_TOLERANCE", 0.002))  # 布林线触碰容差（0.3%）
+BOLL_TOLERANCE = float(os.getenv("BOLL_TOLERANCE", 0.05))  # 布林线触碰容差（0.3%）
 VEGAS_EMA1 = int(os.getenv("VEGAS_EMA1", 12))  # 维加斯通道EMA1周期
 VEGAS_EMA2 = int(os.getenv("VEGAS_EMA2", 144))  # 维加斯通道EMA2周期
 VEGAS_EMA3 = int(os.getenv("VEGAS_EMA3", 169))  # 维加斯通道EMA3周期

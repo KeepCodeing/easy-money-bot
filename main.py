@@ -483,58 +483,163 @@ def setup_logging():
 
 def main():
     """主函数"""
-    # 设置日志
-    setup_logging()
+    parser = argparse.ArgumentParser(description='CS2市场数据分析工具')
+    parser.add_argument('--crawl', action='store_true', help='爬取数据')
+    parser.add_argument('--all', action='store_true', help='批量生成所有商品的图表')
+    parser.add_argument('--indicator', type=str, default='all', choices=['all', 'boll', 'vegas'], help='指标类型')
+    parser.add_argument('--item', type=str, help='指定商品ID')
+    parser.add_argument('--name', type=str, help='指定商品名称')
     
-    # 解析命令行参数
-    parser = argparse.ArgumentParser(description="CS2行情数据爬虫和分析工具")
-    parser.add_argument("--crawl", action="store_true", help="爬取数据")
-    parser.add_argument("--test", action="store_true", help="测试图表")
-    parser.add_argument("--date-range", action="store_true", help="按日期范围显示图表")
-    parser.add_argument("--all", action="store_true", help="生成所有收藏商品的图表")
-    parser.add_argument("--item-id", type=str, default="525873303", help="指定商品ID")
-    parser.add_argument("--data-file", type=str, help="指定数据文件名（可选，默认使用最新的数据文件）")
-    parser.add_argument("--indicator", type=str, choices=["all", "boll", "vegas"], 
-                       default="all", help="指定要显示的技术指标")
-    parser.add_argument("--start-date", type=str, help="开始日期 (YYYY-MM-DD)")
-    parser.add_argument("--end-date", type=str, help="结束日期 (YYYY-MM-DD)")
-    parser.add_argument("--signal", type=str, choices=["buy", "sell"],
-                       help="指定要生成的信号类型（可选，默认随机）")
     args = parser.parse_args()
     
-    if args.crawl:
-        # 爬取数据
-        crawl_and_save(args.data_file, args.indicator)
-    elif args.test:
-        # 测试图表
-        test_chart_from_local(
-            item_id=args.item_id,
-            filename=args.data_file,
-            indicator=args.indicator,
-            signal_type=args.signal
-        )
-    elif args.date_range:
-        # 按日期范围显示图表
-        test_chart_by_date_range(
-            item_id=args.item_id,
-            filename=args.data_file,
-            start_date=args.start_date,
-            end_date=args.end_date,
-            indicator=args.indicator,
-            signal_type=args.signal
-        )
-    elif args.all:
-        # 生成所有收藏商品的图表
-        generate_all_charts(
-            filename=args.data_file,
-            start_date=args.start_date,
-            end_date=args.end_date,
-            indicator=args.indicator,
-            signal_type=args.signal
-        )
-    else:
-        parser.print_help()
+    try:
+        if args.crawl:
+            # 爬取并保存数据，同时生成图表
+            crawl_and_save(indicator=args.indicator)
+            
+        elif args.all:
+            # 批量生成所有商品的图表
+            logger.info("开始批量生成图表")
+            
+            # 获取最新的数据文件夹
+            latest_folder = get_latest_data_folder()
+            if not latest_folder:
+                logger.error("未找到数据文件夹")
+                return
+                
+            # 加载商品数据
+            market_data = load_item_data(latest_folder)
+            if not market_data:
+                logger.error("未找到任何商品数据")
+                return
+                
+            # 遍历生成图表
+            for item_id, item_data in market_data.items():
+                try:
+                    name = item_data.get('name', f'Item-{item_id}')
+                    kline_data = item_data.get('data', [])
+                    
+                    if not kline_data:
+                        logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                        continue
+                    
+                    logger.info(f"正在生成商品 [{name}] 的K线图")
+                    
+                    # 清理数据
+                    cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                    
+                    # 确定要显示的指标类型
+                    indicator_type = IndicatorType.ALL
+                    if args.indicator.lower() == "boll":
+                        indicator_type = IndicatorType.BOLL
+                    elif args.indicator.lower() == "vegas":
+                        indicator_type = IndicatorType.VEGAS
+                    
+                    # 创建图表
+                    chart = KLineChart()
+                    chart.plot_candlestick(
+                        item_id=item_id,
+                        raw_data=cleaned_data,
+                        title=name,
+                        indicator_type=indicator_type
+                    )
+                    
+                    logger.info(f"商品 [{name}] 的K线图生成完成")
+                    
+                except Exception as e:
+                    logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
+                    continue
+                    
+            logger.info("所有图表生成完成")
+            
+        elif args.item:
+            # 生成指定商品的图表
+            latest_folder = get_latest_data_folder()
+            if not latest_folder:
+                logger.error("未找到数据文件夹")
+                return
+                
+            market_data = load_item_data(latest_folder)
+            if not market_data:
+                logger.error("未找到任何商品数据")
+                return
+                
+            if args.item not in market_data:
+                logger.error(f"未找到商品ID: {args.item}")
+                return
+                
+            item_data = market_data[args.item]
+            name = item_data.get('name', f'Item-{args.item}')
+            kline_data = item_data.get('data', [])
+            
+            if not kline_data:
+                logger.error(f"商品 [{name}] 没有K线数据")
+                return
+                
+            # 清理数据
+            cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+            
+            # 确定要显示的指标类型
+            indicator_type = IndicatorType.ALL
+            if args.indicator.lower() == "boll":
+                indicator_type = IndicatorType.BOLL
+            elif args.indicator.lower() == "vegas":
+                indicator_type = IndicatorType.VEGAS
+            
+            # 创建图表
+            chart = KLineChart()
+            chart.plot_candlestick(
+                item_id=args.item,
+                raw_data=cleaned_data,
+                title=name,
+                indicator_type=indicator_type
+            )
+            
+            logger.info(f"商品 [{name}] 的K线图生成完成")
+            
+        else:
+            parser.print_help()
+            
+    except Exception as e:
+        logger.error(f"批量生成图表时出错: {e}")
+        return
 
 
 if __name__ == "__main__":
     main()
+
+
+def load_market_data(filename: Optional[str] = None) -> dict:
+    """
+    加载市场数据，优先从时间戳文件夹中加载所有JSON文件
+    
+    Args:
+        filename: 可选的文件名，如果提供则从指定文件加载（向后兼容）
+        
+    Returns:
+        加载的市场数据
+    """
+    try:
+        if filename:
+            # 如果提供了具体文件名，使用旧的加载方式（向后兼容）
+            load_path = os.path.join(settings.DATA_DIR, filename)
+            with open(load_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info(f"已从指定文件 {load_path} 加载市场数据")
+            return data
+        
+        # 获取最新的数据文件夹
+        latest_folder = get_latest_data_folder()
+        if not latest_folder:
+            raise FileNotFoundError("未找到任何数据文件夹")
+        
+        # 从文件夹中加载所有JSON文件
+        data = load_item_data(latest_folder)
+        if not data:
+            raise FileNotFoundError(f"在文件夹 {latest_folder} 中未找到任何有效的商品数据")
+        
+        return data
+        
+    except Exception as e:
+        logger.error(f"加载市场数据时出错: {e}")
+        return {}
