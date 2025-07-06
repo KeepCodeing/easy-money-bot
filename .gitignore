@@ -43,6 +43,10 @@ ENV/
 .env.local
 .env.*.local
 
+logs/*
+
+__pycache__
+
 # 操作系统
 .DS_Store
 Thumbs.db

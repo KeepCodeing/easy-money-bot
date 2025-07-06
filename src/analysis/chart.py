@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from config import settings
 from .indicators import TechnicalIndicators, IndicatorType
+from src.utils.file_utils import clean_filename
 
 # 配置日志
 logging.basicConfig(
@@ -297,6 +298,9 @@ class KLineChart:
             else:
                 title = f"{title} ({self.days_to_show}天)"
 
+        # 清理文件名中的特殊字符
+        safe_title = clean_filename(title)
+
         # 准备技术指标数据（确保与显示数据长度匹配）
         addplots = []
         if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
@@ -498,7 +502,7 @@ class KLineChart:
         )
 
         # 保存图表
-        save_path = os.path.join(self.charts_dir, f"{item_id}_candlestick.png")
+        save_path = os.path.join(self.charts_dir, f"{safe_title}.png")
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
         logger.info(f"K线图已保存至: {save_path}")
 
