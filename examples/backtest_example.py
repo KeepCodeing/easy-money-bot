@@ -157,7 +157,7 @@ def run_strategy_backtest(strategy_class, raw_data: List, item_name: str, show_d
         strategy = strategy_class(
             lookback_days=360,  # 回测周期
             cooldown_days=8,    # 冷却期
-            tolerance=0.005,    # 触碰容差
+            tolerance=settings.BOLL_TOLERANCE,    # 触碰容差
             show_days=show_days # 图表显示天数
         )
         
@@ -282,6 +282,8 @@ def main():
                 item_name,
                 show_days=60  # 显示60天的数据
             )
+
+            exit(0)
             
             # 运行布林线中轨触碰策略回测
             print("\n--- 运行布林线中轨触碰策略回测 ---")

@@ -115,8 +115,8 @@ class KLineChart:
         upper_touches = []
         lower_touches = []
 
-        # 定义容差范围（1%）
-        tolerance = 0.01
+        # 使用配置中的布林线容差
+        tolerance = settings.BOLL_TOLERANCE
 
         logger.info(
             f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}"

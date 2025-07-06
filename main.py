@@ -212,7 +212,7 @@ def test_chart_from_local(item_id: str = "525873303",
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart()
+        chart = KLineChart(days_to_show=300)
         chart.plot_candlestick(
             item_id=item_id,
             raw_data=cleaned_data,
