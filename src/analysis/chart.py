@@ -16,6 +16,15 @@ from matplotlib.font_manager import FontProperties
 from config import settings
 from .indicators import TechnicalIndicators, IndicatorType
 
+# 配置日志
+logging.basicConfig(
+    level=getattr(logging, settings.LOG_LEVEL),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(f"{settings.LOG_DIR}/analysis.log", encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # 设置中文字体

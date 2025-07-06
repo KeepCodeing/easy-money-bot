@@ -19,7 +19,7 @@ logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(f"{settings.LOG_DIR}/storage.log"),
+        logging.FileHandler(f"{settings.LOG_DIR}/storage.log", encoding='utf-8'),
         logging.StreamHandler()
     ]
 )

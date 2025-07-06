@@ -344,82 +344,83 @@ def generate_all_charts(
         logger.error(f"批量生成图表时出错: {e}")
 
 
-def crawl_and_save(filename: Optional[str] = None):
-    """爬取数据并保存到数据库"""
+def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
+    """
+    爬取数据并保存，同时生成图表
+    
+    Args:
+        filename: 可选的文件名，如果不提供则自动生成
+        indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
+    """
     logger.info("开始执行爬虫任务")
     start_time = time.time()
 
-    # 初始化爬虫和数据库
-    spider = CS2MarketSpider()
+    try:
+        # 初始化爬虫
+        spider = CS2MarketSpider()
 
-    # 爬取数据
-    result = spider.crawl_all_items()
-    
-    # 保存数据到JSON
-    save_market_data(result, filename)
-    
-    exit(0)
-
-    # 清理数据
-    cleaned_data = MarketDataCleaner.clean_kline_data(result["525873303"])
-    
-    # 创建并显示图表
-    chart = KLineChart(days_to_show=30)
-    fig = chart.plot_candlestick("525873303", cleaned_data)
-    
-    if fig:
-        fig.show()
-        fig.waitforbuttonpress()
-    
-    exit(0)
-
-    db = DatabaseManager()
-
-    # 获取收藏商品列表
-    item_ids = spider.get_favorite_items()
-    logger.info(f"获取到 {len(item_ids)} 个商品ID")
-
-    # 爬取每个商品的数据并保存
-    total_items = len(item_ids)
-    success_count = 0
-    total_records = 0
-
-    for i, item_id in enumerate(item_ids):
-        logger.info(f"正在处理商品 {i+1}/{total_items}: {item_id}")
-
-        try:
-            # 爬取商品历史数据
-            item_data = spider.get_item_history(item_id)
-
-            exit(0)
-
-            if item_data:
-                # 保存商品信息
-                db.save_item(item_id, name=f"Item-{item_id}")
-
-                # 保存价格历史
-                saved_count = db.save_price_history(item_id, item_data)
-                total_records += saved_count
-
-                # 导出为JSON备份
-                db.export_to_json(item_id)
-
-                success_count += 1
-                logger.info(f"商品 {item_id} 处理完成，保存了 {saved_count} 条价格记录")
-            else:
-                logger.warning(f"商品 {item_id} 没有获取到数据")
-
-        except Exception as e:
-            logger.error(f"处理商品 {item_id} 时出错: {e}")
-
-    # 统计结果
-    elapsed_time = time.time() - start_time
-    logger.info(
-        f"爬虫任务完成，处理成功 {success_count}/{total_items} 个商品，共保存 {total_records} 条价格记录"
-    )
-    logger.info(f"总耗时: {elapsed_time:.2f} 秒")
-
-    return success_count, total_records
+        # 爬取数据（此时数据已经保存在时间戳文件夹中）
+        result = spider.crawl_all_items()
+        
+        if not result:
+            logger.error("爬取数据失败，未获取到任何数据")
+            return
+        
+        # 获取最新的数据文件夹
+        latest_folder = get_latest_data_folder()
+        if not latest_folder:
+            logger.error("未找到数据文件夹")
+            return
+            
+        logger.info(f"开始为所有商品生成图表")
+        
+        # 遍历所有商品生成图表
+        for item_id, item_data in result.items():
+            try:
+                name = item_data.get('name', f'Item-{item_id}')
+                kline_data = item_data.get('data', [])
+                
+                if not kline_data:
+                    logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                    continue
+                
+                logger.info(f"正在生成商品 [{name}] 的K线图")
+                
+                # 清理数据
+                cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                
+                # 确定要显示的指标类型
+                indicator_type = IndicatorType.ALL
+                if indicator.lower() == "boll":
+                    indicator_type = IndicatorType.BOLL
+                elif indicator.lower() == "vegas":
+                    indicator_type = IndicatorType.VEGAS
+                
+                # 创建图表
+                chart = KLineChart()
+                chart.plot_candlestick(
+                    item_id=item_id,
+                    raw_data=cleaned_data,
+                    title=name,
+                    indicator_type=indicator_type
+                )
+                
+                logger.info(f"商品 [{name}] 的K线图生成完成")
+                
+            except Exception as e:
+                logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
+                continue
+        
+        # 统计结果
+        elapsed_time = time.time() - start_time
+        logger.info(f"任务完成，共处理 {len(result)} 个商品")
+        logger.info(f"数据保存在: {latest_folder}")
+        logger.info(f"总耗时: {elapsed_time:.2f} 秒")
+        
+    except Exception as e:
+        logger.error(f"执行任务时出错: {e}")
+        elapsed_time = time.time() - start_time
+        logger.info(f"任务异常终止，耗时: {elapsed_time:.2f} 秒")
 
 
 def setup_logging():
@@ -460,7 +461,7 @@ def main():
     
     if args.crawl:
         # 爬取数据
-        crawl_and_save(args.data_file)
+        crawl_and_save(args.data_file, args.indicator)
     elif args.test:
         # 测试图表
         test_chart_from_local(
