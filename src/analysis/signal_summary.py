@@ -115,7 +115,7 @@ class SignalSummary:
                     f"{signal['boll_middle']:.2f} | "
                     f"{signal['boll_upper']:.2f} | "
                     f"{signal['boll_lower']:.2f} | "
-                    f"{signal['volume']:.2f} | "
+                    f"{int(signal['volume'])} | "
                     f"{signal['timestamp'].strftime('%Y-%m-%d %H:%M:%S')} |\n"
                 )
             

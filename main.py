@@ -23,6 +23,8 @@ from src.analysis.chart import KLineChart, IndicatorType
 from src.analysis.data_cleaner import MarketDataCleaner
 from src.utils.file_utils import clean_filename
 from src.analysis.signal_summary import SignalSummary
+from src.notification.ntfy import send as send_notify
+from config import settings
 
 # 配置日志
 logging.basicConfig(
@@ -231,6 +233,42 @@ def process_kline_data(kline_data: List[List], signal_type: str = None) -> List[
     except Exception as e:
         logger.error(f"处理K线数据时出错: {e}")
         return kline_data
+
+
+def load_market_data(filename: Optional[str] = None) -> dict:
+    """
+    加载市场数据，优先从时间戳文件夹中加载所有JSON文件
+    
+    Args:
+        filename: 可选的文件名，如果提供则从指定文件加载（向后兼容）
+        
+    Returns:
+        加载的市场数据
+    """
+    try:
+        if filename:
+            # 如果提供了具体文件名，使用旧的加载方式（向后兼容）
+            load_path = os.path.join(settings.DATA_DIR, filename)
+            with open(load_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            logger.info(f"已从指定文件 {load_path} 加载市场数据")
+            return data
+        
+        # 获取最新的数据文件夹
+        latest_folder = get_latest_data_folder()
+        if not latest_folder:
+            raise FileNotFoundError("未找到任何数据文件夹")
+        
+        # 从文件夹中加载所有JSON文件
+        data = load_item_data(latest_folder)
+        if not data:
+            raise FileNotFoundError(f"在文件夹 {latest_folder} 中未找到任何有效的商品数据")
+        
+        return data
+        
+    except Exception as e:
+        logger.error(f"加载市场数据时出错: {e}")
+        return {}
 
 
 def test_chart_from_local(
@@ -508,10 +546,15 @@ def main():
     parser.add_argument('--indicator', type=str, default='all', choices=['all', 'boll', 'vegas'], help='指标类型')
     parser.add_argument('--item', type=str, help='指定商品ID')
     parser.add_argument('--name', type=str, help='指定商品名称')
+    parser.add_argument('--notify', action='store_true', help='消息推送')
     
     args = parser.parse_args()
     
     try:
+        if args.notify:
+            send_notify(settings.NATY_TOPIC_BUY_SELL_NOTIFY, "Hello World", settings.NATY_SERVER_URL)
+            return
+        
         if args.crawl:
             # 爬取并保存数据，同时生成图表
             crawl_and_save(indicator=args.indicator)
@@ -633,39 +676,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-def load_market_data(filename: Optional[str] = None) -> dict:
-    """
-    加载市场数据，优先从时间戳文件夹中加载所有JSON文件
-    
-    Args:
-        filename: 可选的文件名，如果提供则从指定文件加载（向后兼容）
-        
-    Returns:
-        加载的市场数据
-    """
-    try:
-        if filename:
-            # 如果提供了具体文件名，使用旧的加载方式（向后兼容）
-            load_path = os.path.join(settings.DATA_DIR, filename)
-            with open(load_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            logger.info(f"已从指定文件 {load_path} 加载市场数据")
-            return data
-        
-        # 获取最新的数据文件夹
-        latest_folder = get_latest_data_folder()
-        if not latest_folder:
-            raise FileNotFoundError("未找到任何数据文件夹")
-        
-        # 从文件夹中加载所有JSON文件
-        data = load_item_data(latest_folder)
-        if not data:
-            raise FileNotFoundError(f"在文件夹 {latest_folder} 中未找到任何有效的商品数据")
-        
-        return data
-        
-    except Exception as e:
-        logger.error(f"加载市场数据时出错: {e}")
-        return {}

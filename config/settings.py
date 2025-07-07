@@ -92,5 +92,7 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
-# 微信机器人配置
-WECHAT_LOGIN_TIMEOUT = 300  # 登录超时时间（秒）
+# 消息推送配置
+NATY_TOPIC_BUY_SELL_NOTIFY = os.getenv("NATY_TOPIC_BUY_SELL_NOTIFY", "catch_money")
+NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh")
+AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")
