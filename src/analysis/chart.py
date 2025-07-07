@@ -64,11 +64,12 @@ logger.info(f"当前使用的字体家族: {plt.rcParams['font.family']}")
 class KLineChart:
     """K线图绘制类"""
 
-    def __init__(self, days_to_show: int = 30):
+    def __init__(self, signal_summary: SignalSummary = None, days_to_show: int = 30):
         """
         初始化K线图绘制器
 
         Args:
+            signal_summary: 信号汇总器
             days_to_show: 显示最近多少天的数据
         """
         self.days_to_show = days_to_show
@@ -77,7 +78,10 @@ class KLineChart:
             os.makedirs(self.charts_dir)
 
         # 初始化信号汇总器
-        self.signal_summary = SignalSummary()
+        if signal_summary is None:
+            self.signal_summary = SignalSummary()
+        else:
+            self.signal_summary = signal_summary
 
         # 设置图表样式
         self.chart_style = mpf.make_mpf_style(
@@ -394,7 +398,6 @@ class KLineChart:
         indicator_type: IndicatorType = IndicatorType.ALL,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
-        save_signals: bool = True
     ) -> Any:
         """
         绘制K线图
@@ -406,7 +409,6 @@ class KLineChart:
             indicator_type: 要显示的指标类型
             start_date: 开始日期，格式：YYYY-MM-DD
             end_date: 结束日期，格式：YYYY-MM-DD
-            save_signals: 是否保存信号到markdown文件
 
         Returns:
             matplotlib figure 对象
@@ -607,14 +609,6 @@ class KLineChart:
         save_path = os.path.join(self.charts_dir, f"{safe_title}.png")
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
         logger.info(f"K线图已保存至: {save_path}")
-
-        # 如果需要保存信号，并且有信号被添加
-        if save_signals and len(self.signal_summary.signals) > 0:
-            signal_file = self.signal_summary.save_to_markdown()
-            if signal_file:
-                logger.info(f"信号汇总已保存到: {signal_file}")
-            # 清空已保存的信号
-            self.signal_summary.clear_signals()
 
         return fig
 

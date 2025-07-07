@@ -22,6 +22,7 @@ from config import settings
 from src.analysis.chart import KLineChart, IndicatorType
 from src.analysis.data_cleaner import MarketDataCleaner
 from src.utils.file_utils import clean_filename
+from src.analysis.signal_summary import SignalSummary
 
 # 配置日志
 logging.basicConfig(
@@ -34,6 +35,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger("main")
 
+def save_signal_summary(signal_summary: SignalSummary):
+    """保存信号汇总"""
+    signal_file = signal_summary.save_to_markdown()
+    if signal_file:
+        logger.info(f"信号汇总已保存到: {signal_file}")
+    # 清空已保存的信号
+    signal_summary.clear_signals()
 
 def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> str:
     """
@@ -229,7 +237,8 @@ def test_chart_from_local(
     item_id: str = "525873303", 
     filename: Optional[str] = None,
     indicator: str = "all",
-    signal_type: Optional[str] = None
+    signal_type: Optional[str] = None,
+    signal_summary: SignalSummary = None
 ):
     """从本地JSON文件读取数据并绘制K线图"""
     try:
@@ -263,7 +272,7 @@ def test_chart_from_local(
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart(days_to_show=30)
+        chart = KLineChart(signal_summary, days_to_show=30)
         chart.plot_candlestick(
             item_id=item_id,
             raw_data=processed_data,
@@ -281,7 +290,8 @@ def test_chart_by_date_range(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
     indicator: str = "all",
-    signal_type: Optional[str] = None
+    signal_type: Optional[str] = None,
+    signal_summary: SignalSummary = None
 ):
     """
     显示指定时间段的K线图
@@ -325,7 +335,7 @@ def test_chart_by_date_range(
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart()
+        chart = KLineChart(signal_summary, days_to_show=30)
         chart.plot_candlestick(
             item_id=item_id,
             raw_data=processed_data,
@@ -350,6 +360,7 @@ def generate_all_charts(
     try:
         # 加载数据
         data = load_market_data(filename)
+        signal_summary = SignalSummary()
         
         # 遍历所有商品
         for item_id, item_data in data.items():
@@ -369,16 +380,20 @@ def generate_all_charts(
                     start_date=start_date,
                     end_date=end_date,
                     indicator=indicator,
-                    signal_type=signal_type
+                    signal_type=signal_type,
+                    signal_summary=signal_summary
                 )
             else:
                 test_chart_from_local(
                     item_id=item_id,
                     filename=filename,
                     indicator=indicator,
-                    signal_type=signal_type
+                    signal_type=signal_type,
+                    signal_summary=signal_summary
                 )
             
+        save_signal_summary(signal_summary)
+        
     except Exception as e:
         logger.error(f"批量生成图表时出错: {e}")
 
@@ -415,6 +430,8 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
             
         logger.info(f"开始为所有商品生成图表")
         
+        signal_summary = SignalSummary()
+        
         # 遍历所有商品生成图表
         for item_id, item_data in result.items():
             try:
@@ -438,7 +455,7 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
                     indicator_type = IndicatorType.VEGAS
                 
                 # 创建图表
-                chart = KLineChart()
+                chart = KLineChart(signal_summary, days_to_show=30)
                 chart.plot_candlestick(
                     item_id=item_id,
                     raw_data=cleaned_data,
@@ -451,6 +468,8 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
             except Exception as e:
                 logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
                 continue
+        
+        save_signal_summary(signal_summary)
         
         # 统计结果
         elapsed_time = time.time() - start_time
@@ -512,6 +531,8 @@ def main():
             if not market_data:
                 logger.error("未找到任何商品数据")
                 return
+            
+            signal_summary = SignalSummary()
                 
             # 遍历生成图表
             for item_id, item_data in market_data.items():
@@ -536,7 +557,7 @@ def main():
                         indicator_type = IndicatorType.VEGAS
                     
                     # 创建图表
-                    chart = KLineChart()
+                    chart = KLineChart(signal_summary, days_to_show=30)
                     chart.plot_candlestick(
                         item_id=item_id,
                         raw_data=cleaned_data,
@@ -550,6 +571,8 @@ def main():
                     logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
                     continue
                     
+            save_signal_summary(signal_summary)
+            
             logger.info("所有图表生成完成")
             
         elif args.item:
@@ -587,13 +610,16 @@ def main():
                 indicator_type = IndicatorType.VEGAS
             
             # 创建图表
-            chart = KLineChart()
+            signal_summary = SignalSummary()
+            chart = KLineChart(signal_summary, days_to_show=30)
             chart.plot_candlestick(
                 item_id=args.item,
                 raw_data=cleaned_data,
                 title=name,
                 indicator_type=indicator_type
             )
+            
+            save_signal_summary(signal_summary)
             
             logger.info(f"商品 [{name}] 的K线图生成完成")
             
