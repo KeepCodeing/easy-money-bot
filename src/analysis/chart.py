@@ -9,17 +9,11 @@ import os
 import sys
 import logging
 from typing import List, Dict, Optional, Any
-from pathlib import Path
 
 import pandas as pd
 import mplfinance as mpf
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
-
-# 添加项目根目录到Python路径，确保能正确导入config模块
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-sys.path.append(str(ROOT_DIR))
-
 from config import settings
 from .indicators import TechnicalIndicators, IndicatorType
 from src.utils.file_utils import clean_filename
