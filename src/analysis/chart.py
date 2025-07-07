@@ -6,6 +6,7 @@
 """
 
 import os
+import sys
 import logging
 from typing import List, Dict, Optional, Any
 
@@ -29,26 +30,36 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 设置中文字体
-try:
-    # 尝试使用微软雅黑（Windows）
-    font = FontProperties(fname=r"C:\Windows\Fonts\msyh.ttc")
-    plt.rcParams["font.family"] = ["Microsoft YaHei"]
-    logger.info("成功加载微软雅黑字体")
-except Exception as e:
-    try:
-        # 尝试使用其他中文字体（Linux/macOS）
-        plt.rcParams["font.family"] = [
-            "Heiti TC",
-            "Heiti SC",
-            "STHeiti",
-            "SimHei",
-            "sans-serif",
-        ]
-        logger.info("成功加载系统中文字体")
-    except Exception as e:
-        logger.warning(f"加载中文字体失败: {e}，将使用系统默认字体")
+# 设置中文字体 - 改进的跨平台实现
+font = None
+platform = sys.platform
 
+try:
+    if platform == 'win32':
+        # Windows系统
+        font_path = r"C:\Windows\Fonts\msyh.ttc"
+        if os.path.exists(font_path):
+            font = FontProperties(fname=font_path)
+            plt.rcParams["font.family"] = ["Microsoft YaHei"]
+            logger.info("成功加载微软雅黑字体")
+        else:
+            logger.warning("未找到微软雅黑字体，将使用系统默认字体")
+    elif platform == 'darwin':
+        # macOS系统
+        plt.rcParams["font.family"] = ["Heiti TC", "PingFang SC"]
+        logger.info("使用macOS中文字体")
+    else:
+        # Linux系统
+        # 尝试常见的Linux中文字体
+        linux_fonts = ["WenQuanYi Micro Hei", "Noto Sans CJK SC", "Noto Sans CJK TC", "Droid Sans Fallback"]
+        plt.rcParams["font.family"] = linux_fonts + ["sans-serif"]
+        logger.info(f"使用Linux中文字体: {', '.join(linux_fonts)}")
+except Exception as e:
+    logger.warning(f"设置中文字体失败: {e}，将使用系统默认字体")
+    plt.rcParams["font.family"] = ["sans-serif"]
+
+# 检查是否成功设置了字体
+logger.info(f"当前使用的字体家族: {plt.rcParams['font.family']}")
 
 class KLineChart:
     """K线图绘制类"""
@@ -565,7 +576,7 @@ class KLineChart:
                 ha="center",
                 va="bottom" if y_offset > 0 else "top",
                 bbox=None,  # 移除边框
-                fontproperties=(font if "font" in globals() else None),
+                fontproperties=font,  # 使用全局字体变量，可能为None
                 arrowprops=dict(
                     arrowstyle="-",  # 简化箭头样式
                     connectionstyle="arc3,rad=0",
@@ -580,7 +591,7 @@ class KLineChart:
             title,
             fontsize=12,
             fontweight="bold",
-            fontproperties=(font if "font" in globals() else None),
+            fontproperties=font,  # 使用全局字体变量，可能为None
         )
 
         # 调整布局

@@ -35,11 +35,11 @@ PLATFORM = os.getenv("PLATFORM", "YOUPIN")  # 平台，主要使用悠悠有品
 DATA_TYPE = os.getenv("DATA_TYPE", 2)  # 数据类型，对应K线tab
 
 FAV_LIST_ID = [
-    "1414805408485134336",  # 贴纸1
-    "1414804544713326592",  # 贴纸2
-    "1414804160054743040",  # 探员
-    "1414787065409622016",  # 我的关注
-    # "1415633294154125312",  # test
+    # "1414805408485134336",  # 贴纸1
+    # "1414804544713326592",  # 贴纸2
+    # "1414804160054743040",  # 探员
+    # "1414787065409622016",  # 我的关注
+    "1415633294154125312",  # test
     # "1399916930512928768",  # test
 ]
 
@@ -48,7 +48,7 @@ CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 4))  # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv("CATEGORY_DAYS", 90))  # 360天
 BOLLINGER_PERIOD = int(os.getenv("BOLLINGER_PERIOD", 20))  # 布林线周期
 BOLLINGER_STD = int(os.getenv("BOLLINGER_STD", 2))  # 布林线标准差
-BOLL_TOLERANCE = float(os.getenv("BOLL_TOLERANCE", 0.05))  # 布林线触碰容差（0.3%）
+BOLL_TOLERANCE = float(os.getenv("BOLL_TOLERANCE", 0.03))  # 布林线触碰容差（3%）
 VEGAS_EMA1 = int(os.getenv("VEGAS_EMA1", 12))  # 维加斯通道EMA1周期
 VEGAS_EMA2 = int(os.getenv("VEGAS_EMA2", 144))  # 维加斯通道EMA2周期
 VEGAS_EMA3 = int(os.getenv("VEGAS_EMA3", 169))  # 维加斯通道EMA3周期
