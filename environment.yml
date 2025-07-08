@@ -21,3 +21,4 @@ dependencies:
     - pyecharts==2.0.3
     - pillow==10.0.0
     - python-dotenv==1.0.0 
+    - pillow  # 用于图片处理

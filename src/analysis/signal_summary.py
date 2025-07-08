@@ -152,20 +152,15 @@ class SignalSummary:
             return False
             
         try:
-            # 构建消息标题 - 使用ASCII安全的字符
-            title = "CS2 Market Trading Signals"  # 使用纯ASCII字符
+            # 构建消息内容（使用简单的文本列表格式）
+            title = "CS2 Market Trading Signals"
             
-            # 构建消息内容（使用Markdown格式）
             message_parts = []
-            message_parts.append(f"## {title}")
-            message_parts.append(f"Generated Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-            message_parts.append("\n### Signal Summary")
+            message_parts.append(f"📊 {title}")
+            message_parts.append(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            message_parts.append("")
             
-            # 添加信号表格（使用Markdown格式）
-            message_parts.append("\n| Item ID | Item Name | Signal | Price | Middle | Upper | Lower | Volume |")
-            message_parts.append("| ------ | -------- | -------- | -------- | -------- | -------- | -------- | ------ |")
-            
-            # 添加买入信号
+            # 分类信号
             buy_signals = []
             sell_signals = []
             
@@ -174,37 +169,35 @@ class SignalSummary:
                 cleaned_name = self._clean_item_name(signal['name'])
                 signal_type = signal['signal_type']
                 
-                # 构建表格行 - 使用ASCII安全的字符
-                row = (
-                    f"| {item_id} "
-                    f"| {cleaned_name} "
-                    f"| **{signal_type}** "
-                    f"| {signal['price']:.2f} "
-                    f"| {signal['boll_middle']:.2f} "
-                    f"| {signal['boll_upper']:.2f} "
-                    f"| {signal['boll_lower']:.2f} "
-                    f"| {int(signal['volume'])} |"
+                # 构建信号信息
+                signal_info = (
+                    f"📌 {cleaned_name}\n"
+                    f"   ID: {item_id}\n"
+                    f"   Price: {signal['price']:.2f}\n"
+                    f"   Volume: {int(signal['volume'])}\n"
+                    f"   BOLL: {signal['boll_middle']:.2f} | {signal['boll_upper']:.2f} | {signal['boll_lower']:.2f}\n"
                 )
                 
-                # 根据信号类型分类
                 if signal_type == 'buy':
-                    buy_signals.append(row)
+                    buy_signals.append(signal_info)
                 else:
-                    sell_signals.append(row)
+                    sell_signals.append(signal_info)
             
             # 添加买入信号
             if buy_signals:
-                message_parts.append("\n#### Buy Signals")
+                message_parts.append("📈 Buy Signals:")
                 message_parts.extend(buy_signals)
+                message_parts.append("")
                 
             # 添加卖出信号
             if sell_signals:
-                message_parts.append("\n#### Sell Signals")
+                message_parts.append("📉 Sell Signals:")
                 message_parts.extend(sell_signals)
+                message_parts.append("")
             
             # 组合消息内容
             message = "\n".join(message_parts)
-            
+
             # 设置消息标签和优先级
             tags = "chart,money,cs2"
             priority = 3  # 默认优先级
@@ -227,6 +220,62 @@ class SignalSummary:
             logger.error(f"发送ntfy通知时出错: {e}")
             return False 
             
+    @staticmethod
+    def merge_images_vertically(image_paths: List[str]) -> Optional[str]:
+        """
+        将多张图片垂直合并为一张长图
+        
+        Args:
+            image_paths: 图片路径列表
+            
+        Returns:
+            合并后的图片路径，如果失败则返回None
+        """
+        try:
+            from PIL import Image
+            import os
+            
+            # 确保至少有一张图片
+            if not image_paths:
+                return None
+                
+            # 读取所有图片
+            images = []
+            for path in image_paths:
+                if os.path.exists(path):
+                    img = Image.open(path)
+                    images.append(img)
+                    
+            if not images:
+                return None
+                
+            # 计算合并后图片的尺寸
+            total_height = sum(img.height for img in images)
+            max_width = max(img.width for img in images)
+            
+            # 创建新图片
+            merged_image = Image.new('RGB', (max_width, total_height), 'white')
+            
+            # 从上到下粘贴图片
+            y_offset = 0
+            for img in images:
+                # 如果图片宽度小于最大宽度，居中放置
+                x_offset = (max_width - img.width) // 2
+                merged_image.paste(img, (x_offset, y_offset))
+                y_offset += img.height
+                img.close()
+            
+            # 保存合并后的图片
+            output_path = os.path.join(os.path.dirname(image_paths[0]), 'merged_charts.png')
+            merged_image.save(output_path, 'PNG')
+            merged_image.close()
+            
+            return output_path
+            
+        except Exception as e:
+            logger.error(f"合并图片时出错: {e}")
+            return None
+            
     def send_chart_images(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
         """
         发送K线图作为附件
@@ -242,50 +291,56 @@ class SignalSummary:
             logger.info("没有图表需要发送")
             return False
             
-        success_count = 0
-        total_count = len(chart_paths)
-        
-        for item_id, chart_path in chart_paths.items():
-            try:
-                if not os.path.exists(chart_path):
+        try:
+            # 获取所有有效的图片路径
+            valid_paths = []
+            for item_id, chart_path in chart_paths.items():
+                if os.path.exists(chart_path):
+                    valid_paths.append(chart_path)
+                else:
                     logger.warning(f"图表文件不存在: {chart_path}")
-                    continue
-                    
-                # 读取图片文件
-                with open(chart_path, 'rb') as f:
+            
+            if not valid_paths:
+                logger.warning("没有有效的图表文件")
+                return False
+            
+            # 合并所有图片
+            merged_path = self.merge_images_vertically(valid_paths)
+            if not merged_path:
+                logger.error("合并图片失败")
+                return False
+            
+            try:
+                # 读取合并后的图片
+                with open(merged_path, 'rb') as f:
                     image_data = f.read()
                 
-                # 获取商品名称
-                item_name = "未知商品"
-                if item_id in self.signals:
-                    item_name = self.signals[item_id].get('name', f"商品-{item_id}")
-                
-                # 清理商品名称，避免编码问题
-                clean_name = self._clean_item_name(item_name)
-                
-                # 设置消息标题和标签 - 使用ASCII安全的字符
-                title = f"CS2 Market - Item {item_id} Chart"  # 使用纯ASCII字符
-                tags = "chart,cs2"
-                
-                # 设置附加的HTTP头
-                headers = {
-                    "Title": title,
-                    "Tags": tags,
-                    "Filename": f"{item_id}_chart.png",  # 使用安全的文件名
-                    "Content-Type": "image/png"
+                # 设置图片消息头
+                image_headers = {
+                    "Title": "K Line Image",
+                    "Tags": "CS2",
+                    "Filename": "charts_summary.png",
+                    "Content-Type": "image/png; charset=utf-8"
                 }
                 
-                # 发送ntfy消息
-                response = send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=headers)
+                # 发送合并后的图片
+                send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=image_headers)
+                logger.info("已发送合并后的K线图")
                 
-                logger.info(f"已发送商品 {item_id} 的K线图")
-                success_count += 1
+                # 删除临时的合并图片
+                os.remove(merged_path)
+                
+                return True
                 
             except Exception as e:
-                logger.error(f"发送商品 {item_id} 的K线图时出错: {e}")
-        
-        logger.info(f"K线图发送完成，成功: {success_count}/{total_count}")
-        return success_count > 0 
+                logger.error(f"发送合并图片时出错: {e}")
+                if os.path.exists(merged_path):
+                    os.remove(merged_path)
+                return False
+                
+        except Exception as e:
+            logger.error(f"处理图表时出错: {e}")
+            return False
 
     def send_report(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
         """
@@ -298,15 +353,127 @@ class SignalSummary:
         Returns:
             发送是否成功
         """
-        # 首先发送信号汇总
-        text_success = self.send_ntfy_notification(topic_name)
-        
-        # 然后发送K线图
-        image_success = False
-        if chart_paths:
-            image_success = self.send_chart_images(topic_name, chart_paths)
+        if not self.signals:
+            logger.info("没有需要发送的信号")
+            return False
             
-        # 同时保存为markdown文件
-        md_path = self.save_to_markdown()
-        
-        return text_success or image_success 
+        try:
+            # 构建消息内容（使用简单的文本列表格式）
+            title = "CS2 Market Trading Signals"
+            
+            message_parts = []
+            message_parts.append(f"📊 {title}")
+            message_parts.append(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            message_parts.append("")
+            
+            # 分类信号
+            buy_signals = []
+            sell_signals = []
+            
+            for item_id, signal in self.signals.items():
+                # 清理商品名称
+                cleaned_name = self._clean_item_name(signal['name'])
+                signal_type = signal['signal_type']
+                
+                # 构建信号信息
+                signal_info = (
+                    f"📌 {cleaned_name}\n"
+                    f"   ID: {item_id}\n"
+                    f"   Price: {signal['price']:.2f}\n"
+                    f"   Volume: {int(signal['volume'])}\n"
+                    f"   BOLL: {signal['boll_middle']:.2f} | {signal['boll_upper']:.2f} | {signal['boll_lower']:.2f}\n"
+                )
+                
+                if signal_type == 'buy':
+                    buy_signals.append(signal_info)
+                else:
+                    sell_signals.append(signal_info)
+            
+            # 添加买入信号
+            if buy_signals:
+                message_parts.append("📈 Buy Signals:")
+                message_parts.extend(buy_signals)
+                message_parts.append("")
+                
+            # 添加卖出信号
+            if sell_signals:
+                message_parts.append("📉 Sell Signals:")
+                message_parts.extend(sell_signals)
+                message_parts.append("")
+            
+            # 组合消息内容
+            message = "\n".join(message_parts)
+            
+            # 处理图片
+            merged_path = None
+            if chart_paths:
+                # 获取所有有效的图片路径
+                valid_paths = []
+                for item_id, chart_path in chart_paths.items():
+                    if os.path.exists(chart_path):
+                        valid_paths.append(chart_path)
+                    else:
+                        logger.warning(f"图表文件不存在: {chart_path}")
+                
+                if valid_paths:
+                    # 合并所有图片
+                    merged_path = self.merge_images_vertically(valid_paths)
+                    if not merged_path:
+                        logger.error("合并图片失败")
+            
+            try:
+                if merged_path and os.path.exists(merged_path):
+                    # 如果有合并后的图片，将其作为附件发送
+                    with open(merged_path, 'rb') as f:
+                        image_data = f.read()
+                    
+                    # 设置消息头
+                    headers = {
+                        "Title": title,
+                        "Tags": "CS2,chart",
+                        "Priority": "4",
+                        "Filename": "charts_summary.png",
+                        "Content-Type": "image/png"
+                    }
+                    
+                    # 发送带图片的消息
+                    response = send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=headers)
+                    
+                    # 发送文本内容作为评论
+                    comment_headers = {
+                        "Tags": "CS2",
+                        "Poll": "5",  # 设置5秒延迟，确保在图片之后显示
+                        "Content-Type": "text/plain"
+                    }
+                    send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=comment_headers)
+                    
+                else:
+                    # 如果没有图片，只发送文本消息
+                    headers = {
+                        "Title": title,
+                        "Tags": "CS2",
+                        "Priority": "4",
+                        "Content-Type": "text/plain"
+                    }
+                    response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
+                
+                # 清理临时文件
+                if merged_path and os.path.exists(merged_path):
+                    os.remove(merged_path)
+                
+                # 同时保存为markdown文件
+                self.save_to_markdown()
+                
+                logger.info(f"已发送完整报告到主题: {topic_name}")
+                return True
+                
+            except Exception as e:
+                logger.error(f"发送报告时出错: {e}")
+                # 清理临时文件
+                if merged_path and os.path.exists(merged_path):
+                    os.remove(merged_path)
+                return False
+                
+        except Exception as e:
+            logger.error(f"生成报告时出错: {e}")
+            return False 
