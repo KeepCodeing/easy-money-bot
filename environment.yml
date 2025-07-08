@@ -1,9 +1,4 @@
 name: easy-money-bot
-channels:
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
-  - defaults
 dependencies:
   - python=3.10
   - pip=23.0
