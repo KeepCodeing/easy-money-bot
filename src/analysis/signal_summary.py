@@ -7,10 +7,13 @@
 
 import os
 import logging
+import json
+import base64
 from datetime import datetime
 from typing import Dict, List, Optional
 import pandas as pd
 from config import settings
+from src.notification.ntfy import send as send_ntfy
 
 logger = logging.getLogger(__name__)
 
@@ -133,3 +136,177 @@ class SignalSummary:
     def clear_signals(self):
         """清空信号数据"""
         self.signals.clear() 
+        
+    def send_ntfy_notification(self, topic_name: str = "cs2market") -> bool:
+        """
+        使用ntfy的原生功能发送带有格式的消息和图片
+        
+        Args:
+            topic_name: ntfy的主题名称，默认为'cs2market'
+            
+        Returns:
+            发送是否成功
+        """
+        if not self.signals:
+            logger.info("没有需要发送的信号")
+            return False
+            
+        try:
+            # 构建消息标题 - 使用ASCII安全的字符
+            title = "CS2 Market Trading Signals"  # 使用纯ASCII字符
+            
+            # 构建消息内容（使用Markdown格式）
+            message_parts = []
+            message_parts.append(f"## {title}")
+            message_parts.append(f"Generated Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            message_parts.append("\n### Signal Summary")
+            
+            # 添加信号表格（使用Markdown格式）
+            message_parts.append("\n| Item ID | Item Name | Signal | Price | Middle | Upper | Lower | Volume |")
+            message_parts.append("| ------ | -------- | -------- | -------- | -------- | -------- | -------- | ------ |")
+            
+            # 添加买入信号
+            buy_signals = []
+            sell_signals = []
+            
+            for item_id, signal in self.signals.items():
+                # 清理商品名称
+                cleaned_name = self._clean_item_name(signal['name'])
+                signal_type = signal['signal_type']
+                
+                # 构建表格行 - 使用ASCII安全的字符
+                row = (
+                    f"| {item_id} "
+                    f"| {cleaned_name} "
+                    f"| **{signal_type}** "
+                    f"| {signal['price']:.2f} "
+                    f"| {signal['boll_middle']:.2f} "
+                    f"| {signal['boll_upper']:.2f} "
+                    f"| {signal['boll_lower']:.2f} "
+                    f"| {int(signal['volume'])} |"
+                )
+                
+                # 根据信号类型分类
+                if signal_type == 'buy':
+                    buy_signals.append(row)
+                else:
+                    sell_signals.append(row)
+            
+            # 添加买入信号
+            if buy_signals:
+                message_parts.append("\n#### Buy Signals")
+                message_parts.extend(buy_signals)
+                
+            # 添加卖出信号
+            if sell_signals:
+                message_parts.append("\n#### Sell Signals")
+                message_parts.extend(sell_signals)
+            
+            # 组合消息内容
+            message = "\n".join(message_parts)
+            
+            # 设置消息标签和优先级
+            tags = "chart,money,cs2"
+            priority = 3  # 默认优先级
+            
+            # 设置附加的HTTP头
+            headers = {
+                "Title": title,
+                "Tags": tags,
+                "Priority": str(priority),
+                "Content-Type": "text/markdown; charset=utf-8"  # 明确指定UTF-8编码
+            }
+            
+            # 发送ntfy消息
+            response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
+            
+            logger.info(f"已通过ntfy发送交易信号报告到主题: {topic_name}")
+            return True
+                
+        except Exception as e:
+            logger.error(f"发送ntfy通知时出错: {e}")
+            return False 
+            
+    def send_chart_images(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
+        """
+        发送K线图作为附件
+        
+        Args:
+            topic_name: ntfy的主题名称，默认为'cs2market'
+            chart_paths: 图表路径字典，键为商品ID，值为图表文件路径
+            
+        Returns:
+            发送是否成功
+        """
+        if not chart_paths:
+            logger.info("没有图表需要发送")
+            return False
+            
+        success_count = 0
+        total_count = len(chart_paths)
+        
+        for item_id, chart_path in chart_paths.items():
+            try:
+                if not os.path.exists(chart_path):
+                    logger.warning(f"图表文件不存在: {chart_path}")
+                    continue
+                    
+                # 读取图片文件
+                with open(chart_path, 'rb') as f:
+                    image_data = f.read()
+                
+                # 获取商品名称
+                item_name = "未知商品"
+                if item_id in self.signals:
+                    item_name = self.signals[item_id].get('name', f"商品-{item_id}")
+                
+                # 清理商品名称，避免编码问题
+                clean_name = self._clean_item_name(item_name)
+                
+                # 设置消息标题和标签 - 使用ASCII安全的字符
+                title = f"CS2 Market - Item {item_id} Chart"  # 使用纯ASCII字符
+                tags = "chart,cs2"
+                
+                # 设置附加的HTTP头
+                headers = {
+                    "Title": title,
+                    "Tags": tags,
+                    "Filename": f"{item_id}_chart.png",  # 使用安全的文件名
+                    "Content-Type": "image/png"
+                }
+                
+                # 发送ntfy消息
+                response = send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=headers)
+                
+                logger.info(f"已发送商品 {item_id} 的K线图")
+                success_count += 1
+                
+            except Exception as e:
+                logger.error(f"发送商品 {item_id} 的K线图时出错: {e}")
+        
+        logger.info(f"K线图发送完成，成功: {success_count}/{total_count}")
+        return success_count > 0 
+
+    def send_report(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
+        """
+        发送完整的报告，包括信号汇总和K线图
+        
+        Args:
+            topic_name: ntfy的主题名称，默认为'cs2market'
+            chart_paths: 图表路径字典，键为商品ID，值为图表文件路径
+            
+        Returns:
+            发送是否成功
+        """
+        # 首先发送信号汇总
+        text_success = self.send_ntfy_notification(topic_name)
+        
+        # 然后发送K线图
+        image_success = False
+        if chart_paths:
+            image_success = self.send_chart_images(topic_name, chart_paths)
+            
+        # 同时保存为markdown文件
+        md_path = self.save_to_markdown()
+        
+        return text_success or image_success 

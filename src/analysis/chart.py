@@ -398,7 +398,7 @@ class KLineChart:
         indicator_type: IndicatorType = IndicatorType.ALL,
         start_date: Optional[str] = None,
         end_date: Optional[str] = None,
-    ) -> Any:
+    ) -> str:
         """
         绘制K线图
 
@@ -411,7 +411,7 @@ class KLineChart:
             end_date: 结束日期，格式：YYYY-MM-DD
 
         Returns:
-            matplotlib figure 对象
+            str: 保存的图表文件路径，如果失败则返回None
         """
         if not raw_data:
             logger.warning(f"商品 {item_id} 没有数据，无法绘制K线图")
@@ -448,7 +448,7 @@ class KLineChart:
 
         # 准备技术指标数据（确保与显示数据长度匹配）
         addplots = []
-        latest_touches = []  # 存储所有类型的最新触点
+        latest_touches = []
 
         if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
             # 添加布林带（使用与df相同的时间范围）
@@ -605,12 +605,25 @@ class KLineChart:
             hspace=0.1,  # 子图间距
         )
 
-        # 保存图表
-        save_path = os.path.join(self.charts_dir, f"{safe_title}.png")
+        # 保存图表 - 使用商品名称和ID组合作为文件名
+        # 如果safe_title为空，则使用item_id作为文件名
+        if not safe_title:
+            file_name = f"{item_id}.png"
+        else:
+            # 限制文件名长度，避免文件名过长
+            max_name_length = 50
+            if len(safe_title) > max_name_length:
+                safe_title = safe_title[:max_name_length]
+            file_name = f"{safe_title}_{item_id}.png"
+            
+        save_path = os.path.join(self.charts_dir, file_name)
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
         logger.info(f"K线图已保存至: {save_path}")
+        
+        # 关闭图表，释放内存
+        plt.close(fig)
 
-        return fig
+        return save_path
 
     def _filter_recent_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """

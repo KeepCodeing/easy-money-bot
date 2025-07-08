@@ -37,13 +37,95 @@ logging.basicConfig(
 )
 logger = logging.getLogger("main")
 
-def save_signal_summary(signal_summary: SignalSummary):
-    """保存信号汇总"""
-    signal_file = signal_summary.save_to_markdown()
-    if signal_file:
-        logger.info(f"信号汇总已保存到: {signal_file}")
-    # 清空已保存的信号
-    signal_summary.clear_signals()
+def save_signal_summary(signal_summary):
+    """
+    保存信号汇总
+    
+    Args:
+        signal_summary: SignalSummary对象
+    """
+    # 保存为markdown文件
+    md_path = signal_summary.save_to_markdown()
+    if md_path:
+        logger.info(f"信号汇总已保存到: {md_path}")
+    else:
+        logger.warning("没有信号需要保存")
+        
+def load_signal_summary():
+    """
+    加载最新的信号汇总
+    
+    Returns:
+        SignalSummary对象
+    """
+    try:
+        signal_summary = SignalSummary()
+        signals_dir = os.path.join(settings.DATA_DIR, "signals")
+        
+        if not os.path.exists(signals_dir):
+            logger.warning("信号目录不存在")
+            return signal_summary
+            
+        # 获取最新的markdown文件
+        signal_files = [f for f in os.listdir(signals_dir) if f.startswith("signals_") and f.endswith(".md")]
+        if not signal_files:
+            logger.warning("未找到信号文件")
+            return signal_summary
+            
+        # 按文件名排序（文件名包含时间戳）
+        signal_files.sort(reverse=True)
+        latest_signal_file = os.path.join(signals_dir, signal_files[0])
+        
+        # 从charts目录获取图表信息
+        charts_dir = os.path.join(settings.DATA_DIR, "charts")
+        if not os.path.exists(charts_dir):
+            logger.warning("图表目录不存在")
+            return signal_summary
+            
+        # 读取markdown文件，提取信号信息
+        with open(latest_signal_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # 解析markdown表格（简单实现，实际可能需要更复杂的解析）
+        lines = content.split('\n')
+        for i, line in enumerate(lines):
+            if '|' in line and i > 3:  # 跳过表头
+                cells = [cell.strip() for cell in line.split('|')]
+                if len(cells) > 10:  # 确保有足够的单元格
+                    try:
+                        item_id = cells[1].strip()
+                        item_name = cells[2].strip()
+                        signal_type = 'buy' if '买入' in cells[3] else 'sell'
+                        price = float(cells[4].strip())
+                        boll_middle = float(cells[7].strip())
+                        boll_upper = float(cells[8].strip())
+                        boll_lower = float(cells[9].strip())
+                        volume = int(cells[10].strip())
+                        
+                        # 查找对应的图表
+                        chart_path = os.path.join(charts_dir, f"{item_id}.png")
+                        
+                        # 添加到信号汇总
+                        signal_summary.signals[item_id] = {
+                            'name': item_name,
+                            'signal_type': signal_type,
+                            'price': price,
+                            'boll_middle': boll_middle,
+                            'boll_upper': boll_upper,
+                            'boll_lower': boll_lower,
+                            'volume': volume,
+                            'chart_path': chart_path if os.path.exists(chart_path) else None,
+                            'timestamp': datetime.now()  # 使用当前时间作为替代
+                        }
+                    except (ValueError, IndexError) as e:
+                        logger.warning(f"解析信号行失败: {line}, 错误: {e}")
+                        continue
+        
+        logger.info(f"从文件 {latest_signal_file} 加载了 {len(signal_summary.signals)} 个信号")
+        return signal_summary
+    except Exception as e:
+        logger.error(f"加载信号汇总时出错: {e}")
+        return SignalSummary()
 
 def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> str:
     """
@@ -436,13 +518,15 @@ def generate_all_charts(
         logger.error(f"批量生成图表时出错: {e}")
 
 
-def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
+def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_notification: bool = True, ntfy_topic: str = settings.NATY_TOPIC_BUY_SELL_NOTIFY):
     """
     爬取数据并保存，同时生成图表
     
     Args:
         filename: 可选的文件名，如果不提供则自动生成
         indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
+        send_notification: 是否发送通知
+        ntfy_topic: ntfy的主题名称
     """
     logger.info("开始执行爬虫任务")
     start_time = time.time()
@@ -466,21 +550,22 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
             logger.error("加载数据失败，未获取到任何数据")
             return
             
-        logger.info(f"开始为所有商品生成图表")
+        logger.info(f"开始分析商品数据，检测信号")
         
         signal_summary = SignalSummary()
         
-        # 遍历所有商品生成图表
+        # 用于收集所有图表路径
+        chart_paths = {}
+        
+        # 第一次遍历：分析所有商品数据，检测信号
         for item_id, item_data in result.items():
             try:
                 name = item_data.get('name', f'Item-{item_id}')
                 kline_data = item_data.get('data', [])
                 
                 if not kline_data:
-                    logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                    logger.warning(f"商品 [{name}] 没有K线数据，跳过分析")
                     continue
-                
-                logger.info(f"正在生成商品 [{name}] 的K线图")
                 
                 # 清理数据
                 cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
@@ -492,22 +577,87 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all"):
                 elif indicator.lower() == "vegas":
                     indicator_type = IndicatorType.VEGAS
                 
-                # 创建图表
+                # 创建图表对象，用于分析信号
+                # 注意：这里只分析信号，不生成图表
                 chart = KLineChart(signal_summary, days_to_show=30)
-                chart.plot_candlestick(
-                    item_id=item_id,
-                    raw_data=cleaned_data,
-                    title=name,
-                    indicator_type=indicator_type
-                )
                 
-                logger.info(f"商品 [{name}] 的K线图生成完成")
+                # 分析数据，检测信号
+                # 这一步会将检测到的信号添加到signal_summary中
+                df_full = chart.indicators.prepare_dataframe(cleaned_data)
+                middle, upper, lower = chart.indicators.calculate_bollinger_bands(df_full)
+                
+                # 筛选最近数据
+                df = chart._filter_recent_data(df_full)
+                
+                # 手动调用信号检测方法
+                chart._find_bollinger_touches(df, upper[df.index], lower[df.index], item_id, name)
                 
             except Exception as e:
-                logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
+                logger.error(f"分析商品 [{name}] 的数据时出错: {e}")
                 continue
         
+        # 保存信号汇总
         save_signal_summary(signal_summary)
+        
+        # 如果有信号，只为有信号的商品生成图表
+        if signal_summary.signals:
+            logger.info(f"检测到 {len(signal_summary.signals)} 个信号，开始生成图表")
+            
+            for item_id in signal_summary.signals.keys():
+                try:
+                    # 获取商品数据
+                    if item_id not in result:
+                        logger.warning(f"商品 {item_id} 不在爬取结果中，跳过图表生成")
+                        continue
+                        
+                    item_data = result[item_id]
+                    name = item_data.get('name', f'Item-{item_id}')
+                    kline_data = item_data.get('data', [])
+                    
+                    if not kline_data:
+                        logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                        continue
+                    
+                    logger.info(f"正在生成商品 [{name}] 的K线图")
+                    
+                    # 清理数据
+                    cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                    
+                    # 创建图表
+                    chart = KLineChart(signal_summary, days_to_show=30)
+                    chart_path = chart.plot_candlestick(
+                        item_id=item_id,
+                        raw_data=cleaned_data,
+                        title=name,
+                        indicator_type=indicator_type
+                    )
+                    
+                    # 保存图表路径
+                    if chart_path:
+                        chart_paths[item_id] = chart_path
+                        # 将图表路径也存储到信号数据中，便于后续查找
+                        if item_id in signal_summary.signals:
+                            signal_summary.signals[item_id]['chart_path'] = chart_path
+                    
+                    logger.info(f"商品 [{name}] 的K线图生成完成")
+                    
+                except Exception as e:
+                    logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
+                    continue
+        else:
+            logger.info("未检测到任何信号，跳过图表生成")
+        
+        # 如果需要发送通知
+        if send_notification and signal_summary.signals:
+            try:
+                logger.info(f"开始发送报告到ntfy主题: {ntfy_topic}")
+                success = signal_summary.send_report(ntfy_topic, chart_paths)
+                if success:
+                    logger.info("报告发送成功")
+                else:
+                    logger.warning("报告发送失败")
+            except Exception as e:
+                logger.error(f"发送报告时出错: {e}")
         
         # 统计结果
         elapsed_time = time.time() - start_time
@@ -540,46 +690,108 @@ def setup_logging():
 
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description='CS2市场数据分析工具')
-    parser.add_argument('--crawl', action='store_true', help='爬取数据')
-    parser.add_argument('--all', action='store_true', help='批量生成所有商品的图表')
-    parser.add_argument('--indicator', type=str, default='all', choices=['all', 'boll', 'vegas'], help='指标类型')
-    parser.add_argument('--item', type=str, help='指定商品ID')
-    parser.add_argument('--name', type=str, help='指定商品名称')
-    parser.add_argument('--notify', action='store_true', help='消息推送')
+    parser = argparse.ArgumentParser(description="CS2市场数据爬虫与分析工具")
+    
+    # 子命令
+    subparsers = parser.add_subparsers(dest="command", help="子命令")
+    
+    # 爬虫命令
+    crawl_parser = subparsers.add_parser("crawl", help="执行爬虫任务")
+    crawl_parser.add_argument("--indicator", type=str, default="all", choices=["all", "boll", "vegas"], help="要显示的指标类型")
+    crawl_parser.add_argument("--notify", action="store_true", help="发送通知")
+    crawl_parser.add_argument("--ntfy-topic", type=str, help="ntfy主题名称，默认为cs2market")
+    
+    # 图表命令
+    chart_parser = subparsers.add_parser("chart", help="生成图表")
+    chart_parser.add_argument("--indicator", type=str, default="all", choices=["all", "boll", "vegas"], help="要显示的指标类型")
+    chart_parser.add_argument("--notify", action="store_true", help="发送通知")
+    chart_parser.add_argument("--ntfy-topic", type=str, help="ntfy主题名称，默认为cs2market")
+    
+    # 通知命令
+    notify_parser = subparsers.add_parser("notify", help="发送通知")
+    notify_parser.add_argument("--topic", type=str, default="cs2market", help="ntfy主题名称")
     
     args = parser.parse_args()
     
-    try:
-        if args.notify:
-            send_notify(settings.NATY_TOPIC_BUY_SELL_NOTIFY, "Hello World", settings.NATY_SERVER_URL)
+    if args.command == "crawl":
+        # 执行爬虫任务
+        crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=args.ntfy_topic or "cs2market")
+        
+    elif args.command == "chart":
+        # 批量生成所有商品的图表
+        logger.info("开始批量分析商品数据，检测信号")
+        
+        # 获取最新的数据文件夹
+        latest_folder = get_latest_data_folder()
+        if not latest_folder:
+            logger.error("未找到数据文件夹")
+            return
+            
+        # 加载商品数据
+        market_data = load_item_data(latest_folder)
+        if not market_data:
+            logger.error("未找到任何商品数据")
             return
         
-        if args.crawl:
-            # 爬取并保存数据，同时生成图表
-            crawl_and_save(indicator=args.indicator)
-            
-        elif args.all:
-            # 批量生成所有商品的图表
-            logger.info("开始批量生成图表")
-            
-            # 获取最新的数据文件夹
-            latest_folder = get_latest_data_folder()
-            if not latest_folder:
-                logger.error("未找到数据文件夹")
-                return
+        signal_summary = SignalSummary()
+        
+        # 用于收集所有图表路径
+        chart_paths = {}
                 
-            # 加载商品数据
-            market_data = load_item_data(latest_folder)
-            if not market_data:
-                logger.error("未找到任何商品数据")
-                return
-            
-            signal_summary = SignalSummary()
+        # 第一次遍历：分析所有商品数据，检测信号
+        for item_id, item_data in market_data.items():
+            try:
+                name = item_data.get('name', f'Item-{item_id}')
+                kline_data = item_data.get('data', [])
                 
-            # 遍历生成图表
-            for item_id, item_data in market_data.items():
+                if not kline_data:
+                    logger.warning(f"商品 [{name}] 没有K线数据，跳过分析")
+                    continue
+                
+                # 清理数据
+                cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                
+                # 确定要显示的指标类型
+                indicator_type = IndicatorType.ALL
+                if args.indicator.lower() == "boll":
+                    indicator_type = IndicatorType.BOLL
+                elif args.indicator.lower() == "vegas":
+                    indicator_type = IndicatorType.VEGAS
+                
+                # 创建图表对象，用于分析信号
+                # 注意：这里只分析信号，不生成图表
+                chart = KLineChart(signal_summary, days_to_show=30)
+                
+                # 分析数据，检测信号
+                # 这一步会将检测到的信号添加到signal_summary中
+                df_full = chart.indicators.prepare_dataframe(cleaned_data)
+                middle, upper, lower = chart.indicators.calculate_bollinger_bands(df_full)
+                
+                # 筛选最近数据
+                df = chart._filter_recent_data(df_full)
+                
+                # 手动调用信号检测方法
+                chart._find_bollinger_touches(df, upper[df.index], lower[df.index], item_id, name)
+                
+            except Exception as e:
+                logger.error(f"分析商品 [{name}] 的数据时出错: {e}")
+                continue
+                    
+        # 保存信号汇总
+        save_signal_summary(signal_summary)
+        
+        # 如果有信号，只为有信号的商品生成图表
+        if signal_summary.signals:
+            logger.info(f"检测到 {len(signal_summary.signals)} 个信号，开始生成图表")
+            
+            for item_id in signal_summary.signals.keys():
                 try:
+                    # 获取商品数据
+                    if item_id not in market_data:
+                        logger.warning(f"商品 {item_id} 不在数据中，跳过图表生成")
+                        continue
+                        
+                    item_data = market_data[item_id]
                     name = item_data.get('name', f'Item-{item_id}')
                     kline_data = item_data.get('data', [])
                     
@@ -592,86 +804,119 @@ def main():
                     # 清理数据
                     cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
                     
-                    # 确定要显示的指标类型
-                    indicator_type = IndicatorType.ALL
-                    if args.indicator.lower() == "boll":
-                        indicator_type = IndicatorType.BOLL
-                    elif args.indicator.lower() == "vegas":
-                        indicator_type = IndicatorType.VEGAS
-                    
                     # 创建图表
                     chart = KLineChart(signal_summary, days_to_show=30)
-                    chart.plot_candlestick(
+                    chart_path = chart.plot_candlestick(
                         item_id=item_id,
                         raw_data=cleaned_data,
                         title=name,
                         indicator_type=indicator_type
                     )
                     
+                    # 保存图表路径
+                    if chart_path:
+                        chart_paths[item_id] = chart_path
+                        # 将图表路径也存储到信号数据中，便于后续查找
+                        if item_id in signal_summary.signals:
+                            signal_summary.signals[item_id]['chart_path'] = chart_path
+                    
                     logger.info(f"商品 [{name}] 的K线图生成完成")
                     
                 except Exception as e:
-                    logger.error(f"生成商品 [{name}] 的图表时出错: {e}")
+                    logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
                     continue
-                    
-            save_signal_summary(signal_summary)
+        else:
+            logger.info("未检测到任何信号，跳过图表生成")
+        
+        # 如果需要发送通知
+        if args.notify and signal_summary.signals:
+            try:
+                ntfy_topic = args.ntfy_topic or "cs2market"
+                logger.info(f"开始发送报告到ntfy主题: {ntfy_topic}")
+                success = signal_summary.send_report(ntfy_topic, chart_paths)
+                if success:
+                    logger.info("报告发送成功")
+                else:
+                    logger.warning("报告发送失败")
+            except Exception as e:
+                logger.error(f"发送报告时出错: {e}")
             
-            logger.info("所有图表生成完成")
-            
-        elif args.item:
-            # 生成指定商品的图表
+        logger.info("所有图表生成完成")
+        
+    elif args.command == "notify":
+        # 仅发送通知
+        try:
+            # 获取最新的数据文件夹
             latest_folder = get_latest_data_folder()
             if not latest_folder:
                 logger.error("未找到数据文件夹")
                 return
                 
-            market_data = load_item_data(latest_folder)
-            if not market_data:
-                logger.error("未找到任何商品数据")
+            # 加载信号汇总
+            signal_summary = load_signal_summary()
+            if not signal_summary or not signal_summary.signals:
+                logger.error("未找到任何信号数据")
                 return
                 
-            if args.item not in market_data:
-                logger.error(f"未找到商品ID: {args.item}")
-                return
+            # 收集图表路径 - 只收集有信号的商品的图表
+            chart_paths = {}
+            charts_dir = os.path.join(settings.DATA_DIR, "charts")
+            if os.path.exists(charts_dir):
+                # 获取charts目录下的所有PNG文件
+                all_chart_files = [f for f in os.listdir(charts_dir) if f.endswith('.png')]
                 
-            item_data = market_data[args.item]
-            name = item_data.get('name', f'Item-{args.item}')
-            kline_data = item_data.get('data', [])
+                for item_id, signal in signal_summary.signals.items():
+                    # 首先检查信号数据中是否已经有保存的图表路径
+                    if 'chart_path' in signal and os.path.exists(signal['chart_path']):
+                        chart_paths[item_id] = signal['chart_path']
+                        logger.info(f"使用信号中保存的图表路径: {signal['chart_path']}")
+                        continue
+                        
+                    # 尝试按新格式查找: {safe_title}_{item_id}.png
+                    name = signal.get('name', f'Item-{item_id}')
+                    safe_name = clean_filename(name)
+                    
+                    # 尝试查找匹配的文件
+                    matching_files = []
+                    for chart_file in all_chart_files:
+                        # 检查文件名是否以商品ID结尾
+                        if chart_file.endswith(f"_{item_id}.png") or chart_file == f"{item_id}.png":
+                            matching_files.append(chart_file)
+                    
+                    if matching_files:
+                        # 如果找到多个匹配文件，使用最新的一个
+                        matching_files.sort(key=lambda f: os.path.getmtime(os.path.join(charts_dir, f)), reverse=True)
+                        chart_path = os.path.join(charts_dir, matching_files[0])
+                        chart_paths[item_id] = chart_path
+                        logger.info(f"找到商品 {item_id} 的图表文件: {matching_files[0]}")
+                    else:
+                        # 尝试旧格式: {item_id}.png
+                        old_format_path = os.path.join(charts_dir, f"{item_id}.png")
+                        if os.path.exists(old_format_path):
+                            chart_paths[item_id] = old_format_path
+                            logger.info(f"使用旧格式图表文件: {item_id}.png")
+                        else:
+                            logger.warning(f"商品 {item_id} 的图表文件不存在")
             
-            if not kline_data:
-                logger.error(f"商品 [{name}] 没有K线数据")
-                return
-                
-            # 清理数据
-            cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+            # 检查是否有图表可以发送
+            if not chart_paths:
+                logger.warning("未找到任何有效的图表文件，将只发送文本报告")
+            else:
+                logger.info(f"找到 {len(chart_paths)} 个图表文件可以发送")
             
-            # 确定要显示的指标类型
-            indicator_type = IndicatorType.ALL
-            if args.indicator.lower() == "boll":
-                indicator_type = IndicatorType.BOLL
-            elif args.indicator.lower() == "vegas":
-                indicator_type = IndicatorType.VEGAS
+            # 发送报告
+            logger.info(f"开始发送报告到ntfy主题: {args.topic}")
+            success = signal_summary.send_report(args.topic, chart_paths)
+            if success:
+                logger.info("报告发送成功")
+            else:
+                logger.warning("报告发送失败")
+        except Exception as e:
+            logger.error(f"发送报告时出错: {e}")
             
-            # 创建图表
-            signal_summary = SignalSummary()
-            chart = KLineChart(signal_summary, days_to_show=30)
-            chart.plot_candlestick(
-                item_id=args.item,
-                raw_data=cleaned_data,
-                title=name,
-                indicator_type=indicator_type
-            )
-            
-            save_signal_summary(signal_summary)
-            
-            logger.info(f"商品 [{name}] 的K线图生成完成")
-            
-        else:
-            parser.print_help()
-            
-    except Exception as e:
-        logger.error(f"批量生成图表时出错: {e}")
-        return
+    else:
+        # 默认显示帮助信息
+        parser.print_help()
 
 
 if __name__ == "__main__":
