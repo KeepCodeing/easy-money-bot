@@ -342,6 +342,22 @@ class SignalSummary:
             logger.error(f"处理图表时出错: {e}")
             return False
 
+    @staticmethod
+    def _encode_header_value(value: str) -> str:
+        """
+        对header值进行编码，处理非ASCII字符和特殊字符
+        
+        Args:
+            value: 原始字符串
+            
+        Returns:
+            编码后的字符串
+        """
+        import base64
+        # 将字符串转换为base64编码
+        encoded = base64.b64encode(value.encode('utf-8')).decode('ascii')
+        return f"=?UTF-8?B?{encoded}?="
+        
     def send_report(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
         """
         发送完整的报告，包括信号汇总和K线图
@@ -422,38 +438,31 @@ class SignalSummary:
                         logger.error("合并图片失败")
             
             try:
+                priority = "3"
+                
+                # 如果有图片，发送图片作为附件
                 if merged_path and os.path.exists(merged_path):
-                    # 如果有合并后的图片，将其作为附件发送
                     with open(merged_path, 'rb') as f:
                         image_data = f.read()
-                    
+                        
                     # 设置消息头
                     headers = {
                         "Title": title,
-                        "Tags": "CS2,chart",
-                        "Priority": "4",
-                        "Filename": "charts_summary.png",
-                        "Content-Type": "image/png"
-                    }
-                    
-                    # 发送带图片的消息
-                    response = send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=headers)
-                    
-                    # 发送文本内容作为评论
-                    comment_headers = {
                         "Tags": "CS2",
-                        "Poll": "5",  # 设置5秒延迟，确保在图片之后显示
-                        "Content-Type": "text/plain"
+                        "Priority": priority,
+                        "Filename": "charts_summary.png",  # 指定文件名
+                        "Content-Type": "image/png",  # 指定内容类型
+                        "Message": self._encode_header_value(message),  # 对消息进行编码
                     }
-                    send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=comment_headers)
                     
+                    # 使用PUT请求发送图片数据
+                    response = send_ntfy(topic_name, image_data, url=settings.NATY_SERVER_URL, headers=headers, method="PUT")
                 else:
                     # 如果没有图片，只发送文本消息
                     headers = {
                         "Title": title,
                         "Tags": "CS2",
-                        "Priority": "4",
-                        "Content-Type": "text/plain"
+                        "Priority": priority
                     }
                     response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
                 
