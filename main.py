@@ -697,25 +697,24 @@ def main():
     
     # 爬虫命令
     crawl_parser = subparsers.add_parser("crawl", help="执行爬虫任务")
-    crawl_parser.add_argument("--indicator", type=str, default="all", choices=["all", "boll", "vegas"], help="要显示的指标类型")
-    crawl_parser.add_argument("--notify", action="store_true", help="发送通知")
-    crawl_parser.add_argument("--ntfy-topic", type=str, help="ntfy主题名称，默认为cs2market")
+    crawl_parser.add_argument("--indicator", type=str, default="boll", choices=["all", "boll", "vegas"], help="要显示的指标类型")
+    crawl_parser.add_argument("--notify", action="store_true", default=True, help="发送通知")
     
     # 图表命令
     chart_parser = subparsers.add_parser("chart", help="生成图表")
-    chart_parser.add_argument("--indicator", type=str, default="all", choices=["all", "boll", "vegas"], help="要显示的指标类型")
-    chart_parser.add_argument("--notify", action="store_true", help="发送通知")
-    chart_parser.add_argument("--ntfy-topic", type=str, help="ntfy主题名称，默认为cs2market")
+    chart_parser.add_argument("--indicator", type=str, default="boll", choices=["all", "boll", "vegas"], help="要显示的指标类型")
+    chart_parser.add_argument("--notify", action="store_true", default=True, help="发送通知")
+    chart_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称，默认为cs2market")
     
     # 通知命令
     notify_parser = subparsers.add_parser("notify", help="发送通知")
-    notify_parser.add_argument("--topic", type=str, default="cs2market", help="ntfy主题名称")
+    notify_parser.add_argument("--topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
     
     args = parser.parse_args()
     
     if args.command == "crawl":
         # 执行爬虫任务
-        crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=args.ntfy_topic or "cs2market")
+        crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
         
     elif args.command == "chart":
         # 批量生成所有商品的图表
