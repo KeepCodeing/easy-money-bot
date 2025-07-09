@@ -360,6 +360,83 @@ class SignalSummary:
         
     def send_report(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
         """
+        发送信号汇总报告
+        
+        Args:
+            topic_name: ntfy的主题名称，默认为'cs2market'
+        Returns:
+            发送是否成功
+        """
+        if not self.signals:
+            logger.info("没有需要发送的信号")
+            return False
+            
+        try:
+            # 构建消息内容（使用简单的文本列表格式）
+            title = "CS2 Market Trading Signals"
+            
+            message_parts = []
+            message_parts.append(f"📊 {title}")
+            message_parts.append(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            message_parts.append("")
+            
+            # 分类信号
+            buy_signals = []
+            sell_signals = []
+            
+            for item_id, signal in self.signals.items():
+                # 清理商品名称
+                cleaned_name = self._clean_item_name(signal['name'])
+                signal_type = signal['signal_type']
+                
+                # 构建信号信息
+                signal_info = (
+                    f"📌 {cleaned_name}\n"
+                    f"   ID: {item_id}\n"
+                    f"   Price: {signal['price']:.2f}\n"
+                    f"   Volume: {int(signal['volume'])}\n"
+                    f"   BOLL: {signal['boll_middle']:.2f} | {signal['boll_upper']:.2f} | {signal['boll_lower']:.2f}\n"
+                )
+                
+                if signal_type == 'buy':
+                    buy_signals.append(signal_info)
+                else:
+                    sell_signals.append(signal_info)
+            
+            # 添加买入信号
+            if buy_signals:
+                message_parts.append("📈 Buy Signals:")
+                message_parts.extend(buy_signals)
+                message_parts.append("")
+                
+            # 添加卖出信号
+            if sell_signals:
+                message_parts.append("📉 Sell Signals:")
+                message_parts.extend(sell_signals)
+                message_parts.append("")
+            
+            # 组合消息内容
+            message = "\n".join(message_parts)
+            
+            priority = "3"
+            
+            headers = {
+                            "Title": title,
+                            "Tags": "CS2",
+                            "Priority": priority
+                        }
+            response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
+            # 同时保存为markdown文件
+            self.save_to_markdown()
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"生成报告时出错: {e}")
+            return False 
+        
+    def send_report_and_chart(self, topic_name: str = "cs2market", chart_paths: Dict[str, str] = None) -> bool:
+        """
         发送完整的报告，包括信号汇总和K线图
         
         Args:
