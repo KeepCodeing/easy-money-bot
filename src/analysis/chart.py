@@ -146,6 +146,7 @@ class KLineChart:
 
         for idx in df.index:
             high_price = float(df.loc[idx, "High"])
+            low_price = float(df.loc[idx, "Low"])  # 添加最低价
             open_price = float(df.loc[idx, "Open"])
             close_price = float(df.loc[idx, "Close"])
             volume = float(df.loc[idx, "Volume"])
@@ -153,13 +154,13 @@ class KLineChart:
             lower_band = float(lower[idx])
             middle_band = float((upper_band + lower_band) / 2)  # 计算中轨
 
-            # 获取实体的较低价格（开盘价和收盘价中的较小值）
-            body_low_price = min(open_price, close_price)
+            # 不再需要计算实体低点，直接使用最低价
+            # body_low_price = min(open_price, close_price)
 
             logger.debug(f"检查日期 {idx}:")
             logger.debug(f"  最高价：{high_price:.2f}, 布林上轨：{upper_band:.2f}")
             logger.debug(
-                f"  实体低点：{body_low_price:.2f}, 布林下轨：{lower_band:.2f}"
+                f"  最低价：{low_price:.2f}, 布林下轨：{lower_band:.2f}"
             )
 
             # 检查上轨（保持不变，使用最高价）
@@ -198,10 +199,10 @@ class KLineChart:
 
             # 检查下轨（只使用实体价格）
             lower_threshold = lower_band * (1 + tolerance)
-            if body_low_price <= lower_threshold:
+            if low_price <= lower_threshold: # 修改条件，使用最低价
                 touch = {
                     "index": idx,
-                    "price": body_low_price,
+                    "price": low_price,
                     "position": "lower",
                     "open": open_price,
                     "close": close_price,
@@ -215,7 +216,7 @@ class KLineChart:
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
                         signal_type='buy',
-                        price=body_low_price,
+                        price=low_price,
                         open_price=open_price,
                         close_price=close_price,
                         volume=volume,
@@ -227,7 +228,7 @@ class KLineChart:
                         timestamp=pd.to_datetime(idx)
                     )
                 logger.info(
-                    f"检测到下轨触碰点: 日期={idx}, 实体低点={body_low_price:.2f}, 布林下轨={lower_band:.2f}"
+                    f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
                 )
 
         # 返回所有触碰点

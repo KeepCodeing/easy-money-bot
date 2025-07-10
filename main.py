@@ -911,7 +911,7 @@ def main():
     # 图表命令
     chart_parser = subparsers.add_parser("chart", help="生成图表")
     chart_parser.add_argument("--indicator", type=str, default="boll", choices=["all", "boll", "vegas"], help="要显示的指标类型")
-    chart_parser.add_argument("--notify", action="store_true", default=True, help="发送通知")
+    chart_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
     chart_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称，默认为cs2market")
     
     # 通知命令

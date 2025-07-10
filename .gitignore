@@ -35,6 +35,8 @@ logs/
 *.swo
 *~
 
+*.pyc
+
 # 环境
 .env
 .venv
