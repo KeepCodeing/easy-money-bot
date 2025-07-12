@@ -21,6 +21,11 @@ wheels/
 .installed.cfg
 *.egg
 
+# Python byte-compiled files
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+
 # 项目特定
 data/
 logs/
@@ -35,8 +40,6 @@ logs/
 *.swo
 *~
 
-*.pyc
-
 # 环境
 .env
 .venv
@@ -44,10 +47,6 @@ venv/
 ENV/
 .env.local
 .env.*.local
-
-logs/*
-
-__pycache__
 
 # 操作系统
 .DS_Store

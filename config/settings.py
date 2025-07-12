@@ -16,10 +16,13 @@ load_dotenv()
 # 项目根目录
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
-# 数据存储目录
-DATA_DIR = os.path.join(BASE_DIR, "data")
-if not os.path.exists(DATA_DIR):
-    os.makedirs(DATA_DIR)
+# 数据存储配置
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')  # 数据根目录
+
+# 确保必要的子目录存在
+os.makedirs(os.path.join(DATA_DIR, 'items'), exist_ok=True)  # 商品数据目录
+os.makedirs(os.path.join(DATA_DIR, 'charts'), exist_ok=True)  # 图表目录
+os.makedirs(os.path.join(DATA_DIR, 'signals'), exist_ok=True)  # 信号目录
 
 # 数据库文件路径
 DB_PATH = os.path.join(DATA_DIR, "db.sqlite")
@@ -43,7 +46,7 @@ FAV_LIST_ID = [
 ]
 
 # 策略参数
-CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 4))  # 4 * 90 = 360天
+CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 1))  # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv("CATEGORY_DAYS", 90))  # 360天
 BOLLINGER_PERIOD = int(os.getenv("BOLLINGER_PERIOD", 20))  # 布林线周期
 BOLLINGER_STD = int(os.getenv("BOLLINGER_STD", 2))  # 布林线标准差
@@ -65,8 +68,8 @@ PAGE_DELAY_MIN = 2  # 翻页最小延迟（秒）
 PAGE_DELAY_MAX = 5  # 翻页最大延迟（秒）
 FOLDER_DELAY_MIN = 3  # 收藏夹切换最小延迟（秒）
 FOLDER_DELAY_MAX = 8  # 收藏夹切换最大延迟（秒）
-ITEM_DELAY_MIN = 2  # 商品爬取最小延迟（秒）
-ITEM_DELAY_MAX = 5  # 商品爬取最大延迟（秒）
+ITEM_DELAY_MIN = 1  # 商品爬取最小延迟（秒）
+ITEM_DELAY_MAX = 4  # 商品爬取最大延迟（秒）
 
 # 用户代理列表
 USER_AGENTS = [

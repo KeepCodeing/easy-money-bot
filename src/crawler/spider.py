@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-爬虫核心模块，负责从API获取数据
+爬虫模块，负责爬取商品数据
 """
 
 import os
@@ -55,11 +55,12 @@ def generate_timestamps(current_timestamp: int, category_month: int = 4, categor
     return timestamps
 
 
-class CS2MarketSpider:
-    """CS2市场数据爬虫类"""
-
+class Spider:
+    """爬虫类，用于爬取商品数据"""
+    
     def __init__(self):
         """初始化爬虫"""
+        # API相关配置
         self.api_url = settings.API_URL
         self.fav_url = settings.FAV_URL
         self.platform = settings.PLATFORM
@@ -67,17 +68,14 @@ class CS2MarketSpider:
         self.timeout = settings.REQUEST_TIMEOUT
         self.max_retries = settings.MAX_RETRIES
         self.retry_delay = settings.RETRY_DELAY
+        
+        # 数据类别配置
         self.CATEGORY_MONTH = settings.CATEGORY_MONTH
         self.CATEGORY_DAYS = settings.CATEGORY_DAYS
-        self.data_dir = settings.DATA_DIR  # 数据存储目录
-        
-        # 尝试使用fake-useragent，如果失败则使用配置中的用户代理列表
-        try:
-            self.ua = UserAgent()
-            logger.info("成功初始化UserAgent")
-        except Exception as e:
-            logger.warning(f"初始化UserAgent失败: {e}，将使用预设的用户代理列表")
-            self.ua = None
+
+        # 确保数据目录存在
+        self.items_dir = os.path.join(settings.DATA_DIR, 'items')
+        os.makedirs(self.items_dir, exist_ok=True)
     
     def _get_random_user_agent(self) -> str:
         """获取随机用户代理"""
@@ -408,6 +406,7 @@ class CS2MarketSpider:
                 item_id: {
                     name: str,  # 商品名称
                     data: List[Dict]  # 商品数据列表
+                    last_updated: str  # 最后更新时间
                 }
             }
         """
@@ -424,9 +423,6 @@ class CS2MarketSpider:
         logger.info(f"开始爬取 {len(items)} 个商品的数据")
         
         try:
-            # 创建时间戳文件夹
-            folder_path = self._create_timestamp_folder()
-            
             for item in items:
                 item_id = item['item_id']
                 name = item['name']
@@ -434,14 +430,20 @@ class CS2MarketSpider:
                 
                 item_data = self.get_item_history(item_id)
                 if item_data:
-                    # 保存到内存中的结果字典
-                    result[item_id] = {
+                    # 准备保存的数据结构
+                    save_data = {
                         'name': name,
-                        'data': item_data
+                        'data': item_data,
+                        'last_updated': datetime.now().isoformat()
                     }
                     
-                    # 保存为独立的JSON文件
-                    self._save_item_to_json(folder_path, item_id, name, item_data)
+                    # 保存为JSON文件（直接覆盖）
+                    json_path = os.path.join(self.items_dir, f"{item_id}.json")
+                    with open(json_path, 'w', encoding='utf-8') as f:
+                        json.dump(save_data, f, ensure_ascii=False, indent=2)
+                    
+                    # 保存到内存中的结果字典
+                    result[item_id] = save_data
                     logger.info(f"成功获取并保存商品 [{name}]({item_id}) 的数据")
                     successful_items.append(name)
                 else:
@@ -450,7 +452,7 @@ class CS2MarketSpider:
                 
                 # 添加随机延迟，避免请求过于频繁
                 if item != items[-1]:  # 如果不是最后一个商品
-                    delay = random.uniform(settings.ITEM_DELAY_MIN, settings.ITEM_DELAY_MAX)  # 使用配置的商品延迟
+                    delay = random.uniform(settings.ITEM_DELAY_MIN, settings.ITEM_DELAY_MAX)
                     logger.info(f"等待 {delay:.1f} 秒后继续...")
                     time.sleep(delay)
             
@@ -480,7 +482,7 @@ class CS2MarketSpider:
                     logger.info(f"{i}. {name}")
                     
             logger.info("="*50)
-            logger.info(f"数据已保存至: {folder_path}")
+            logger.info(f"数据已保存至: {self.items_dir}")
             return result
             
         except Exception as e:
@@ -498,7 +500,7 @@ class CS2MarketSpider:
 
 if __name__ == "__main__":
     # 简单测试
-    spider = CS2MarketSpider()
+    spider = Spider()
     item_ids = spider.get_favorite_items()
     if item_ids:
         test_id = item_ids[0]

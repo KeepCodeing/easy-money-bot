@@ -16,7 +16,7 @@ import re
 import pandas as pd
 import numpy as np
 
-from src.crawler.spider import CS2MarketSpider
+from src.crawler.spider import Spider
 from src.storage.database import DatabaseManager
 from config import settings
 from src.analysis.chart import KLineChart, IndicatorType
@@ -185,37 +185,36 @@ def get_latest_data_folder() -> Optional[str]:
         return None
 
 
-def load_item_data(folder_path: str) -> Dict[str, Dict]:
+def load_item_data(data_dir: str = None) -> Dict[str, Dict]:
     """
-    从文件夹中加载所有商品数据
+    加载所有商品数据
     
     Args:
-        folder_path: 数据文件夹路径
+        data_dir: 数据目录路径，如果为None则使用默认路径
         
     Returns:
-        Dict: 商品数据字典
+        包含所有商品数据的字典
     """
+    if data_dir is None:
+        data_dir = os.path.join(settings.DATA_DIR, 'items')
+        
+    if not os.path.exists(data_dir):
+        logger.error(f"数据目录不存在: {data_dir}")
+        return {}
+        
     result = {}
-    try:
-        # 获取文件夹中所有JSON文件
-        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
-        
-        for json_file in json_files:
-            file_path = os.path.join(folder_path, json_file)
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                item_id = data['item_id']
-                result[item_id] = {
-                    'name': data['name'],
-                    'data': data['data']
-                }
+    for file_name in os.listdir(data_dir):
+        if file_name.endswith('.json'):
+            file_path = os.path.join(data_dir, file_name)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    item_data = json.load(f)
+                    item_id = file_name[:-5]  # 移除.json后缀
+                    result[item_id] = item_data
+            except Exception as e:
+                logger.error(f"加载文件 {file_name} 失败: {e}")
                 
-        logger.info(f"成功加载 {len(result)} 个商品的数据")
-        return result
-        
-    except Exception as e:
-        logger.error(f"加载商品数据时出错: {e}")
-        return result
+    return result
 
 
 def process_kline_data(kline_data: List[List], signal_type: str = None) -> List[List]:
@@ -533,7 +532,7 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
 
     try:
         # 初始化爬虫
-        spider = CS2MarketSpider()
+        spider = Spider()
 
         # 爬取数据（此时数据已经保存在时间戳文件夹中）
         spider.crawl_all_items()
@@ -697,14 +696,8 @@ def handle_chart_command(args):
     """
     logger.info("开始批量分析商品数据，检测信号")
     
-    # 获取最新的数据文件夹
-    latest_folder = get_latest_data_folder()
-    if not latest_folder:
-        logger.error("未找到数据文件夹")
-        return
-        
-    # 加载商品数据
-    market_data = load_item_data(latest_folder)
+    # 直接加载商品数据
+    market_data = load_item_data()
     if not market_data:
         logger.error("未找到任何商品数据")
         return
@@ -737,6 +730,13 @@ def handle_chart_command(args):
             # 创建图表对象，用于分析信号
             # 注意：这里只分析信号，不生成图表
             chart = KLineChart(signal_summary, days_to_show=30)
+            # save chart
+            # chart_path = chart.plot_candlestick(
+            #         item_id=item_id,
+            #         raw_data=cleaned_data,
+            #         title=name,
+            #         indicator_type=indicator_type
+            #     )
             
             # 分析数据，检测信号
             # 这一步会将检测到的信号添加到signal_summary中
