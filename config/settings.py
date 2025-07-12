@@ -34,15 +34,28 @@ API_URL = os.getenv(
 FAV_URL = os.getenv(
     "FAV_URL", "https://sdt-api.ok-skins.com/user/collect/skin/v1/page"
 )  # post 请求
+TOTAL_BUY_RANK = os.getenv(
+    "TOTAL_BUY_RANK", "https://sdt-api.ok-skins.com/user/ranking/v1/page"
+)  # post 请求
+FAV_LIST_URL = os.getenv(
+    "FAV_LIST_URL", "http://sdt-api.ok-skins.com/user/collect/skin/folder/v1/list"
+)  # get 请求
 PLATFORM = os.getenv("PLATFORM", "YOUPIN")  # 平台，主要使用悠悠有品
 DATA_TYPE = os.getenv("DATA_TYPE", 2)  # 数据类型，对应K线tab
 
+# 交易量排行榜配置
+TOP_TOTAL_BUY_COUNT = 10  # 获取前10个数据
+TOTAL_BUY_DAY_RANGE = "ONE_DAY"  # 统计时间段
+MIN_SELL_NUM = 200  # 最低在售数量
+RANK_DATA_FIELD = "sellNumsRate"  # 排序字段：sellNumsRate（在售数量变化率）或 transactionAmount（交易量）
+RANK_SORT_TYPE = "ASC"  # 排序方式：ASC（升序）或 DESC（降序）
+
 FAV_LIST_ID = [
-    # "1414805408485134336",  # 贴纸1
-    # "1414804544713326592",  # 贴纸2
-    # "1414804160054743040",  # 探员
-    # "1414787065409622016",  # 我的关注
-    "1415633294154125312",  # test
+    "1414805408485134336",  # 贴纸1
+    "1414804544713326592",  # 贴纸2
+    "1414804160054743040",  # 探员
+    "1414787065409622016",  # 我的关注
+    # "1415633294154125312",  # test
 ]
 
 # 策略参数

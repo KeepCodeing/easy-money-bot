@@ -13,7 +13,6 @@ import logging
 import requests
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Union, Any
-from fake_useragent import UserAgent
 
 from config import settings
 
@@ -74,13 +73,12 @@ class Spider:
         self.CATEGORY_DAYS = settings.CATEGORY_DAYS
 
         # 确保数据目录存在
+        self.data_dir = settings.DATA_DIR
         self.items_dir = os.path.join(settings.DATA_DIR, 'items')
         os.makedirs(self.items_dir, exist_ok=True)
     
     def _get_random_user_agent(self) -> str:
         """获取随机用户代理"""
-        if self.ua:
-            return self.ua.random
         return random.choice(settings.USER_AGENTS)
     
     def _get_headers(self) -> Dict[str, str]:
@@ -497,13 +495,234 @@ class Spider:
             logger.error(f"成功爬取商品数: {len(successful_items)}")
             return result
 
+    def _process_rank_item(self, item: Dict) -> Dict:
+        """
+        处理排行榜数据中的单个商品数据
+        
+        Args:
+            item: 原始商品数据
+            
+        Returns:
+            处理后的商品数据，包含指定字段
+        """
+        def get_safe_value(value, default=0):
+            """安全获取值，处理None和NaN"""
+            if value is None or str(value).lower() == 'nan':
+                return default
+            return value
+        
+        def get_safe_str(value, default="Unknown"):
+            """安全获取字符串值"""
+            if not value or str(value).lower() in ['nan', 'none', '']:
+                return default
+            return str(value)
+        
+        # 获取各个字段
+        item_info = item.get('itemInfoVO', {})
+        sell_nums_info = item.get('sellNumsInfoVO', {})
+        sell_price_info = item.get('sellPriceInfoVO', {})
+        transaction_amount_info = item.get('transactionAmountInfoVO', {})
+        transaction_count_info = item.get('transactionCountInfoVO', {})
+        
+        return {
+            'survive_num': get_safe_value(item.get('surviveNum')),  # 存世量
+            'item_name': get_safe_str(item_info.get('name')),  # 商品名称
+            'item_rarity': get_safe_str(item_info.get('rarity')),  # 商品等级
+            'item_id': get_safe_str(item_info.get('itemId')),  # 商品ID
+            'sell_nums': {
+                'current': get_safe_value(sell_nums_info.get('sellNums')),  # 当前在售数量
+                'day1': {
+                    'nums': get_safe_value(sell_nums_info.get('sellNums1Days')),  # 一天前的在售数量
+                    'diff': get_safe_value(sell_nums_info.get('sellNums1DaysDiff')),  # 当前在售-一天前在售差值
+                    'rate': get_safe_value(sell_nums_info.get('sellNums1DaysRate')),  # 相对前一天的减少/增多比例
+                },
+                'day3': {
+                    'nums': get_safe_value(sell_nums_info.get('sellNums3Days')),  # 三天前的在售数量
+                    'diff': get_safe_value(sell_nums_info.get('sellNums3DaysDiff')),  # 当前在售-三天前在售差值
+                    'rate': get_safe_value(sell_nums_info.get('sellNums3DaysRate')),  # 相对前三天的减少/增多比例
+                }
+            },
+            'price': {
+                'current': get_safe_value(sell_price_info.get('price')),  # 当前在售价值
+                'day1': {
+                    'price': get_safe_value(sell_price_info.get('before1DaysPrice')),  # 一天前价格
+                    'diff': get_safe_value(sell_price_info.get('diff1DaysPrice')),  # 价格变化
+                    'rate': get_safe_value(sell_price_info.get('diff1Days')),  # 价格变化率
+                },
+                'day3': {
+                    'price': get_safe_value(sell_price_info.get('before3DaysPrice')),  # 三天前价格
+                    'diff': get_safe_value(sell_price_info.get('diff3DaysPrice')),  # 价格变化
+                    'rate': get_safe_value(sell_price_info.get('diff3Days')),  # 价格变化率
+                }
+            },
+            'transaction': {
+                'amount_24h': get_safe_value(transaction_amount_info.get('transactionAmount24Hours')),  # 近24小时成交额
+                'count_24h': get_safe_value(transaction_count_info.get('transactionCount24Hours')),  # 近24小时成交数量
+            }
+        }
+
+    def get_total_buy_rank(self, fav_id: str) -> Optional[List[Dict]]:
+        """
+        获取指定收藏夹中商品的交易量排行榜数据
+        
+        Args:
+            fav_id: 收藏夹ID
+            
+        Returns:
+            排行榜数据列表或None（如果请求失败）
+        """
+        try:
+            current_timestamp = int(time.time() * 1000)  # 使用毫秒时间戳
+            
+            # 准备请求数据
+            json_data = {
+                "page": 1,
+                "pageSize": 15,
+                "nextId": "",
+                "dataRange": settings.TOTAL_BUY_DAY_RANGE,
+                "dataField": settings.RANK_DATA_FIELD,
+                "sortType": settings.RANK_SORT_TYPE,
+                "folder": {
+                    "expected": "",
+                    "folderId": fav_id
+                },
+                "rangeConditionList": [
+                    {
+                        "field": "price",
+                        "minVal": "",
+                        "maxVal": None
+                    },
+                    {
+                        "field": "sellNums",
+                        "minVal": settings.MIN_SELL_NUM,
+                        "maxVal": None
+                    },
+                    {
+                        "field": "priceRate",
+                        "range": "SEVEN_DAYS",
+                        "minVal": None,
+                        "maxVal": None
+                    },
+                    {
+                        "field": "transactionCount",
+                        "range": "THREE_DAYS",
+                        "minVal": None,
+                        "maxVal": None
+                    }
+                ],
+                "timestamp": current_timestamp,
+                "queryName": "",
+                "exteriorList": [],
+                "qualityList": [],
+                "rarityList": [],
+                "weaponList": [],
+                "typeList": []
+            }
+            
+            logger.info(f"开始获取收藏夹 {fav_id} 的交易量排行榜数据")
+            
+            # 发送请求
+            response = self._make_request(settings.TOTAL_BUY_RANK, method='POST', json_data=json_data)
+            
+            if not response or not response.get('success'):
+                logger.error(f"获取收藏夹 {fav_id} 的交易量排行榜数据失败")
+                return None
+            
+            # 解析数据
+            data = response.get('data', {})
+            items = data.get('list', [])
+            
+            # 处理每个商品的数据
+            processed_items = [self._process_rank_item(item) for item in items]
+            
+            # 只返回前TOP_TOTAL_BUY_COUNT个数据
+            result = processed_items[:settings.TOP_TOTAL_BUY_COUNT] if processed_items else []
+            
+            logger.info(f"成功获取到 {len(result)} 条交易量排行榜数据")
+            return result
+            
+        except Exception as e:
+            logger.error(f"获取交易量排行榜数据时发生错误: {e}")
+            return None
+
+    def get_all_fav_total_buy_rank(self) -> Dict[str, List[Dict]]:
+        """
+        获取所有配置的收藏夹的交易量排行榜数据
+        
+        Returns:
+            Dict[str, List[Dict]]: 以收藏夹ID为key，排行榜数据为value的字典
+        """
+        result = {}
+        
+        for fav_id in settings.FAV_LIST_ID:
+            logger.info(f"开始获取收藏夹 {fav_id} 的交易量排行榜数据")
+            rank_data = self.get_total_buy_rank(fav_id)
+            
+            if rank_data:
+                result[fav_id] = rank_data
+                
+                # 添加延迟，避免请求过于频繁
+                if fav_id != settings.FAV_LIST_ID[-1]:  # 如果不是最后一个收藏夹
+                    delay = random.uniform(settings.FOLDER_DELAY_MIN, settings.FOLDER_DELAY_MAX)
+                    logger.info(f"等待 {delay:.1f} 秒后继续...")
+                    time.sleep(delay)
+            
+        return result
+
+    def get_favorite_folders(self) -> Dict[str, str]:
+        """
+        获取收藏夹列表
+        
+        Returns:
+            Dict[str, str]: 以收藏夹ID为key，收藏夹名称为value的字典
+        """
+        try:
+            logger.info("开始获取收藏夹列表")
+            
+            # 准备请求参数
+            params = {
+                'timestamp': int(time.time() * 1000),  # 当前时间戳（毫秒）
+                'platform': settings.PLATFORM
+            }
+            
+            # 发送请求
+            response = self._make_request(settings.FAV_LIST_URL, method='GET', params=params)
+            
+            if not response or not response.get('success'):
+                logger.error("获取收藏夹列表失败")
+                return {}
+            
+            # 解析数据
+            folders = response.get('data', [])
+            result = {
+                folder['folderId']: folder['folderName']
+                for folder in folders
+                if 'folderId' in folder and 'folderName' in folder
+            }
+            
+            logger.info(f"成功获取到 {len(result)} 个收藏夹信息")
+            return result
+            
+        except Exception as e:
+            logger.error(f"获取收藏夹列表时发生错误: {e}")
+            return {}
 
 if __name__ == "__main__":
-    # 简单测试
+    # 测试代码
     spider = Spider()
-    item_ids = spider.get_favorite_items()
-    if item_ids:
-        test_id = item_ids[0]
+    
+    # 测试获取交易量排行榜数据
+    print("\n测试获取交易量排行榜数据:")
+    for fav_id in settings.FAV_LIST_ID:
+        print(f"\n收藏夹 {fav_id} 的交易量排行榜数据:")
+        rank_data = spider.get_total_buy_rank(fav_id)
+        if rank_data:
+            for i, item in enumerate(rank_data, 1):
+                print(f"{i}. {item.get('name')} - 交易量: {item.get('transactionAmount')}")
+                
+    # 测试获取单个商品数据
+    if settings.TEST_ITEM_IDS:
+        test_id = settings.TEST_ITEM_IDS[0]
         data = spider.get_item_data(test_id)
-        print(f"获取到商品 {test_id} 的数据示例：")
+        print(f"\n获取到商品 {test_id} 的数据示例：")
         print(data) 

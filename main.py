@@ -912,6 +912,92 @@ def handle_notify_command(args):
         logger.error(f"发送报告时出错: {e}")
 
 
+def handle_rank_command(args):
+    """
+    处理rank命令，获取交易量排行榜数据
+    
+    Args:
+        args: 命令行参数
+    """
+    # 获取交易量排行榜数据
+    spider = Spider()
+    
+    # 获取收藏夹列表
+    folders = spider.get_favorite_folders()
+    
+    if args.fav_id:
+        # 获取指定收藏夹的排行榜数据
+        rank_data = spider.get_total_buy_rank(args.fav_id)
+        folder_name = folders.get(args.fav_id, f"未知收藏夹({args.fav_id})")
+        
+        if rank_data:
+            print(f"\n收藏夹 [{folder_name}] 的交易量排行榜数据:")
+            for i, item in enumerate(rank_data, 1):
+                print(f"\n{i}. {item['item_name']} (ID: {item['item_id']}):")
+                print(f"   等级: {item['item_rarity']}")
+                print(f"   存世量: {item['survive_num']}")
+                print(f"   在售情况:")
+                print(f"     当前: {item['sell_nums']['current']} 个")
+                print(f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)")
+                print(f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)")
+                print(f"   价格情况:")
+                print(f"     当前: {item['price']['current']:.2f}")
+                print(f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)")
+                print(f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)")
+                print(f"   24小时交易:")
+                print(f"     成交量: {item['transaction']['count_24h']} 个")
+                print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
+            
+            # 如果需要发送通知
+            if args.notify:
+                message = f"收藏夹 [{folder_name}] 交易量排行榜：\n\n"
+                for i, item in enumerate(rank_data, 1):
+                    message += f"{i}. {item['item_name']}\n"
+                    message += f"   存世量: {item['survive_num']}\n"
+                    message += f"   在售: {item['sell_nums']['current']} (1天变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
+                    message += f"   价格: {item['price']['current']:.2f} (1天变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
+                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}\n\n"
+                send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
+    else:
+        # 获取所有收藏夹的排行榜数据
+        all_rank_data = spider.get_all_fav_total_buy_rank()
+        
+        # 控制台输出
+        for fav_id, rank_data in all_rank_data.items():
+            folder_name = folders.get(fav_id, f"未知收藏夹({fav_id})")
+            print(f"\n收藏夹 [{folder_name}] 的交易量排行榜数据:")
+            for i, item in enumerate(rank_data, 1):
+                print(f"\n{i}. {item['item_name']} (ID: {item['item_id']}):")
+                print(f"   等级: {item['item_rarity']}")
+                print(f"   存世量: {item['survive_num']}")
+                print(f"   在售情况:")
+                print(f"     当前: {item['sell_nums']['current']} 个")
+                print(f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)")
+                print(f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)")
+                print(f"   价格情况:")
+                print(f"     当前: {item['price']['current']:.2f}")
+                print(f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)")
+                print(f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)")
+                print(f"   24小时交易:")
+                print(f"     成交量: {item['transaction']['count_24h']} 个")
+                print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
+        
+        # 如果需要发送通知，合并所有收藏夹的数据为一条消息
+        if args.notify and all_rank_data:
+            message = "交易量排行榜数据汇总：\n"
+            for fav_id, rank_data in all_rank_data.items():
+                folder_name = folders.get(fav_id, f"未知收藏夹({fav_id})")
+                message += f"\n=== 收藏夹 [{folder_name}] ===\n"
+                for i, item in enumerate(rank_data, 1):
+                    message += f"\n{i}. {item['item_name']}\n"
+                    message += f"   存世量: {item['survive_num']}\n"
+                    message += f"   在售: {item['sell_nums']['current']} (1天变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
+                    message += f"   价格: {item['price']['current']:.2f} (1天变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
+                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}"
+            
+            send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
+
+
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(description="CS2市场数据爬虫与分析工具")
@@ -934,6 +1020,12 @@ def main():
     notify_parser = subparsers.add_parser("notify", help="发送通知")
     notify_parser.add_argument("--topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
     
+    # 交易量排行榜命令
+    rank_parser = subparsers.add_parser("rank", help="获取交易量排行榜数据")
+    rank_parser.add_argument("--fav-id", type=str, help="指定收藏夹ID，不指定则获取所有配置的收藏夹数据")
+    rank_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
+    rank_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
+
     args = parser.parse_args()
     
     if args.command == "crawl":
@@ -946,6 +1038,8 @@ def main():
     elif args.command == "notify":
         handle_notify_command(args)
             
+    elif args.command == "rank":
+        handle_rank_command(args)
     else:
         # 默认显示帮助信息
         parser.print_help()
