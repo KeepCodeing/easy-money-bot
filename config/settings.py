@@ -96,5 +96,5 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 # 消息推送配置
 NATY_TOPIC_BUY_SELL_NOTIFY = os.getenv("NATY_TOPIC_BUY_SELL_NOTIFY", "catch_money")
-NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh")
-AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")
+NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh") # change it on .env
+AUTH_TOKEN = os.getenv("AUTH_TOKEN", "") # change it on .env

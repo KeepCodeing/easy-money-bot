@@ -51,81 +51,91 @@ def save_signal_summary(signal_summary):
     else:
         logger.warning("没有信号需要保存")
         
-def load_signal_summary():
+def load_signal_summary() -> Optional[SignalSummary]:
     """
     加载最新的信号汇总
     
     Returns:
-        SignalSummary对象
+        SignalSummary对象，如果没有找到则返回None
     """
     try:
-        signal_summary = SignalSummary()
         signals_dir = os.path.join(settings.DATA_DIR, "signals")
-        
         if not os.path.exists(signals_dir):
             logger.warning("信号目录不存在")
-            return signal_summary
+            return None
             
-        # 获取最新的markdown文件
-        signal_files = [f for f in os.listdir(signals_dir) if f.startswith("signals_") and f.endswith(".md")]
+        # 获取最新的信号文件
+        signal_files = [f for f in os.listdir(signals_dir) if f.endswith('.md')]
         if not signal_files:
-            logger.warning("未找到信号文件")
+            logger.warning("未找到任何信号文件")
+            return None
+            
+        # 按文件修改时间排序，获取最新的
+        latest_file = max(signal_files, key=lambda x: os.path.getmtime(os.path.join(signals_dir, x)))
+        file_path = os.path.join(signals_dir, latest_file)
+        
+        signal_summary = SignalSummary()
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            
+        # 跳过表头和分隔线
+        data_lines = [line.strip() for line in lines if line.strip() and '|' in line]
+        if len(data_lines) <= 2:  # 如果只有表头和分隔线
+            logger.info("信号文件为空")
             return signal_summary
             
-        # 按文件名排序（文件名包含时间戳）
-        signal_files.sort(reverse=True)
-        latest_signal_file = os.path.join(signals_dir, signal_files[0])
-        
-        # 从charts目录获取图表信息
-        charts_dir = os.path.join(settings.DATA_DIR, "charts")
-        if not os.path.exists(charts_dir):
-            logger.warning("图表目录不存在")
-            return signal_summary
-            
-        # 读取markdown文件，提取信号信息
-        with open(latest_signal_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        # 解析markdown表格（简单实现，实际可能需要更复杂的解析）
-        lines = content.split('\n')
-        for i, line in enumerate(lines):
-            if '|' in line and i > 3:  # 跳过表头
-                cells = [cell.strip() for cell in line.split('|')]
-                if len(cells) > 10:  # 确保有足够的单元格
-                    try:
-                        item_id = cells[1].strip()
-                        item_name = cells[2].strip()
-                        signal_type = 'buy' if '买入' in cells[3] else 'sell'
-                        price = float(cells[4].strip())
-                        boll_middle = float(cells[7].strip())
-                        boll_upper = float(cells[8].strip())
-                        boll_lower = float(cells[9].strip())
-                        volume = int(cells[10].strip())
-                        
-                        # 查找对应的图表
-                        chart_path = os.path.join(charts_dir, f"{item_id}.png")
-                        
-                        # 添加到信号汇总
-                        signal_summary.signals[item_id] = {
-                            'name': item_name,
-                            'signal_type': signal_type,
-                            'price': price,
-                            'boll_middle': boll_middle,
-                            'boll_upper': boll_upper,
-                            'boll_lower': boll_lower,
-                            'volume': volume,
-                            'chart_path': chart_path if os.path.exists(chart_path) else None,
-                            'timestamp': datetime.now()  # 使用当前时间作为替代
-                        }
-                    except (ValueError, IndexError) as e:
-                        logger.warning(f"解析信号行失败: {line}, 错误: {e}")
-                        continue
-        
-        logger.info(f"从文件 {latest_signal_file} 加载了 {len(signal_summary.signals)} 个信号")
+        # 从第三行开始解析（跳过表头和分隔线）
+        for line in data_lines[2:]:
+            try:
+                # 检查是否是分隔线
+                if all(c in '-|' for c in line.strip()):
+                    continue
+                    
+                # 解析信号行
+                parts = [p.strip() for p in line.split('|')[1:-1]]  # 去掉首尾的|
+                if len(parts) < 10:  # 确保有足够的字段
+                    continue
+                    
+                item_id = parts[0]
+                name = parts[1]
+                signal_type = parts[2]
+                price = float(parts[3]) if parts[3] else 0.0
+                open_price = float(parts[4]) if parts[4] else 0.0
+                close_price = float(parts[5]) if parts[5] else 0.0
+                volume = float(parts[6]) if parts[6] else 0.0
+                boll_middle = float(parts[7]) if parts[7] else 0.0
+                boll_upper = float(parts[8]) if parts[8] else 0.0
+                boll_lower = float(parts[9]) if parts[9] else 0.0
+                timestamp = parts[10] if len(parts) > 10 else None
+                
+                # 添加信号
+                signal_summary.add_signal(
+                    item_id=item_id,
+                    item_name=name,
+                    signal_type=signal_type,
+                    price=price,
+                    open_price=open_price,
+                    close_price=close_price,
+                    volume=volume,
+                    boll_values={
+                        'middle': boll_middle,
+                        'upper': boll_upper,
+                        'lower': boll_lower
+                    },
+                    timestamp=timestamp
+                )
+                
+            except (ValueError, IndexError) as e:
+                logger.warning(f"解析信号行失败: {line}, 错误: {e}")
+                continue
+                
+        logger.info(f"从文件 {file_path} 加载了 {len(signal_summary.signals)} 个信号")
         return signal_summary
+        
     except Exception as e:
         logger.error(f"加载信号汇总时出错: {e}")
-        return SignalSummary()
+        return None
 
 def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> str:
     """
@@ -156,64 +166,74 @@ def save_market_data(data: Dict[str, Dict], filename: Optional[str] = None) -> s
 
 def get_latest_data_folder() -> Optional[str]:
     """
-    获取最新的数据文件夹路径
+    获取最新的数据文件夹
     
     Returns:
-        str: 文件夹路径，如果没有找到则返回None
+        最新数据文件夹的路径，如果没有找到则返回None
     """
     try:
-        data_dir = os.path.join(settings.DATA_DIR, 'items')
+        data_dir = settings.DATA_DIR
         if not os.path.exists(data_dir):
-            logger.warning("未找到items目录")
+            logger.warning("未找到任何时间戳文件夹")
             return None
             
         # 获取所有时间戳文件夹
-        folders = [f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))]
+        folders = [f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f)) and f.isdigit()]
+        
         if not folders:
             logger.warning("未找到任何时间戳文件夹")
             return None
             
         # 按时间戳排序，获取最新的
         latest_folder = max(folders, key=lambda x: int(x))
-        folder_path = os.path.join(data_dir, latest_folder)
+        latest_path = os.path.join(data_dir, latest_folder)
         
-        logger.info(f"找到最新数据文件夹: {folder_path}")
-        return folder_path
+        return latest_path
         
     except Exception as e:
         logger.error(f"获取最新数据文件夹时出错: {e}")
         return None
 
-
-def load_item_data(data_dir: str = None) -> Dict[str, Dict]:
+def load_item_data(folder_path: str) -> Dict[str, Dict]:
     """
-    加载所有商品数据
+    从文件夹中加载所有商品数据
     
     Args:
-        data_dir: 数据目录路径，如果为None则使用默认路径
+        folder_path: 数据文件夹路径
         
     Returns:
-        包含所有商品数据的字典
+        Dict: 商品数据字典，格式为：
+        {
+            item_id: {
+                'name': str,
+                'data': List[Dict],
+                'last_updated': str
+            }
+        }
     """
-    if data_dir is None:
-        data_dir = os.path.join(settings.DATA_DIR, 'items')
-        
-    if not os.path.exists(data_dir):
-        logger.error(f"数据目录不存在: {data_dir}")
-        return {}
-        
     result = {}
-    for file_name in os.listdir(data_dir):
-        if file_name.endswith('.json'):
-            file_path = os.path.join(data_dir, file_name)
+    try:
+        # 获取文件夹中所有JSON文件
+        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        
+        for json_file in json_files:
+            file_path = os.path.join(folder_path, json_file)
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     item_data = json.load(f)
-                    item_id = file_name[:-5]  # 移除.json后缀
+                    # 从文件名获取item_id（移除.json后缀）
+                    item_id = json_file[:-5]
                     result[item_id] = item_data
+                    
             except Exception as e:
-                logger.error(f"加载文件 {file_name} 失败: {e}")
+                logger.error(f"加载文件 {json_file} 失败: {e}")
+                continue
                 
+        logger.info(f"成功加载 {len(result)} 个商品的数据")
+        return result
+        
+    except Exception as e:
+        logger.error(f"加载商品数据时出错: {e}")
     return result
 
 
@@ -318,7 +338,7 @@ def process_kline_data(kline_data: List[List], signal_type: str = None) -> List[
 
 def load_market_data(filename: Optional[str] = None) -> dict:
     """
-    加载市场数据，优先从时间戳文件夹中加载所有JSON文件
+    加载市场数据，从items目录加载所有JSON文件
     
     Args:
         filename: 可选的文件名，如果提供则从指定文件加载（向后兼容）
@@ -335,15 +355,26 @@ def load_market_data(filename: Optional[str] = None) -> dict:
             logger.info(f"已从指定文件 {load_path} 加载市场数据")
             return data
         
-        # 获取最新的数据文件夹
-        latest_folder = get_latest_data_folder()
-        if not latest_folder:
-            raise FileNotFoundError("未找到任何数据文件夹")
+        # 从items目录加载所有JSON文件
+        items_dir = os.path.join(settings.DATA_DIR, 'items')
+        if not os.path.exists(items_dir):
+            raise FileNotFoundError("未找到items目录")
         
-        # 从文件夹中加载所有JSON文件
-        data = load_item_data(latest_folder)
+        # 加载所有商品数据
+        data = {}
+        for file_name in os.listdir(items_dir):
+            if file_name.endswith('.json'):
+                file_path = os.path.join(items_dir, file_name)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        item_data = json.load(f)
+                        item_id = file_name[:-5]  # 移除.json后缀
+                        data[item_id] = item_data
+                except Exception as e:
+                    logger.error(f"加载文件 {file_name} 失败: {e}")
+        
         if not data:
-            raise FileNotFoundError(f"在文件夹 {latest_folder} 中未找到任何有效的商品数据")
+            raise FileNotFoundError(f"在目录 {items_dir} 中未找到任何有效的商品数据")
         
         return data
         
@@ -534,19 +565,10 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
         # 初始化爬虫
         spider = Spider()
 
-        # 爬取数据（此时数据已经保存在时间戳文件夹中）
-        spider.crawl_all_items()
-        
-        # 获取最新的数据文件夹
-        latest_folder = get_latest_data_folder()
-        if not latest_folder:
-            logger.error("未找到数据文件夹")
-            return
-            
-        # 加载商品数据
-        result = load_item_data(latest_folder)
+        # 爬取数据（数据会被保存到items目录）
+        result = spider.crawl_all_items()
         if not result:
-            logger.error("加载数据失败，未获取到任何数据")
+            logger.error("爬取数据失败，未获取到任何数据")
             return
             
         logger.info(f"开始分析商品数据，检测信号")
@@ -596,7 +618,7 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
                 continue
         
         # 保存信号汇总
-        save_signal_summary(signal_summary)
+        # save_signal_summary(signal_summary)
         
         # 如果有信号，只为有信号的商品生成图表
         if signal_summary.signals:
@@ -661,7 +683,7 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
         # 统计结果
         elapsed_time = time.time() - start_time
         logger.info(f"任务完成，共处理 {len(result)} 个商品")
-        logger.info(f"数据保存在: {latest_folder}")
+        logger.info(f"数据保存在: {os.path.join(settings.DATA_DIR, 'items')}")
         logger.info(f"总耗时: {elapsed_time:.2f} 秒")
         
     except Exception as e:
@@ -697,7 +719,7 @@ def handle_chart_command(args):
     logger.info("开始批量分析商品数据，检测信号")
     
     # 直接加载商品数据
-    market_data = load_item_data()
+    market_data = load_item_data(os.path.join(settings.DATA_DIR, 'items'))
     if not market_data:
         logger.error("未找到任何商品数据")
         return
@@ -754,7 +776,7 @@ def handle_chart_command(args):
             continue
                 
     # 保存信号汇总
-    save_signal_summary(signal_summary)
+    # save_signal_summary(signal_summary)
     
     # 如果有信号，只为有信号的商品生成图表
     if signal_summary.signals:
@@ -827,10 +849,10 @@ def handle_notify_command(args):
         args: 命令行参数
     """
     try:
-        # 获取最新的数据文件夹
-        latest_folder = get_latest_data_folder()
-        if not latest_folder:
-            logger.error("未找到数据文件夹")
+        # 加载商品数据
+        market_data = load_market_data()
+        if not market_data:
+            logger.error("未找到任何商品数据")
             return
             
         # 加载信号汇总
@@ -853,10 +875,6 @@ def handle_notify_command(args):
                     logger.info(f"使用信号中保存的图表路径: {signal['chart_path']}")
                     continue
                     
-                # 尝试按新格式查找: {safe_title}_{item_id}.png
-                name = signal.get('name', f'Item-{item_id}')
-                safe_name = clean_filename(name)
-                
                 # 尝试查找匹配的文件
                 matching_files = []
                 for chart_file in all_chart_files:
@@ -871,13 +889,7 @@ def handle_notify_command(args):
                     chart_paths[item_id] = chart_path
                     logger.info(f"找到商品 {item_id} 的图表文件: {matching_files[0]}")
                 else:
-                    # 尝试旧格式: {item_id}.png
-                    old_format_path = os.path.join(charts_dir, f"{item_id}.png")
-                    if os.path.exists(old_format_path):
-                        chart_paths[item_id] = old_format_path
-                        logger.info(f"使用旧格式图表文件: {item_id}.png")
-                    else:
-                        logger.warning(f"商品 {item_id} 的图表文件不存在")
+                    logger.warning(f"商品 {item_id} 的图表文件不存在")
         
         # 检查是否有图表可以发送
         if not chart_paths:
@@ -886,12 +898,16 @@ def handle_notify_command(args):
             logger.info(f"找到 {len(chart_paths)} 个图表文件可以发送")
         
         # 发送报告
-        logger.info(f"开始发送报告到ntfy主题: {args.topic}")
-        success = signal_summary.send_report(args.topic, chart_paths)
-        if success:
-            logger.info("报告发送成功")
+        if signal_summary and signal_summary.signals:
+            logger.info(f"开始发送报告到ntfy主题: {args.topic}")
+            success = signal_summary.send_report(args.topic, chart_paths)
+            if success:
+                logger.info("报告发送成功")
+            else:
+                logger.warning("报告发送失败")
         else:
-            logger.warning("报告发送失败")
+            logger.warning("没有信号数据可以发送")
+            
     except Exception as e:
         logger.error(f"发送报告时出错: {e}")
 
