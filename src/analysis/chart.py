@@ -15,6 +15,10 @@ import mplfinance as mpf
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from config import settings
+from config.settings import (
+    BOLL_TOLERANCE_UPPER,
+    BOLL_TOLERANCE_LOWER,
+)
 from .indicators import TechnicalIndicators, IndicatorType
 from src.utils.file_utils import clean_filename
 from .signal_summary import SignalSummary
@@ -138,7 +142,8 @@ class KLineChart:
         lower_touches = []
 
         # 使用配置中的布林线容差
-        tolerance = settings.BOLL_TOLERANCE
+        tolerance_upper = settings.BOLL_TOLERANCE_UPPER
+        tolerance_lower = settings.BOLL_TOLERANCE_LOWER
 
         logger.info(
             f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}"
@@ -146,26 +151,25 @@ class KLineChart:
 
         for idx in df.index:
             high_price = float(df.loc[idx, "High"])
-            low_price = float(df.loc[idx, "Low"])  # 添加最低价
+            low_price = float(df.loc[idx, "Low"])
             open_price = float(df.loc[idx, "Open"])
             close_price = float(df.loc[idx, "Close"])
             volume = float(df.loc[idx, "Volume"])
             upper_band = float(upper[idx])
             lower_band = float(lower[idx])
-            middle_band = float((upper_band + lower_band) / 2)  # 计算中轨
+            middle_band = float((upper_band + lower_band) / 2)
 
-            # 不再需要计算实体低点，直接使用最低价
-            # body_low_price = min(open_price, close_price)
+            # 计算实体上方和下方价格
+            body_high_price = max(open_price, close_price)
+            body_low_price = min(open_price, close_price)
 
             logger.debug(f"检查日期 {idx}:")
-            logger.debug(f"  最高价：{high_price:.2f}, 布林上轨：{upper_band:.2f}")
-            logger.debug(
-                f"  最低价：{low_price:.2f}, 布林下轨：{lower_band:.2f}"
-            )
+            logger.debug(f"  实体上方：{body_high_price:.2f}, 布林上轨：{upper_band:.2f}")
+            logger.debug(f"  实体下方：{body_low_price:.2f}, 布林下轨：{lower_band:.2f}")
 
-            # 检查上轨（保持不变，使用最高价）
-            upper_threshold = upper_band * (1 - tolerance)
-            if high_price >= upper_threshold:
+            # 检查上轨（使用实体上方价格）
+            upper_threshold = upper_band * (1 - tolerance_upper)
+            if body_high_price >= upper_threshold:
                 touch = {
                     "index": idx,
                     "price": high_price,
@@ -197,9 +201,9 @@ class KLineChart:
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
                 )
 
-            # 检查下轨（只使用实体价格）
-            lower_threshold = lower_band * (1 + tolerance)
-            if low_price <= lower_threshold: # 修改条件，使用最低价
+            # 检查下轨（使用实体下方价格）
+            lower_threshold = lower_band * (1 + tolerance_lower)
+            if body_low_price <= lower_threshold:
                 touch = {
                     "index": idx,
                     "price": low_price,
