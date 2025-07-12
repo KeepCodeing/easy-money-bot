@@ -17,12 +17,14 @@ load_dotenv()
 BASE_DIR = Path(__file__).parent.parent.absolute()
 
 # 数据存储配置
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')  # 数据根目录
+DATA_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), "data"
+)  # 数据根目录
 
 # 确保必要的子目录存在
-os.makedirs(os.path.join(DATA_DIR, 'items'), exist_ok=True)  # 商品数据目录
-os.makedirs(os.path.join(DATA_DIR, 'charts'), exist_ok=True)  # 图表目录
-os.makedirs(os.path.join(DATA_DIR, 'signals'), exist_ok=True)  # 信号目录
+os.makedirs(os.path.join(DATA_DIR, "items"), exist_ok=True)  # 商品数据目录
+os.makedirs(os.path.join(DATA_DIR, "charts"), exist_ok=True)  # 图表目录
+os.makedirs(os.path.join(DATA_DIR, "signals"), exist_ok=True)  # 信号目录
 
 # 数据库文件路径
 DB_PATH = os.path.join(DATA_DIR, "db.sqlite")
@@ -51,11 +53,15 @@ RANK_DATA_FIELD = "sellNumsRate"  # 排序字段：sellNumsRate（在售数量�
 RANK_SORT_TYPE = "ASC"  # 排序方式：ASC（升序）或 DESC（降序）
 
 FAV_LIST_ID = [
-    "1414805408485134336",  # 贴纸1
-    "1414804544713326592",  # 贴纸2
+    "1399917014021996544",  # 手套
+    "1399947806538366976",  # 收藏品
+    "1417735341674864640",  # 刀皮
     "1414804160054743040",  # 探员
-    "1414787065409622016",  # 我的关注
-    # "1415633294154125312",  # test
+    "1417733750678888448",  # 千战百战
+    "1418012730076360704",  # 十战个战
+    "1417747830720622592",  # 贴纸
+    "1414787065409622016",  # 鸟狙
+    "1415633294154125312",  # test
 ]
 
 # 策略参数
@@ -109,5 +115,5 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 # 消息推送配置
 NATY_TOPIC_BUY_SELL_NOTIFY = os.getenv("NATY_TOPIC_BUY_SELL_NOTIFY", "catch_money")
-NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh") # change it on .env
-AUTH_TOKEN = os.getenv("AUTH_TOKEN", "") # change it on .env
+NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh")  # change it on .env
+AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")  # change it on .env
