@@ -987,7 +987,7 @@ def handle_rank_command(args):
             message = "交易量排行榜数据汇总：\n"
             for fav_id, rank_data in all_rank_data.items():
                 folder_name = folders.get(fav_id, f"未知收藏夹({fav_id})")
-                message += f"\n=== 收藏夹 [{folder_name}] ===\n"
+                message += f"\n\n=== 收藏夹 [{folder_name}] ===\n"
                 for i, item in enumerate(rank_data, 1):
                     message += f"\n{i}. {item['item_name']}\n"
                     message += f"   存世量: {item['survive_num']}\n"
