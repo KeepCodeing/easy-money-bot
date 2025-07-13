@@ -30,7 +30,8 @@ class SignalSummary:
     def add_signal(self, item_id: str, item_name: str, signal_type: str, 
                   price: float, open_price: float, close_price: float,
                   volume: float, boll_values: Dict[str, float], 
-                  timestamp: Optional[str] = None):
+                  timestamp: Optional[str] = None,
+                  previous_touch: Optional[Dict] = None):
         """
         添加新的信号
 
@@ -44,6 +45,12 @@ class SignalSummary:
             volume: 成交量
             boll_values: 布林带值 {'middle': float, 'upper': float, 'lower': float}
             timestamp: 信号时间（可选），如果不提供则使用当前时间
+            previous_touch: 上一次触碰点信息（可选）
+                {
+                    'price': float,  # 价格
+                    'timestamp': str,  # 时间
+                    'days_ago': int,  # 几天前
+                }
         """
         if timestamp is None:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -56,9 +63,12 @@ class SignalSummary:
             'close_price': close_price,
             'volume': volume,
             'boll_values': boll_values,
-            'timestamp': timestamp
+            'timestamp': timestamp,
+            'previous_touch': previous_touch
         }
         logger.info(f"添加{signal_type}信号: 商品={item_name}({item_id}), 价格={price:.2f}, 时间={timestamp}")
+        if previous_touch:
+            logger.info(f"上一次触碰: 价格={previous_touch['price']:.2f}, 时间={previous_touch['timestamp']}, {previous_touch['days_ago']}天前")
     
     @staticmethod
     def _clean_item_name(name: str) -> str:
@@ -103,11 +113,17 @@ class SignalSummary:
             
             with open(filepath, "w", encoding="utf-8") as f:
                 # 写入表头
-                f.write("| 商品ID | 商品名称 | 信号类型 | 触发价格 | 开盘价 | 收盘价 | 成交量 | 布林中轨 | 布林上轨 | 布林下轨 | 触发时间 |\n")
-                f.write("|---------|----------|----------|----------|---------|---------|----------|----------|----------|---------|----------|\n")
+                f.write("| 商品ID | 商品名称 | 信号类型 | 触发价格 | 开盘价 | 收盘价 | 成交量 | 布林中轨 | 布林上轨 | 布林下轨 | 上次触碰价格 | 上次触碰时间 | 间隔天数 | 触发时间 |\n")
+                f.write("|---------|----------|----------|----------|---------|---------|----------|----------|----------|---------|--------------|--------------|----------|----------|\n")
                 
                 # 写入每个信号
                 for item_id, signal in self.signals.items():
+                    # 获取历史触碰点信息
+                    prev_touch = signal.get('previous_touch', {})
+                    prev_price = f"{prev_touch.get('price', '-'):.2f}" if isinstance(prev_touch.get('price'), (int, float)) else '-'
+                    prev_time = prev_touch.get('timestamp', '-')
+                    days_ago = str(prev_touch.get('days_ago', '-'))
+                    
                     f.write(
                         f"| {item_id} | "
                         f"{signal['name']} | "
@@ -119,6 +135,9 @@ class SignalSummary:
                         f"{signal['boll_values']['middle']:.2f} | "
                         f"{signal['boll_values']['upper']:.2f} | "
                         f"{signal['boll_values']['lower']:.2f} | "
+                        f"{prev_price} | "
+                        f"{prev_time} | "
+                        f"{days_ago} | "
                         f"{signal['timestamp']} |\n"
                     )
                 
@@ -386,13 +405,20 @@ class SignalSummary:
                 signal_type = signal['signal_type']
                 
                 # 构建信号信息
-                signal_info = (
-                    f"📌 {cleaned_name}\n"
-                    f"   ID: {item_id}\n"
-                    f"   Price: {signal['price']:.2f}\n"
-                    f"   Volume: {int(signal['volume'])}\n"
-                    f"   BOLL: {signal['boll_values']['middle']:.2f} | {signal['boll_values']['upper']:.2f} | {signal['boll_values']['lower']:.2f}\n"
-                )
+                signal_info = [
+                    f"📌 {cleaned_name}",
+                    f"   ID: {item_id}",
+                    f"   Price: ¥{signal['price']:.2f}",
+                    f"   Volume: {int(signal['volume'])}",
+                    f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}"
+                ]
+                
+                # 添加历史触碰点信息
+                if signal.get('previous_touch'):
+                    prev = signal['previous_touch']
+                    signal_info.append(f"   Previous Touch: ¥{prev['price']:.2f} ({prev['days_ago']} days ago)")
+                
+                signal_info = "\n".join(signal_info)
                 
                 if signal_type == 'buy':
                     buy_signals.append(signal_info)
@@ -417,10 +443,10 @@ class SignalSummary:
             priority = "3"
             
             headers = {
-                            "Title": title,
-                            "Tags": "CS2",
-                            "Priority": priority
-                        }
+                "Title": title,
+                "Tags": "CS2",
+                "Priority": priority
+            }
             response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
             # 同时保存为markdown文件
             self.save_to_markdown()

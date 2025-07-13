@@ -182,6 +182,17 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
+                    # 查找上一次的上轨触碰点
+                    previous_upper = None
+                    if len(upper_touches) > 1:
+                        prev_touch = upper_touches[-2]  # 倒数第二个触碰点
+                        days_ago = (pd.to_datetime(idx) - pd.to_datetime(prev_touch['index'])).days
+                        previous_upper = {
+                            'price': prev_touch['price'],
+                            'timestamp': prev_touch['index'].strftime('%Y-%m-%d %H:%M:%S'),
+                            'days_ago': days_ago
+                        }
+                    
                     self.signal_summary.add_signal(
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
@@ -195,7 +206,8 @@ class KLineChart:
                             'upper': upper_band,
                             'lower': lower_band
                         },
-                        timestamp=pd.to_datetime(idx)
+                        timestamp=pd.to_datetime(idx),
+                        previous_touch=previous_upper
                     )
                 logger.info(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
@@ -216,6 +228,17 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
+                    # 查找上一次的下轨触碰点
+                    previous_lower = None
+                    if len(lower_touches) > 1:
+                        prev_touch = lower_touches[-2]  # 倒数第二个触碰点
+                        days_ago = (pd.to_datetime(idx) - pd.to_datetime(prev_touch['index'])).days
+                        previous_lower = {
+                            'price': prev_touch['price'],
+                            'timestamp': prev_touch['index'].strftime('%Y-%m-%d %H:%M:%S'),
+                            'days_ago': days_ago
+                        }
+                    
                     self.signal_summary.add_signal(
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
@@ -229,7 +252,8 @@ class KLineChart:
                             'upper': upper_band,
                             'lower': lower_band
                         },
-                        timestamp=pd.to_datetime(idx)
+                        timestamp=pd.to_datetime(idx),
+                        previous_touch=previous_lower
                     )
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
