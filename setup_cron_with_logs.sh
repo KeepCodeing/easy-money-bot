@@ -32,9 +32,9 @@ echo "0 22 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${
 echo "0 2 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_02).log 2>&1" >> "$TEMP_CRON"
 echo "0 6 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_06).log 2>&1" >> "$TEMP_CRON"
 
-# 添加排名任务 (09:00, 14:00, 18:30, 23:00)
+# 添加排名任务 (09:00, 14:30, 18:30, 23:00)
 echo "0 9 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_09).log 2>&1" >> "$TEMP_CRON"
-echo "0 14 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
+echo "30 14 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
 echo "30 18 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_1830).log 2>&1" >> "$TEMP_CRON"
 echo "0 23 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_23).log 2>&1" >> "$TEMP_CRON"
 
