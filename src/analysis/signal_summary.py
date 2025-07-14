@@ -118,9 +118,16 @@ class SignalSummary:
                 
                 # 写入每个信号
                 for item_id, signal in self.signals.items():
-                    # 获取历史触碰点信息
-                    prev_touch = signal.get('previous_touch', {})
-                    prev_price = f"{prev_touch.get('price', '-'):.2f}" if isinstance(prev_touch.get('price'), (int, float)) else '-'
+                    # 获取历史触碰点信息，确保previous_touch存在
+                    prev_touch = signal.get('previous_touch') or {}
+                    
+                    # 安全地获取价格并格式化
+                    try:
+                        prev_price = f"{prev_touch.get('price', 0):.2f}" if prev_touch.get('price') is not None else '-'
+                    except (TypeError, ValueError):
+                        prev_price = '-'
+                    
+                    # 安全地获取其他信息
                     prev_time = prev_touch.get('timestamp', '-')
                     days_ago = str(prev_touch.get('days_ago', '-'))
                     
