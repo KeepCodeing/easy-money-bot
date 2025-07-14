@@ -139,7 +139,7 @@ def load_market_data() -> dict:
         logger.error(f"加载市场数据失败: {e}")
         return {}
 
-def run_strategy_backtest(strategy_class, raw_data: List, item_name: str, show_days: int = 30) -> Dict:
+def run_strategy_backtest(strategy_class, raw_data: List, item_name: str, show_days: int = settings.CHART_DAYS) -> Dict:
     """
     运行策略回测
     
@@ -280,7 +280,7 @@ def main():
                 BollingerStrategy,
                 item_data,
                 item_name,
-                show_days=60  # 显示60天的数据
+                show_days=settings.CHART_DAYS  # 显示60天的数据
             )
 
             exit(0)
@@ -291,7 +291,7 @@ def main():
                 BollingerMidlineStrategy,
                 item_data,
                 item_name,
-                show_days=60  # 显示60天的数据
+                show_days=settings.CHART_DAYS  # 显示60天的数据
             )
             
             # 合并结果

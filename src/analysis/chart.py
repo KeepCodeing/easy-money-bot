@@ -68,7 +68,7 @@ logger.info(f"当前使用的字体家族: {plt.rcParams['font.family']}")
 class KLineChart:
     """K线图绘制类"""
 
-    def __init__(self, signal_summary: SignalSummary = None, days_to_show: int = 30):
+    def __init__(self, signal_summary: SignalSummary = None, days_to_show: int = settings.CHART_DAYS):
         """
         初始化K线图绘制器
 
@@ -685,7 +685,7 @@ if __name__ == "__main__":
     }
 
     # 创建K线图显示类
-    chart = KLineChart(days_to_show=30)
+    chart = KLineChart(days_to_show=settings.CHART_DAYS)
 
     # 绘制K线图
     fig = chart.plot_candlestick("525873303", sample_data["525873303"])

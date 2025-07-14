@@ -23,7 +23,7 @@ class BollingerStrategy:
         lookback_days: int = 100,
         cooldown_days: int = 8,
         tolerance: float = 0.03,  # 修改默认容差为3%
-        show_days: int = 30  # 添加图表显示天数参数
+        show_days: int = settings.CHART_DAYS  # 添加图表显示天数参数
     ):
         """
         初始化布林线策略回测器

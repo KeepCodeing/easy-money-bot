@@ -427,6 +427,7 @@ class Spider:
                 logger.info(f"开始获取商品 [{name}]({item_id}) 的数据")
                 
                 item_data = self.get_item_history(item_id)
+                
                 if item_data:
                     # 准备保存的数据结构
                     save_data = {
@@ -436,9 +437,10 @@ class Spider:
                     }
                     
                     # 保存为JSON文件（直接覆盖）
-                    json_path = os.path.join(self.items_dir, f"{item_id}.json")
-                    with open(json_path, 'w', encoding='utf-8') as f:
-                        json.dump(save_data, f, ensure_ascii=False, indent=2)
+                    if settings.SAVE_JSON:
+                        json_path = os.path.join(self.items_dir, f"{item_id}.json")
+                        with open(json_path, 'w', encoding='utf-8') as f:
+                            json.dump(save_data, f, ensure_ascii=False, indent=2)
                     
                     # 保存到内存中的结果字典
                     result[item_id] = save_data
@@ -479,8 +481,8 @@ class Spider:
                 for i, name in enumerate(failed_items, 1):
                     logger.info(f"{i}. {name}")
                     
-            logger.info("="*50)
-            logger.info(f"数据已保存至: {self.items_dir}")
+            # logger.info("="*50)
+            # logger.info(f"数据已保存至: {self.items_dir}")
             return result
             
         except Exception as e:

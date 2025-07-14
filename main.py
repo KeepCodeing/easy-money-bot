@@ -422,13 +422,15 @@ def test_chart_from_local(
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart(signal_summary, days_to_show=30)
-        chart.plot_candlestick(
-            item_id=item_id,
-            raw_data=processed_data,
-            title=name,
-            indicator_type=indicator_type
-        )
+        chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
+        
+        if settings.SAVE_CHART:
+            chart.plot_candlestick(
+                item_id=item_id,
+                raw_data=processed_data,
+                title=name,
+                indicator_type=indicator_type
+            )
         
     except Exception as e:
         logger.error(f"生成图表时出错: {e}")
@@ -485,15 +487,16 @@ def test_chart_by_date_range(
             indicator_type = IndicatorType.VEGAS
         
         # 创建图表
-        chart = KLineChart(signal_summary, days_to_show=30)
-        chart.plot_candlestick(
-            item_id=item_id,
-            raw_data=processed_data,
-            title=name,
-            indicator_type=indicator_type,
-            start_date=start_date,
-            end_date=end_date
-        )
+        chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
+        if settings.SAVE_CHART:
+            chart_path = chart.plot_candlestick(
+                item_id=item_id,
+                raw_data=processed_data,
+                title=name,
+                indicator_type=indicator_type,
+                start_date=start_date,
+                end_date=end_date
+            )
         
     except Exception as e:
         logger.error(f"生成图表时出错: {e}")
@@ -600,7 +603,7 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
                 
                 # 创建图表对象，用于分析信号
                 # 注意：这里只分析信号，不生成图表
-                chart = KLineChart(signal_summary, days_to_show=30)
+                chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
                 
                 # 分析数据，检测信号
                 # 这一步会将检测到的信号添加到signal_summary中
@@ -645,22 +648,24 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
                     cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
                     
                     # 创建图表
-                    chart = KLineChart(signal_summary, days_to_show=30)
-                    chart_path = chart.plot_candlestick(
-                        item_id=item_id,
-                        raw_data=cleaned_data,
-                        title=name,
-                        indicator_type=indicator_type
-                    )
+                    chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
                     
-                    # 保存图表路径
-                    if chart_path:
-                        chart_paths[item_id] = chart_path
-                        # 将图表路径也存储到信号数据中，便于后续查找
-                        if item_id in signal_summary.signals:
-                            signal_summary.signals[item_id]['chart_path'] = chart_path
-                    
-                    logger.info(f"商品 [{name}] 的K线图生成完成")
+                    if settings.SAVE_CHART:
+                        chart_path = chart.plot_candlestick(
+                            item_id=item_id,
+                            raw_data=cleaned_data,
+                            title=name,
+                            indicator_type=indicator_type
+                        )
+                        
+                        # 保存图表路径
+                        if chart_path:
+                            chart_paths[item_id] = chart_path
+                            # 将图表路径也存储到信号数据中，便于后续查找
+                            if item_id in signal_summary.signals:
+                                signal_summary.signals[item_id]['chart_path'] = chart_path
+                        
+                        logger.info(f"商品 [{name}] 的K线图生成完成")
                     
                 except Exception as e:
                     logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
@@ -751,7 +756,7 @@ def handle_chart_command(args):
             
             # 创建图表对象，用于分析信号
             # 注意：这里只分析信号，不生成图表
-            chart = KLineChart(signal_summary, days_to_show=30)
+            chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
             # save chart
             # chart_path = chart.plot_candlestick(
             #         item_id=item_id,
@@ -779,52 +784,54 @@ def handle_chart_command(args):
     # save_signal_summary(signal_summary)
     
     # 如果有信号，只为有信号的商品生成图表
-    if signal_summary.signals:
-        logger.info(f"检测到 {len(signal_summary.signals)} 个信号，开始生成图表")
-        
-        for item_id in signal_summary.signals.keys():
-            try:
-                # 获取商品数据
-                if item_id not in market_data:
-                    logger.warning(f"商品 {item_id} 不在数据中，跳过图表生成")
-                    continue
+    if settings.SAVE_CHART:
+        if signal_summary.signals:
+            logger.info(f"检测到 {len(signal_summary.signals)} 个信号，开始生成图表")
+            
+            for item_id in signal_summary.signals.keys():
+                try:
+                    # 获取商品数据
+                    if item_id not in market_data:
+                        logger.warning(f"商品 {item_id} 不在数据中，跳过图表生成")
+                        continue
+                        
+                    item_data = market_data[item_id]
+                    name = item_data.get('name', f'Item-{item_id}')
+                    kline_data = item_data.get('data', [])
                     
-                item_data = market_data[item_id]
-                name = item_data.get('name', f'Item-{item_id}')
-                kline_data = item_data.get('data', [])
+                    if not kline_data:
+                        logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                        continue
+                    
+                    logger.info(f"正在生成商品 [{name}] 的K线图")
+                    
+                    # 清理数据
+                    cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                    
+                    # 创建图表
+                    chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
+                    
+                    chart_path = chart.plot_candlestick(
+                        item_id=item_id,
+                        raw_data=cleaned_data,
+                        title=name,
+                        indicator_type=indicator_type
+                    )
+                    
+                    # 保存图表路径
+                    if chart_path:
+                        chart_paths[item_id] = chart_path
+                        # 将图表路径也存储到信号数据中，便于后续查找
+                        if item_id in signal_summary.signals:
+                            signal_summary.signals[item_id]['chart_path'] = chart_path
+                    
+                    logger.info(f"商品 [{name}] 的K线图生成完成")
                 
-                if not kline_data:
-                    logger.warning(f"商品 [{name}] 没有K线数据，跳过图表生成")
+                except Exception as e:
+                    logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
                     continue
-                
-                logger.info(f"正在生成商品 [{name}] 的K线图")
-                
-                # 清理数据
-                cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
-                
-                # 创建图表
-                chart = KLineChart(signal_summary, days_to_show=30)
-                chart_path = chart.plot_candlestick(
-                    item_id=item_id,
-                    raw_data=cleaned_data,
-                    title=name,
-                    indicator_type=indicator_type
-                )
-                
-                # 保存图表路径
-                if chart_path:
-                    chart_paths[item_id] = chart_path
-                    # 将图表路径也存储到信号数据中，便于后续查找
-                    if item_id in signal_summary.signals:
-                        signal_summary.signals[item_id]['chart_path'] = chart_path
-                
-                logger.info(f"商品 [{name}] 的K线图生成完成")
-                
-            except Exception as e:
-                logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
-                continue
-    else:
-        logger.info("未检测到任何信号，跳过图表生成")
+        else:
+            logger.info("未检测到任何信号，跳过图表生成")
     
     # 如果需要发送通知
     if args.notify and signal_summary.signals:
@@ -839,7 +846,7 @@ def handle_chart_command(args):
         except Exception as e:
             logger.error(f"发送报告时出错: {e}")
         
-    logger.info("所有图表生成完成")
+    # logger.info("所有图表生成完成")
 
 def handle_notify_command(args):
     """
