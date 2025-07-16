@@ -180,6 +180,30 @@ class SignalSummary:
         """清空信号数据"""
         self.signals.clear() 
         
+    def _sort_signals_by_price_change(self, signals: Dict[str, Dict], signal_type: str = None) -> List[tuple]:
+        """
+        按7天价格变化率对信号进行排序
+        
+        Args:
+            signals: 信号字典
+            signal_type: 可选的信号类型过滤 ('buy' 或 'sell')
+            
+        Returns:
+            排序后的信号列表，每个元素为 (item_id, signal_dict) 元组
+        """
+        # 过滤信号类型（如果指定）
+        filtered_signals = []
+        for item_id, signal in signals.items():
+            if signal_type and signal['signal_type'] != signal_type:
+                continue
+            filtered_signals.append((item_id, signal))
+        
+        # 按7天价格变化率排序（降幅越大越靠前）
+        return sorted(
+            filtered_signals,
+            key=lambda x: x[1]['price_changes']['day7']['rate']
+        )
+
     def send_ntfy_notification(self, topic_name: str = "cs2market") -> bool:
         """
         使用ntfy的原生功能发送带有格式的消息和图片
@@ -203,14 +227,18 @@ class SignalSummary:
             message_parts.append(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             message_parts.append("")
             
-            # 分类信号
+            # 分类并排序信号
             buy_signals = []
             sell_signals = []
             
-            for item_id, signal in self.signals.items():
+            # 获取排序后的买入和卖出信号
+            sorted_buy_signals = self._sort_signals_by_price_change(self.signals, 'buy')
+            sorted_sell_signals = self._sort_signals_by_price_change(self.signals, 'sell')
+            
+            # 处理买入信号
+            for item_id, signal in sorted_buy_signals:
                 # 清理商品名称
                 cleaned_name = self._clean_item_name(signal['name'])
-                signal_type = signal['signal_type']
                 
                 # 获取价格变化信息
                 price_changes = signal.get('price_changes', {
@@ -228,11 +256,30 @@ class SignalSummary:
                     f"   3days ago: {price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%)\n"
                     f"   7days ago: {price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)\n"
                 )
+                buy_signals.append(signal_info)
+            
+            # 处理卖出信号
+            for item_id, signal in sorted_sell_signals:
+                # 清理商品名称
+                cleaned_name = self._clean_item_name(signal['name'])
                 
-                if signal_type == 'buy':
-                    buy_signals.append(signal_info)
-                else:
-                    sell_signals.append(signal_info)
+                # 获取价格变化信息
+                price_changes = signal.get('price_changes', {
+                    'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                    'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+                })
+                
+                # 构建信号信息
+                signal_info = (
+                    f"📌 {cleaned_name}\n"
+                    f"   ID: {item_id}\n"
+                    f"   Price: {signal['price']:.2f}\n"
+                    f"   Volume: {int(signal['volume'])}\n"
+                    f"   BOLL: {signal['boll_values']['middle']:.2f} | {signal['boll_values']['upper']:.2f} | {signal['boll_values']['lower']:.2f}\n"
+                    f"   3days ago: {price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%)\n"
+                    f"   7days ago: {price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)\n"
+                )
+                sell_signals.append(signal_info)
             
             # 添加买入信号
             if buy_signals:
@@ -431,14 +478,18 @@ class SignalSummary:
             message_parts.append(f"🕒 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             message_parts.append("")
             
-            # 分类信号
+            # 分类并排序信号
             buy_signals = []
             sell_signals = []
             
-            for item_id, signal in self.signals.items():
+            # 获取排序后的买入和卖出信号
+            sorted_buy_signals = self._sort_signals_by_price_change(self.signals, 'buy')
+            sorted_sell_signals = self._sort_signals_by_price_change(self.signals, 'sell')
+            
+            # 处理买入信号
+            for item_id, signal in sorted_buy_signals:
                 # 清理商品名称
                 cleaned_name = self._clean_item_name(signal['name'])
-                signal_type = signal['signal_type']
                 
                 # 构建信号信息
                 signal_info = [
@@ -457,11 +508,31 @@ class SignalSummary:
                     signal_info.append(f"   Previous Touch: ¥{prev['price']:.2f} ({prev['days_ago']} days ago)")
                 
                 signal_info = "\n".join(signal_info)
+                buy_signals.append(signal_info)
+            
+            # 处理卖出信号
+            for item_id, signal in sorted_sell_signals:
+                # 清理商品名称
+                cleaned_name = self._clean_item_name(signal['name'])
                 
-                if signal_type == 'buy':
-                    buy_signals.append(signal_info)
-                else:
-                    sell_signals.append(signal_info)
+                # 构建信号信息
+                signal_info = [
+                    f"📌 {cleaned_name}",
+                    f"   ID: {item_id}",
+                    f"   Price: ¥{signal['price']:.2f}",
+                    f"   Volume: {int(signal['volume'])}",
+                    f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
+                    f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
+                    f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"
+                ]
+                
+                # 添加历史触碰点信息
+                if signal.get('previous_touch'):
+                    prev = signal['previous_touch']
+                    signal_info.append(f"   Previous Touch: ¥{prev['price']:.2f} ({prev['days_ago']} days ago)")
+                
+                signal_info = "\n".join(signal_info)
+                sell_signals.append(signal_info)
             
             # 添加买入信号
             if buy_signals:
