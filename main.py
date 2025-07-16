@@ -954,7 +954,7 @@ def handle_rank_command(args):
                 print(f"   24小时交易:")
                 print(f"     成交量: {item['transaction']['count_24h']} 个")
                 print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
-            
+                print(f"     当日成交量: {item['transaction']['count_1day']} 个")
             # 如果需要发送通知
             if args.notify:
                 message = f"收藏夹 [{folder_name}] 交易量排行榜：\n\n"
@@ -963,7 +963,8 @@ def handle_rank_command(args):
                     message += f"   存世量: {item['survive_num']}\n"
                     message += f"   在售: {item['sell_nums']['current']} (1天变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
                     message += f"   价格: {item['price']['current']:.2f} (1天变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
-                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}\n\n"
+                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}\n"
+                    message += f"     当日成交量: {item['transaction']['count_1day']} 个\n\n"
                 send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
     else:
         # 获取所有收藏夹的排行榜数据
@@ -988,7 +989,7 @@ def handle_rank_command(args):
                 print(f"   24小时交易:")
                 print(f"     成交量: {item['transaction']['count_24h']} 个")
                 print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
-        
+                print(f"     当日成交量: {item['transaction']['count_1day']} 个")
         # 如果需要发送通知，合并所有收藏夹的数据为一条消息
         if args.notify and all_rank_data:
             message = "交易量排行榜数据汇总：\n"
@@ -1000,7 +1001,8 @@ def handle_rank_command(args):
                     message += f"   存世量: {item['survive_num']}\n"
                     message += f"   在售: {item['sell_nums']['current']} (1天变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
                     message += f"   价格: {item['price']['current']:.2f} (1天变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
-                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}"
+                    message += f"   24h成交: {item['transaction']['count_24h']}个 / {item['transaction']['amount_24h']:.2f}\n"
+                    message += f"     当日成交量: {item['transaction']['count_1day']} 个\n\n"
             
             send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
 

@@ -49,8 +49,8 @@ DATA_TYPE = os.getenv("DATA_TYPE", 2)  # 数据类型，对应K线tab
 TOP_TOTAL_BUY_COUNT = 10  # 获取前10个数据
 TOTAL_BUY_DAY_RANGE = "ONE_DAY"  # 统计时间段
 MIN_SELL_NUM = 200  # 最低在售数量
-RANK_DATA_FIELD = "sellNumsRate"  # 排序字段：sellNumsRate（在售数量变化率）或 transactionAmount（交易量）
-RANK_SORT_TYPE = "ASC"  # 排序方式：ASC（升序）或 DESC（降序）
+RANK_DATA_FIELD = "transactionCount"  # 排序字段：sellNumsRate（在售数量变化率）或 transactionCount（交易量）
+RANK_SORT_TYPE = "DESC"  # 排序方式：ASC（升序）或 DESC（降序）
 
 FAV_LIST_ID = [
     "1399917014021996544",  # 手套

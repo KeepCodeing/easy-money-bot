@@ -560,6 +560,7 @@ class Spider:
             'transaction': {
                 'amount_24h': get_safe_value(transaction_amount_info.get('transactionAmount24Hours')),  # 近24小时成交额
                 'count_24h': get_safe_value(transaction_count_info.get('transactionCount24Hours')),  # 近24小时成交数量
+                'count_1day': get_safe_value(transaction_count_info.get('transactionCount1Days')),  # 当日成交量
             }
         }
 
