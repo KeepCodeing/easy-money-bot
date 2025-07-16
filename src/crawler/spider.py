@@ -542,6 +542,11 @@ class Spider:
                     'nums': get_safe_value(sell_nums_info.get('sellNums3Days')),  # 三天前的在售数量
                     'diff': get_safe_value(sell_nums_info.get('sellNums3DaysDiff')),  # 当前在售-三天前在售差值
                     'rate': get_safe_value(sell_nums_info.get('sellNums3DaysRate')),  # 相对前三天的减少/增多比例
+                },
+                'day7': {
+                    'nums': get_safe_value(sell_nums_info.get('sellNums7Days')),  # 七天前的在售数量
+                    'diff': get_safe_value(sell_nums_info.get('sellNums7DaysDiff')),  # 当前在售-七天前在售差值
+                    'rate': get_safe_value(sell_nums_info.get('sellNums7DaysRate')),  # 相对七天的减少/增多比例
                 }
             },
             'price': {
@@ -555,6 +560,11 @@ class Spider:
                     'price': get_safe_value(sell_price_info.get('before3DaysPrice')),  # 三天前价格
                     'diff': get_safe_value(sell_price_info.get('diff3DaysPrice')),  # 价格变化
                     'rate': get_safe_value(sell_price_info.get('diff3Days')),  # 价格变化率
+                },
+                'day7': {
+                    'price': get_safe_value(sell_price_info.get('before7DaysPrice')),  # 七天前价格
+                    'diff': get_safe_value(sell_price_info.get('diff7DaysPrice')),  # 价格变化
+                    'rate': get_safe_value(sell_price_info.get('diff7Days')),  # 价格变化率
                 }
             },
             'transaction': {

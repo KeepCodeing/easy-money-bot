@@ -947,10 +947,12 @@ def handle_rank_command(args):
                 print(f"     当前: {item['sell_nums']['current']} 个")
                 print(f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)")
                 print(f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)")
+                print(f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)")
                 print(f"   价格情况:")
                 print(f"     当前: {item['price']['current']:.2f}")
                 print(f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)")
                 print(f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)")
+                print(f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)")
                 print(f"   24小时交易:")
                 print(f"     成交量: {item['transaction']['count_24h']} 个")
                 print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
@@ -966,10 +968,12 @@ def handle_rank_command(args):
                     message += f"     当前: {item['sell_nums']['current']} 个\n"
                     message += f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
                     message += f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)\n"
+                    message += f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)\n"
                     message += f"   价格情况:\n"
                     message += f"     当前: {item['price']['current']:.2f}\n"
                     message += f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
                     message += f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)\n"
+                    message += f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)\n"
                     message += f"   24小时交易:\n"
                     message += f"     成交量: {item['transaction']['count_24h']} 个\n"
                     message += f"     成交额: {item['transaction']['amount_24h']:.2f}\n"
@@ -991,10 +995,12 @@ def handle_rank_command(args):
                 print(f"     当前: {item['sell_nums']['current']} 个")
                 print(f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)")
                 print(f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)")
+                print(f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)")
                 print(f"   价格情况:")
                 print(f"     当前: {item['price']['current']:.2f}")
                 print(f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)")
                 print(f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)")
+                print(f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)")
                 print(f"   24小时交易:")
                 print(f"     成交量: {item['transaction']['count_24h']} 个")
                 print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
@@ -1013,10 +1019,12 @@ def handle_rank_command(args):
                     message += f"     当前: {item['sell_nums']['current']} 个\n"
                     message += f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
                     message += f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)\n"
+                    message += f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)\n"
                     message += f"   价格情况:\n"
                     message += f"     当前: {item['price']['current']:.2f}\n"
                     message += f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
                     message += f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)\n"
+                    message += f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)\n"
                     message += f"   24小时交易:\n"
                     message += f"     成交量: {item['transaction']['count_24h']} 个\n"
                     message += f"     成交额: {item['transaction']['amount_24h']:.2f}\n"
