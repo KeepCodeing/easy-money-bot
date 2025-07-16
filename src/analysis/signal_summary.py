@@ -31,7 +31,8 @@ class SignalSummary:
                   price: float, open_price: float, close_price: float,
                   volume: float, boll_values: Dict[str, float], 
                   timestamp: Optional[str] = None,
-                  previous_touch: Optional[Dict] = None):
+                  previous_touch: Optional[Dict] = None,
+                  price_changes: Optional[Dict] = None):
         """
         添加新的信号
 
@@ -51,6 +52,11 @@ class SignalSummary:
                     'timestamp': str,  # 时间
                     'days_ago': int,  # 几天前
                 }
+            price_changes: 价格变化信息（可选）
+                {
+                    'day3': {'price': float, 'diff': float, 'rate': float},
+                    'day7': {'price': float, 'diff': float, 'rate': float}
+                }
         """
         if timestamp is None:
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -64,11 +70,18 @@ class SignalSummary:
             'volume': volume,
             'boll_values': boll_values,
             'timestamp': timestamp,
-            'previous_touch': previous_touch
+            'previous_touch': previous_touch,
+            'price_changes': price_changes or {
+                'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+            }
         }
         logger.info(f"添加{signal_type}信号: 商品={item_name}({item_id}), 价格={price:.2f}, 时间={timestamp}")
         if previous_touch:
             logger.info(f"上一次触碰: 价格={previous_touch['price']:.2f}, 时间={previous_touch['timestamp']}, {previous_touch['days_ago']}天前")
+        if price_changes:
+            logger.info(f"价格变化: 3天前={price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%), "
+                       f"7天前={price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)")
     
     @staticmethod
     def _clean_item_name(name: str) -> str:
@@ -113,13 +126,17 @@ class SignalSummary:
             
             with open(filepath, "w", encoding="utf-8") as f:
                 # 写入表头
-                f.write("| 商品ID | 商品名称 | 信号类型 | 触发价格 | 开盘价 | 收盘价 | 成交量 | 布林中轨 | 布林上轨 | 布林下轨 | 上次触碰价格 | 上次触碰时间 | 间隔天数 | 触发时间 |\n")
-                f.write("|---------|----------|----------|----------|---------|---------|----------|----------|----------|---------|--------------|--------------|----------|----------|\n")
+                f.write("| 商品ID | 商品名称 | 信号类型 | 触发价格 | 开盘价 | 收盘价 | 成交量 | 布林中轨 | 布林上轨 | 布林下轨 | 3天前价格 | 3天涨跌幅 | 7天前价格 | 7天涨跌幅 | 上次触碰价格 | 上次触碰时间 | 间隔天数 | 触发时间 |\n")
+                f.write("|---------|----------|----------|----------|---------|---------|----------|----------|----------|---------|------------|------------|------------|------------|--------------|--------------|----------|----------|\n")
                 
                 # 写入每个信号
                 for item_id, signal in self.signals.items():
                     # 获取历史触碰点信息，确保previous_touch存在
                     prev_touch = signal.get('previous_touch') or {}
+                    price_changes = signal.get('price_changes') or {
+                        'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                        'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+                    }
                     
                     # 安全地获取价格并格式化
                     try:
@@ -142,6 +159,10 @@ class SignalSummary:
                         f"{signal['boll_values']['middle']:.2f} | "
                         f"{signal['boll_values']['upper']:.2f} | "
                         f"{signal['boll_values']['lower']:.2f} | "
+                        f"{price_changes['day3']['price']:.2f} | "
+                        f"{price_changes['day3']['rate']:+.2f}% | "
+                        f"{price_changes['day7']['price']:.2f} | "
+                        f"{price_changes['day7']['rate']:+.2f}% | "
                         f"{prev_price} | "
                         f"{prev_time} | "
                         f"{days_ago} | "
@@ -191,6 +212,12 @@ class SignalSummary:
                 cleaned_name = self._clean_item_name(signal['name'])
                 signal_type = signal['signal_type']
                 
+                # 获取价格变化信息
+                price_changes = signal.get('price_changes', {
+                    'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                    'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+                })
+                
                 # 构建信号信息
                 signal_info = (
                     f"📌 {cleaned_name}\n"
@@ -198,6 +225,8 @@ class SignalSummary:
                     f"   Price: {signal['price']:.2f}\n"
                     f"   Volume: {int(signal['volume'])}\n"
                     f"   BOLL: {signal['boll_values']['middle']:.2f} | {signal['boll_values']['upper']:.2f} | {signal['boll_values']['lower']:.2f}\n"
+                    f"   3days ago: {price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%)\n"
+                    f"   7days ago: {price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)\n"
                 )
                 
                 if signal_type == 'buy':
@@ -240,7 +269,7 @@ class SignalSummary:
                 
         except Exception as e:
             logger.error(f"发送ntfy通知时出错: {e}")
-            return False 
+            return False
             
     @staticmethod
     def merge_images_vertically(image_paths: List[str]) -> Optional[str]:
@@ -417,7 +446,9 @@ class SignalSummary:
                     f"   ID: {item_id}",
                     f"   Price: ¥{signal['price']:.2f}",
                     f"   Volume: {int(signal['volume'])}",
-                    f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}"
+                    f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
+                    f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
+                    f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"
                 ]
                 
                 # 添加历史触碰点信息
@@ -445,7 +476,7 @@ class SignalSummary:
                 message_parts.append("")
             
             # 组合消息内容
-            message = "\n".join(message_parts)
+            message = "\n".join(message_parts) + "\n"
             
             priority = "3"
             
@@ -456,7 +487,7 @@ class SignalSummary:
             }
             response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
             # 同时保存为markdown文件
-            self.save_to_markdown()
+            # self.save_to_markdown()
             
             return True
             

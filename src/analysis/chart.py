@@ -193,6 +193,33 @@ class KLineChart:
                             'days_ago': days_ago
                         }
                     
+                    # 计算3天和7天前的价格变化
+                    current_idx = df.index.get_loc(idx)
+                    price_changes = {
+                        'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                        'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+                    }
+                    
+                    # 计算3天前的价格变化
+                    if current_idx >= 3 and current_idx - 3 >= 0:
+                        day3_idx = df.index[current_idx - 3]
+                        day3_price = float(df.loc[day3_idx, "Close"])
+                        price_changes['day3'] = {
+                            'price': day3_price,
+                            'diff': high_price - day3_price,
+                            'rate': ((high_price - day3_price) / day3_price * 100) if day3_price > 0 else 0.0
+                        }
+                    
+                    # 计算7天前的价格变化
+                    if current_idx >= 7 and current_idx - 7 >= 0:
+                        day7_idx = df.index[current_idx - 7]
+                        day7_price = float(df.loc[day7_idx, "Close"])
+                        price_changes['day7'] = {
+                            'price': day7_price,
+                            'diff': high_price - day7_price,
+                            'rate': ((high_price - day7_price) / day7_price * 100) if day7_price > 0 else 0.0
+                        }
+                    
                     self.signal_summary.add_signal(
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
@@ -207,7 +234,8 @@ class KLineChart:
                             'lower': lower_band
                         },
                         timestamp=pd.to_datetime(idx),
-                        previous_touch=previous_upper
+                        previous_touch=previous_upper,
+                        price_changes=price_changes
                     )
                 logger.info(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
@@ -239,6 +267,33 @@ class KLineChart:
                             'days_ago': days_ago
                         }
                     
+                    # 计算3天和7天前的价格变化
+                    current_idx = df.index.get_loc(idx)
+                    price_changes = {
+                        'day3': {'price': 0.0, 'diff': 0.0, 'rate': 0.0},
+                        'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
+                    }
+                    
+                    # 计算3天前的价格变化
+                    if current_idx >= 3 and current_idx - 3 >= 0:
+                        day3_idx = df.index[current_idx - 3]
+                        day3_price = float(df.loc[day3_idx, "Close"])
+                        price_changes['day3'] = {
+                            'price': day3_price,
+                            'diff': low_price - day3_price,
+                            'rate': ((low_price - day3_price) / day3_price * 100) if day3_price > 0 else 0.0
+                        }
+                    
+                    # 计算7天前的价格变化
+                    if current_idx >= 7 and current_idx - 7 >= 0:
+                        day7_idx = df.index[current_idx - 7]
+                        day7_price = float(df.loc[day7_idx, "Close"])
+                        price_changes['day7'] = {
+                            'price': day7_price,
+                            'diff': low_price - day7_price,
+                            'rate': ((low_price - day7_price) / day7_price * 100) if day7_price > 0 else 0.0
+                        }
+                    
                     self.signal_summary.add_signal(
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
@@ -253,7 +308,8 @@ class KLineChart:
                             'lower': lower_band
                         },
                         timestamp=pd.to_datetime(idx),
-                        previous_touch=previous_lower
+                        previous_touch=previous_lower,
+                        price_changes=price_changes
                     )
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
