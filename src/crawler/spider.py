@@ -182,7 +182,7 @@ class Spider:
                     logger.error(f"请求失败，已达到最大重试次数: {e}")
                     return None
     
-    def get_favorite_items(self) -> List[Dict]:
+    def get_favorite_items(self) -> dict:
         """
         获取收藏商品信息列表
         
@@ -192,6 +192,12 @@ class Spider:
             - name: 商品名称
         """
         items = []
+        
+        items_count = 0
+        
+        fav_list_names = self.get_favorite_folders()
+        
+        fav_list = []
         
         try:
             # 遍历收藏夹ID
@@ -236,6 +242,9 @@ class Spider:
                     
                     if page_num >= total_pages:
                         logger.info(f"已到达最后一页（当前第{page_num}页，共{total_pages}页）")
+                        fav_list.append({ 'name': fav_list_names[fav_id], 'id': fav_id, 'items': items })
+                        items_count += len(items)
+                        items = []
                         break
                     
                     page_num += 1
@@ -250,8 +259,8 @@ class Spider:
                     logger.info(f"等待 {delay:.1f} 秒后继续...")
                     time.sleep(delay)
             
-            logger.info(f"共获取到 {len(items)} 个商品信息")
-            return items
+            logger.info(f"共获取到 {items_count} 个商品信息")
+            return fav_list
             
         except Exception as e:
             logger.error(f"获取收藏商品信息失败: {e}")
@@ -394,7 +403,7 @@ class Spider:
             logger.error(f"保存商品 [{name}]({item_id}) 数据到JSON文件失败: {e}")
             return False
     
-    def crawl_all_items(self) -> Dict[str, Dict]:
+    def crawl_all_items(self, fav_list: list[dict] = None) -> Dict[str, Dict]:
         """
         爬取所有收藏商品的数据并保存为独立的JSON文件
         
@@ -412,7 +421,7 @@ class Spider:
         result = {}
         successful_items = []  # 记录成功爬取的商品
         failed_items = []      # 记录失败的商品
-        items = self.get_favorite_items()
+        items = fav_list
         
         if not items:
             logger.warning("没有获取到任何收藏商品信息")

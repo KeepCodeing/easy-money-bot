@@ -116,7 +116,7 @@ class KLineChart:
 
     def _find_bollinger_touches(
         self, df: pd.DataFrame, upper: pd.Series, lower: pd.Series, 
-        item_id: str = None, item_name: str = None
+        item_id: str = None, item_name: str = None, fav_name: str = None
     ) -> List[Dict]:
         """
         查找触碰布林线的点，并返回对应时间点的价格
@@ -235,7 +235,8 @@ class KLineChart:
                         },
                         timestamp=pd.to_datetime(idx),
                         previous_touch=previous_upper,
-                        price_changes=price_changes
+                        price_changes=price_changes,
+                        fav_name=fav_name
                     )
                 logger.info(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
@@ -309,7 +310,8 @@ class KLineChart:
                         },
                         timestamp=pd.to_datetime(idx),
                         previous_touch=previous_lower,
-                        price_changes=price_changes
+                        price_changes=price_changes,
+                        fav_name=fav_name
                     )
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"

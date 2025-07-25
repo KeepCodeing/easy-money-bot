@@ -5,7 +5,9 @@
 主程序入口，整合爬虫和数据存储功能
 """
 
+from math import e
 import os
+from signal import Signals
 import time
 import json
 import logging
@@ -567,64 +569,71 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
     try:
         # 初始化爬虫
         spider = Spider()
-
-        # 爬取数据（数据会被保存到items目录）
-        result = spider.crawl_all_items()
-        if not result:
-            logger.error("爬取数据失败，未获取到任何数据")
-            return
-            
-        logger.info(f"开始分析商品数据，检测信号")
+        
+        # 获取收藏商品列表
+        fav_folders = spider.get_favorite_items()
         
         signal_summary = SignalSummary()
-        
+    
         # 用于收集所有图表路径
         chart_paths = {}
         
-        # 第一次遍历：分析所有商品数据，检测信号
-        for item_id, item_data in result.items():
-            try:
-                name = item_data.get('name', f'Item-{item_id}')
-                kline_data = item_data.get('data', [])
+        for fav_data in fav_folders:
+
+            # 爬取数据（数据会被保存到items目录）
+            result = spider.crawl_all_items(fav_data.get('items', []))
+            fav_name = fav_data.get('name', "Unknown")
+            
+            if not result:
+                logger.error("爬取数据失败，未获取到任何数据")
+                return
                 
-                if not kline_data:
-                    logger.warning(f"商品 [{name}] 没有K线数据，跳过分析")
+            logger.info(f"开始分析商品数据，检测信号")
+            
+            # 第一次遍历：分析所有商品数据，检测信号
+            for item_id, item_data in result.items():
+                try:
+                    name = item_data.get('name', f'Item-{item_id}')
+                    kline_data = item_data.get('data', [])
+                    
+                    if not kline_data:
+                        logger.warning(f"商品 [{name}] 没有K线数据，跳过分析")
+                        continue
+                    
+                    # 清理数据
+                    cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
+                    
+                    # 确定要显示的指标类型
+                    indicator_type = IndicatorType.ALL
+                    if indicator.lower() == "boll":
+                        indicator_type = IndicatorType.BOLL
+                    elif indicator.lower() == "vegas":
+                        indicator_type = IndicatorType.VEGAS
+                    
+                    # 创建图表对象，用于分析信号
+                    # 注意：这里只分析信号，不生成图表
+                    chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
+                    
+                    # 分析数据，检测信号
+                    # 这一步会将检测到的信号添加到signal_summary中
+                    df_full = chart.indicators.prepare_dataframe(cleaned_data)
+                    middle, upper, lower = chart.indicators.calculate_bollinger_bands(df_full)
+                    
+                    # 筛选最近数据
+                    df = chart._filter_recent_data(df_full)
+                    
+                    # 手动调用信号检测方法
+                    chart._find_bollinger_touches(df, upper[df.index], lower[df.index], item_id, name, fav_name)
+                    
+                except Exception as e:
+                    logger.error(f"分析商品 [{name}] 的数据时出错: {e}")
                     continue
-                
-                # 清理数据
-                cleaned_data = MarketDataCleaner.clean_kline_data(kline_data)
-                
-                # 确定要显示的指标类型
-                indicator_type = IndicatorType.ALL
-                if indicator.lower() == "boll":
-                    indicator_type = IndicatorType.BOLL
-                elif indicator.lower() == "vegas":
-                    indicator_type = IndicatorType.VEGAS
-                
-                # 创建图表对象，用于分析信号
-                # 注意：这里只分析信号，不生成图表
-                chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
-                
-                # 分析数据，检测信号
-                # 这一步会将检测到的信号添加到signal_summary中
-                df_full = chart.indicators.prepare_dataframe(cleaned_data)
-                middle, upper, lower = chart.indicators.calculate_bollinger_bands(df_full)
-                
-                # 筛选最近数据
-                df = chart._filter_recent_data(df_full)
-                
-                # 手动调用信号检测方法
-                chart._find_bollinger_touches(df, upper[df.index], lower[df.index], item_id, name)
-                
-            except Exception as e:
-                logger.error(f"分析商品 [{name}] 的数据时出错: {e}")
-                continue
-        
-        # 保存信号汇总
-        # save_signal_summary(signal_summary)
-        
-        # 如果有信号，只为有信号的商品生成图表
-        if signal_summary.signals:
+            
+            # 保存信号汇总
+            # save_signal_summary(signal_summary)
+            
+            # 如果有信号，只为有信号的商品生成图表
+        if signal_summary.signals and settings.SAVE_CHART:
             logger.info(f"检测到 {len(signal_summary.signals)} 个信号，开始生成图表")
             
             for item_id in signal_summary.signals.keys():
@@ -650,30 +659,27 @@ def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_
                     # 创建图表
                     chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
                     
-                    if settings.SAVE_CHART:
-                        chart_path = chart.plot_candlestick(
-                            item_id=item_id,
-                            raw_data=cleaned_data,
-                            title=name,
-                            indicator_type=indicator_type
-                        )
-                        
-                        # 保存图表路径
-                        if chart_path:
-                            chart_paths[item_id] = chart_path
-                            # 将图表路径也存储到信号数据中，便于后续查找
-                            if item_id in signal_summary.signals:
-                                signal_summary.signals[item_id]['chart_path'] = chart_path
-                        
-                        logger.info(f"商品 [{name}] 的K线图生成完成")
+                    chart_path = chart.plot_candlestick(
+                        item_id=item_id,
+                        raw_data=cleaned_data,
+                        title=name,
+                        indicator_type=indicator_type
+                    )
+                    
+                    # 保存图表路径
+                    if chart_path:
+                        chart_paths[item_id] = chart_path
+                        # 将图表路径也存储到信号数据中，便于后续查找
+                        if item_id in signal_summary.signals:
+                            signal_summary.signals[item_id]['chart_path'] = chart_path
+                    
+                    logger.info(f"商品 [{name}] 的K线图生成完成")
                     
                 except Exception as e:
                     logger.error(f"生成商品 {item_id} 的图表时出错: {e}")
                     continue
-        else:
-            logger.info("未检测到任何信号，跳过图表生成")
-        
-        # 如果需要发送通知
+
+            # 如果需要发送通知
         if send_notification and signal_summary.signals:
             try:
                 logger.info(f"开始发送报告到ntfy主题: {ntfy_topic}")
