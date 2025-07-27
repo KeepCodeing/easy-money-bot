@@ -15,13 +15,10 @@ import mplfinance as mpf
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 from config import settings
-from config.settings import (
-    BOLL_TOLERANCE_UPPER,
-    BOLL_TOLERANCE_LOWER,
-)
 from .indicators import TechnicalIndicators, IndicatorType
 from src.utils.file_utils import clean_filename
 from .signal_summary import SignalSummary
+from math import ceil
 
 # 配置日志
 logging.basicConfig(
@@ -620,6 +617,39 @@ class KLineChart:
                     ),
                 ]
             )
+
+        # 计算成交量MA
+        volume_ma1 = df['Volume'].rolling(window=settings.VOLUME_MA1, min_periods=1).mean()
+        volume_ma2 = df['Volume'].rolling(window=settings.VOLUME_MA2, min_periods=1).mean()
+        volume_ma3 = df['Volume'].rolling(window=settings.VOLUME_MA3, min_periods=1).mean()
+
+        # 添加成交量MA线到addplots
+        addplots.extend([
+            mpf.make_addplot(
+                volume_ma1,
+                panel=1,  # 指定在成交量面板（panel 1）绘制
+                color='blue',
+                width=1,
+                alpha=0.7,
+                secondary_y=False,
+            ),
+            mpf.make_addplot(
+                volume_ma2,
+                panel=1,
+                color='orange',
+                width=1,
+                alpha=0.7,
+                secondary_y=False,
+            ),
+            mpf.make_addplot(
+                volume_ma3,
+                panel=1,
+                color='purple',
+                width=1,
+                alpha=0.7,
+                secondary_y=False,
+            ),
+        ])
 
         # 绘制K线图
         fig, axes = mpf.plot(
