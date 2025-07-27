@@ -507,12 +507,14 @@ class KLineChart:
         # 在全量数据上计算技术指标
         middle, upper, lower = self.indicators.calculate_bollinger_bands(df_full)
         ema1, ema2, ema3 = self.indicators.calculate_vegas_tunnel(df_full)
-
+    
         # 按日期范围筛选数据
         if start_date or end_date:
             df = self._filter_date_range(df_full, start_date, end_date)
         else:
             df = self._filter_recent_data(df_full)
+
+        volume_ma1, volume_ma2, volume_ma3 = self.indicators.calculate_volume_ma(df)
 
         if len(df) == 0:
             logger.warning(f"商品 {item_id} 筛选后没有数据，无法绘制K线图")
@@ -617,11 +619,6 @@ class KLineChart:
                     ),
                 ]
             )
-
-        # 计算成交量MA
-        volume_ma1 = df['Volume'].rolling(window=settings.VOLUME_MA1, min_periods=1).mean()
-        volume_ma2 = df['Volume'].rolling(window=settings.VOLUME_MA2, min_periods=1).mean()
-        volume_ma3 = df['Volume'].rolling(window=settings.VOLUME_MA3, min_periods=1).mean()
 
         # 添加成交量MA线到addplots
         addplots.extend([

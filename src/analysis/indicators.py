@@ -35,6 +35,11 @@ class TechnicalIndicators:
         self.vegas_ema1 = settings.VEGAS_EMA1
         self.vegas_ema2 = settings.VEGAS_EMA2
         self.vegas_ema3 = settings.VEGAS_EMA3
+
+        # 成交量MA参数
+        self.volume_ma1 = settings.VOLUME_MA1
+        self.volume_ma2 = settings.VOLUME_MA2
+        self.volume_ma3 = settings.VOLUME_MA3
     
     def calculate_bollinger_bands(self, df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
         """
@@ -81,6 +86,26 @@ class TechnicalIndicators:
             return ema1, ema2, ema3
         except Exception as e:
             logger.error(f"计算维加斯通道时出错: {e}")
+            return pd.Series(), pd.Series(), pd.Series()
+    
+    def calculate_volume_ma(self, df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
+        """
+        计算成交量的移动平均线（MA1, MA2, MA3）
+        
+        Args:
+            df: 包含Volume列的DataFrame
+            
+        Returns:
+            (MA1, MA2, MA3)
+        """
+        try:
+            # 计算成交量MA（填充前 window-1 个点）
+            ma1 = df['Volume'].rolling(window=self.volume_ma1, min_periods=1).mean()
+            ma2 = df['Volume'].rolling(window=self.volume_ma2, min_periods=1).mean()
+            ma3 = df['Volume'].rolling(window=self.volume_ma3, min_periods=1).mean()
+            return ma1, ma2, ma3
+        except Exception as e:
+            logger.error(f"计算成交量MA时出错: {e}")
             return pd.Series(), pd.Series(), pd.Series()
     
     def add_indicators_to_plot(self, df: pd.DataFrame, ax: any, volume_ax: any = None,

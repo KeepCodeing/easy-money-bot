@@ -53,15 +53,15 @@ RANK_DATA_FIELD = "transactionCount"  # 排序字段：sellNumsRate（在售数�
 RANK_SORT_TYPE = "DESC"  # 排序方式：ASC（升序）或 DESC（降序）
 
 FAV_LIST_ID = [
-    "1399917014021996544",  # 手套
-    "1399947806538366976",  # 收藏品
-    "1417735341674864640",  # 刀皮
-    "1414804160054743040",  # 探员
-    "1417733750678888448",  # 千战百战
-    "1418012730076360704",  # 十战个战
-    "1417747830720622592",  # 贴纸
-    "1414787065409622016",  # 鸟狙
-    # "1415633294154125312",  # test
+    # "1399917014021996544",  # 手套
+    # "1399947806538366976",  # 收藏品
+    # "1417735341674864640",  # 刀皮
+    # "1414804160054743040",  # 探员
+    # "1417733750678888448",  # 千战百战
+    # "1418012730076360704",  # 十战个战
+    # "1417747830720622592",  # 贴纸
+    # "1414787065409622016",  # 鸟狙
+    "1415633294154125312",  # test
 ]
 
 # 策略参数
@@ -76,15 +76,19 @@ VEGAS_EMA1 = int(os.getenv("VEGAS_EMA1", 12))  # 维加斯通道EMA1周期
 VEGAS_EMA2 = int(os.getenv("VEGAS_EMA2", 144))  # 维加斯通道EMA2周期
 VEGAS_EMA3 = int(os.getenv("VEGAS_EMA3", 169))  # 维加斯通道EMA3周期
 
+VOLUME_MA1 = int(os.getenv("VOLUME_MA1", 5))  # 成交量MA1周期
+VOLUME_MA2 = int(os.getenv("VOLUME_MA2", 10))  # 成交量MA2周期
+VOLUME_MA3 = int(os.getenv("VOLUME_MA3", 20))  # 成交量MA3周期
+
 # 爬虫配置
 CRAWL_INTERVAL = int(os.getenv("CRAWL_INTERVAL", 4))  # 小时
 
 # 图表配置
 CHART_DAYS = int(os.getenv("CHART_DAYS", 30))  # 图表显示天数
-SAVE_CHART = os.getenv("SAVE_CHART", False)  # 是否保存图表
+SAVE_CHART = os.getenv("SAVE_CHART", True )  # 是否保存图表
 
 # 存储配置
-SAVE_JSON = os.getenv("SAVE_JSON", False)  # 是否保存json
+SAVE_JSON = os.getenv("SAVE_JSON", True)  # 是否保存json
 
 # HTTP请求配置
 REQUEST_TIMEOUT = 30  # 请求超时时间（秒）

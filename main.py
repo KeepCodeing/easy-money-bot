@@ -764,12 +764,12 @@ def handle_chart_command(args):
             # 注意：这里只分析信号，不生成图表
             chart = KLineChart(signal_summary, days_to_show=settings.CHART_DAYS)
             # save chart
-            # chart_path = chart.plot_candlestick(
-            #         item_id=item_id,
-            #         raw_data=cleaned_data,
-            #         title=name,
-            #         indicator_type=indicator_type
-            #     )
+            chart_path = chart.plot_candlestick(
+                    item_id=item_id,
+                    raw_data=cleaned_data,
+                    title=name,
+                    indicator_type=indicator_type
+                )
             
             # 分析数据，检测信号
             # 这一步会将检测到的信号添加到signal_summary中
@@ -1071,7 +1071,8 @@ def main():
     
     if args.command == "crawl":
         # 执行爬虫任务
-        crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
+        # crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
+        crawl_and_save(indicator=args.indicator, send_notification=False, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
         
     elif args.command == "chart":
         handle_chart_command(args)
