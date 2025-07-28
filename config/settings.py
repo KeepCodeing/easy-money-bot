@@ -100,8 +100,8 @@ PAGE_DELAY_MIN = 1  # 翻页最小延迟（秒）
 PAGE_DELAY_MAX = 4  # 翻页最大延迟（秒）
 FOLDER_DELAY_MIN = 2  # 收藏夹切换最小延迟（秒）
 FOLDER_DELAY_MAX = 5  # 收藏夹切换最大延迟（秒）
-ITEM_DELAY_MIN = 1  # 商品爬取最小延迟（秒）
-ITEM_DELAY_MAX = 2  # 商品爬取最大延迟（秒）
+ITEM_DELAY_MIN = 2  # 商品爬取最小延迟（秒）
+ITEM_DELAY_MAX = 8  # 商品爬取最大延迟（秒）
 
 # 用户代理列表
 USER_AGENTS = [
