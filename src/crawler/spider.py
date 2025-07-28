@@ -96,7 +96,7 @@ class Spider:
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Content-Type': 'application/json',
-            'access-token': '3951fea7-44e3-4368-8099-36d1b1ed86ee', # 暂时不知道这个参数怎么计算出来的，但是GET请求不需要
+            'access-token': settings.ACCESS_TOKEN, # 暂时不知道这个参数怎么计算出来的，但是GET请求不需要
             'Origin': 'https://steamdt.com',
             'Referer': 'https://steamdt.com/',
             'Connection': 'keep-alive',
