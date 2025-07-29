@@ -85,10 +85,10 @@ CRAWL_INTERVAL = int(os.getenv("CRAWL_INTERVAL", 4))  # 小时
 
 # 图表配置
 CHART_DAYS = int(os.getenv("CHART_DAYS", 30))  # 图表显示天数
-SAVE_CHART = os.getenv("SAVE_CHART", True )  # 是否保存图表
+SAVE_CHART = os.getenv("SAVE_CHART", False )  # 是否保存图表
 
 # 存储配置
-SAVE_JSON = os.getenv("SAVE_JSON", True)  # 是否保存json
+SAVE_JSON = os.getenv("SAVE_JSON", False)  # 是否保存json
 
 # HTTP请求配置
 REQUEST_TIMEOUT = 30  # 请求超时时间（秒）

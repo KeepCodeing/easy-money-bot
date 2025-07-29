@@ -1071,8 +1071,8 @@ def main():
     
     if args.command == "crawl":
         # 执行爬虫任务
-        # crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
-        crawl_and_save(indicator=args.indicator, send_notification=False, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
+        crawl_and_save(indicator=args.indicator, send_notification=args.notify, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
+        # crawl_and_save(indicator=args.indicator, send_notification=False, ntfy_topic=settings.NATY_TOPIC_BUY_SELL_NOTIFY)
         
     elif args.command == "chart":
         handle_chart_command(args)
