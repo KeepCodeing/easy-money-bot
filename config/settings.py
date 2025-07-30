@@ -84,7 +84,7 @@ VOLUME_MA3 = int(os.getenv("VOLUME_MA3", 20))  # 成交量MA3周期
 CRAWL_INTERVAL = int(os.getenv("CRAWL_INTERVAL", 4))  # 小时
 
 # 图表配置
-CHART_DAYS = int(os.getenv("CHART_DAYS", 30))  # 图表显示天数
+CHART_DAYS = int(os.getenv("CHART_DAYS", 1))  # 图表显示天数
 SAVE_CHART = os.getenv("SAVE_CHART", False )  # 是否保存图表
 
 # 存储配置
