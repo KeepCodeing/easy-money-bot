@@ -88,7 +88,7 @@ class TechnicalIndicators:
             logger.error(f"计算维加斯通道时出错: {e}")
             return pd.Series(), pd.Series(), pd.Series()
     
-    def calculate_volume_ma(self, df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
+    def calculate_volume_ma(self, df: pd.DataFrame) -> list[pd.Series]:
         """
         计算成交量的移动平均线（MA1, MA2, MA3）
         
@@ -103,10 +103,10 @@ class TechnicalIndicators:
             ma1 = df['Volume'].rolling(window=self.volume_ma1, min_periods=1).mean()
             ma2 = df['Volume'].rolling(window=self.volume_ma2, min_periods=1).mean()
             ma3 = df['Volume'].rolling(window=self.volume_ma3, min_periods=1).mean()
-            return ma1, ma2, ma3
+            return [ma1, ma2, ma3]
         except Exception as e:
             logger.error(f"计算成交量MA时出错: {e}")
-            return pd.Series(), pd.Series(), pd.Series()
+            return [pd.Series(), pd.Series(), pd.Series()]
     
     def add_indicators_to_plot(self, df: pd.DataFrame, ax: any, volume_ax: any = None,
                              indicator_type: IndicatorType = IndicatorType.ALL):

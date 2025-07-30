@@ -33,7 +33,8 @@ class SignalSummary:
                   timestamp: Optional[str] = None,
                   previous_touch: Optional[Dict] = None,
                   price_changes: Optional[Dict] = None,
-                  fav_name: str = None):
+                  fav_name: str = None,
+                  volume_ma: list = []):
         """
         添加新的信号
 
@@ -80,14 +81,15 @@ class SignalSummary:
                 'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
             },
             'item_id': item_id,
+            'volume_ma': volume_ma
         })
         
         logger.info(f"添加{signal_type}信号: 商品={item_name}({item_id}), 价格={price:.2f}, 时间={timestamp}")
-        if previous_touch:
-            logger.info(f"上一次触碰: 价格={previous_touch['price']:.2f}, 时间={previous_touch['timestamp']}, {previous_touch['days_ago']}天前")
-        if price_changes:
-            logger.info(f"价格变化: 3天前={price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%), "
-                       f"7天前={price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)")
+        # if previous_touch:
+        #     logger.info(f"上一次触碰: 价格={previous_touch['price']:.2f}, 时间={previous_touch['timestamp']}, {previous_touch['days_ago']}天前")
+        # if price_changes:
+        #     logger.info(f"价格变化: 3天前={price_changes['day3']['price']:.2f} ({price_changes['day3']['rate']:+.2f}%), "
+        #                f"7天前={price_changes['day7']['price']:.2f} ({price_changes['day7']['rate']:+.2f}%)")
     
     @staticmethod
     def _clean_item_name(name: str) -> str:
@@ -495,7 +497,7 @@ class SignalSummary:
                 # 分类并排序信号
                 buy_signals = []
                 sell_signals = []
-                message_parts.append(f"==========={fav_name}===========")
+                message_parts.append(f"==========={fav_name or 'Unknown'}===========")
                 
                 # 获取排序后的买入和卖出信号
                 sorted_buy_signals = self._sort_signals_by_price_change(item, 'buy')
@@ -512,6 +514,7 @@ class SignalSummary:
                         f"   ID: {item_id}",
                         f"   Price: ¥{signal['price']:.2f}",
                         f"   Volume: {int(signal['volume'])}",
+                        f"   Volume MA(5/10/20): {'/'.join(map(str, signal['volume_ma']))}",
                         f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
                         f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
                         f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"
@@ -536,6 +539,7 @@ class SignalSummary:
                         f"   ID: {item_id}",
                         f"   Price: ¥{signal['price']:.2f}",
                         f"   Volume: {int(signal['volume'])}",
+                        f"   Volume MA(5/10/20): {'/'.join(map(str, signal['volume_ma']))}",
                         f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
                         f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
                         f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"

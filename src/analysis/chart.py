@@ -179,6 +179,8 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
+                    volume_ma = [round(ma[-1]) for ma in self.indicators.calculate_volume_ma(df)];
+                    
                     # 查找上一次的上轨触碰点
                     previous_upper = None
                     if len(upper_touches) > 1:
@@ -233,7 +235,8 @@ class KLineChart:
                         timestamp=pd.to_datetime(idx),
                         previous_touch=previous_upper,
                         price_changes=price_changes,
-                        fav_name=fav_name
+                        fav_name=fav_name,
+                        volume_ma=volume_ma
                     )
                 logger.info(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
@@ -254,6 +257,8 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
+                    volume_ma = [round(ma[-1]) for ma in self.indicators.calculate_volume_ma(df)];
+
                     # 查找上一次的下轨触碰点
                     previous_lower = None
                     if len(lower_touches) > 1:
@@ -308,7 +313,8 @@ class KLineChart:
                         timestamp=pd.to_datetime(idx),
                         previous_touch=previous_lower,
                         price_changes=price_changes,
-                        fav_name=fav_name
+                        fav_name=fav_name,
+                        volume_ma=volume_ma
                     )
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
