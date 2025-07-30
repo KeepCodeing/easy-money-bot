@@ -207,7 +207,6 @@ class SignalSummary:
                 continue
             filtered_signals.append((item['item_id'], item))
         
-        print(filtered_signals)
         # 按7天价格变化率排序（降幅越大越靠前）
         return sorted(
             filtered_signals,
@@ -575,6 +574,8 @@ class SignalSummary:
                 "Tags": "CS2",
                 "Priority": priority
             }
+            
+            logger.info(message)
 
             response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
             # 同时保存为markdown文件
