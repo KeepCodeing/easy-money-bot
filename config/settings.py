@@ -80,6 +80,10 @@ VOLUME_MA1 = int(os.getenv("VOLUME_MA1", 5))  # 成交量MA1周期
 VOLUME_MA2 = int(os.getenv("VOLUME_MA2", 10))  # 成交量MA2周期
 VOLUME_MA3 = int(os.getenv("VOLUME_MA3", 20))  # 成交量MA3周期
 
+VOLUME_MA1_FILTER_SCORE = int(os.getenv("VOLUME_MA1_FILTER_SCORE", 150)) # 成交量 / MA1 > FILTER，认为有吸筹迹象
+VOLUME_MA_FILTER_DAY_RANGE = int(os.getenv("VOLUME_MA_FILTER_DAY_RANGE", 5)) # 计算近N天内的吸筹迹象
+MIN_VOLUME_COUNT = int(os.getenv("MIN_VOLUME_COUNT", 50)) # 最低成交量
+
 # 爬虫配置
 CRAWL_INTERVAL = int(os.getenv("CRAWL_INTERVAL", 4))  # 小时
 

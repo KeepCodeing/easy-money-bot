@@ -146,6 +146,8 @@ class KLineChart:
             f"开始检测触碰点，数据长度：{len(df)}，布林线上轨长度：{len(upper)}，布林线下轨长度：{len(lower)}"
         )
 
+        item_volume_ma = self.indicators.calculate_volume_ma(df)
+
         for idx in df.index:
             high_price = float(df.loc[idx, "High"])
             low_price = float(df.loc[idx, "Low"])
@@ -179,7 +181,7 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
-                    volume_ma = [round(ma[-1]) for ma in self.indicators.calculate_volume_ma(df)];
+                    volume_ma = [round(ma[-1]) for ma in item_volume_ma]
                     
                     # 查找上一次的上轨触碰点
                     previous_upper = None
@@ -257,7 +259,7 @@ class KLineChart:
                 
                 # 如果是最新的一天且提供了商品ID，添加到信号汇总
                 if item_id and idx == df.index[-1]:
-                    volume_ma = [round(ma[-1]) for ma in self.indicators.calculate_volume_ma(df)];
+                    volume_ma = [round(ma[-1]) for ma in item_volume_ma]
 
                     # 查找上一次的下轨触碰点
                     previous_lower = None
@@ -319,6 +321,87 @@ class KLineChart:
                 logger.info(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
                 )
+
+            # 检测买盘力度
+            if item_id and idx == df.index[-settings.VOLUME_MA_FILTER_DAY_RANGE]:
+                # 获取最后N天的索引位置
+                n = settings.VOLUME_MA_FILTER_DAY_RANGE
+                last_n_indices = df.index[-n:]
+                
+                # 获取最后N天的Volume和MA数据
+                nearly_vol = df.loc[last_n_indices, 'Volume']
+                nearly_vol_ma = [ma[-n:] for ma in item_volume_ma[-n:]]
+                
+                # 打印调试信息
+                logger.info(f"近{n}天成交量:\n{nearly_vol}")
+                logger.info(f"近{n}天MA值:\n{nearly_vol_ma}")
+                
+                large_order_timeline = {
+                    'items': [],
+                    'info': {
+                        'day_range': settings.VOLUME_MA_FILTER_DAY_RANGE
+                    }
+                }
+                
+                # 遍历最后N天
+                for i, (date, vol) in enumerate(zip(last_n_indices, nearly_vol)):
+                    # 跳过小于最小成交量的数据
+                    if vol < settings.MIN_VOLUME_COUNT:
+                        continue
+                    
+                    # 计算MA5得分
+                    ma5_value = nearly_vol_ma[0][i]  # 假设第一个MA是MA5
+                    ma5_score = round(vol / ma5_value * 100, 2)
+                    
+                    # 检查是否满足拉盘条件
+                    if ma5_score > settings.VOLUME_MA1_FILTER_SCORE:
+                        # 正确获取当前行的数据
+                        row = df.loc[date]
+                        
+                        open_price = float(row["Open"])
+                        close_price = float(row["Close"])
+                        volume = float(row["Volume"])
+                        
+                        logger.info(f"拉盘信号: {item_name} 于 {date}, score: {ma5_score}")
+                        logger.info(f"开盘价: {open_price}, 收盘价: {close_price}, 成交量: {volume}")
+                        
+                        large_order_timeline['items'].append({
+                            'timestamp': date,
+                            'score': ma5_score,
+                            'ma_ratio': round((vol - ma5_value) / ma5_value * 100, 2),
+                            'volume': int(volume),
+                            'price_change': {
+                                'open': open_price,
+                                'close': close_price,
+                                'rate': round((close_price - open_price) / open_price * 100, 2)
+                            },
+                        })
+
+                large_order_timeline['info']['neraly_vol'] = list(nearly_vol)                
+                large_order_timeline['info']['neraly_ma5'] = list(map(round, [ma for ma in nearly_vol_ma[0]]))      
+                logger.info("*" * 100)        
+                logger.info(large_order_timeline)
+                logger.info("*" * 100)        
+                # if len(large_order_timeline) > 0:
+                #     self.signal_summary.add_signal(
+                #         item_id=str(item_id),
+                #         item_name=str(item_name or f'Item-{item_id}'),
+                #         signal_type='large_order',
+                #         price=close_price,
+                #         open_price=open_price,
+                #         close_price=close_price,
+                #         volume=volume,
+                #         boll_values={
+                #             'middle': middle_band,
+                #             'upper': upper_band,
+                #             'lower': lower_band
+                #         },
+                #         timestamp=pd.to_datetime(idx),
+                #         previous_touch=previous_lower,
+                #         price_changes=price_changes,
+                #         fav_name=fav_name,
+                #         volume_ma=volume_ma
+                #     )
 
         # 返回所有触碰点
         touches = upper_touches + lower_touches
