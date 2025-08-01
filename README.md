@@ -159,7 +159,7 @@ conda activate easy-money-bot
 创建`.env`文件，填入必要的配置信息：
 ```
 # API配置
-API_URL=https://xxx.xxx.com/user/steam/category/v1/kline
+KLINE_URL=https://xxx.xxx.com/user/steam/category/v1/kline
 FAV_URL=https://xxx.xxx.com/user/fav/url
 PLATFORM=steam
 DATA_TYPE=default

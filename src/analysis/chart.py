@@ -19,6 +19,7 @@ from .indicators import TechnicalIndicators, IndicatorType
 from src.utils.file_utils import clean_filename
 from .signal_summary import SignalSummary
 from math import ceil
+import matplotlib.dates as mdates
 
 # 配置日志
 logging.basicConfig(
@@ -829,6 +830,97 @@ class KLineChart:
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
         logger.info(f"K线图已保存至: {save_path}")
         
+        # 关闭图表，释放内存
+        plt.close(fig)
+
+        return save_path
+
+    def plot_sell_quantity(
+        self,
+        item_id: str,
+        raw_data: List[List],
+        title: Optional[str] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+    ) -> str:
+        """
+        绘制在售数量的柱状图
+
+        Args:
+            item_id: 商品ID
+            raw_data: 原始数据，格式为：
+                [
+                    [timestamp, sell_quantity, buy_price, buy_quantity, hourly_volume, hourly_amount, survive_num],
+                    ...
+                ]
+            title: 图表标题，默认为"商品ID - 在售数量"
+            start_date: 开始日期，格式：YYYY-MM-DD
+            end_date: 结束日期，格式：YYYY-MM-DD
+
+        Returns:
+            str: 保存的图表文件路径，如果失败则返回None
+        """
+        if not raw_data:
+            logger.warning(f"商品 {item_id} 没有数据，无法绘制在售数量图")
+            return None
+
+        # 转换数据为DataFrame
+        df = pd.DataFrame(
+            raw_data,
+            columns=["timestamp", "price", "sell_quantity", "buy_price", "buy_quantity", "hourly_amount", "hourly_volume", "survive_num"]
+        )
+        df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
+        df.set_index("timestamp", inplace=True)
+
+        df = df.tail(settings.TREAD_FILTER_DAY_RANGE * 24)
+        
+        # 按日期范围筛选数据
+        # if start_date or end_date:
+        #     df = self._filter_date_range(df, start_date, end_date)
+        # else:
+        #     # 默认显示最近 settings.TREAD_FILTER_DAY_RANGE 天的数据
+        #     df = self._filter_recent_data(df, days=settings.TREAD_FILTER_DAY_RANGE)
+
+        if len(df) == 0:
+            logger.warning(f"商品 {item_id} 筛选后没有数据，无法绘制在售数量图")
+            return None
+
+        # 设置图表标题
+        if title is None:
+            title = f"商品 {item_id} - 在售数量"
+
+        # 清理文件名中的特殊字符
+        safe_title = clean_filename(title)
+
+        # 创建图表
+        fig, ax = plt.subplots(figsize=(15, 6))
+
+        # 绘制柱状图
+        ax.bar(
+            df.index,
+            df["sell_quantity"],
+            width=0.8,
+            color="skyblue",
+            edgecolor="white",
+            label="在售数量"
+        )
+
+        # 设置图表标题和标签
+        ax.set_title(title, fontsize=12, fontweight="bold", fontproperties=font)
+        ax.set_xlabel("日期", fontproperties=font)
+        ax.set_ylabel("在售数量", fontproperties=font)
+        ax.legend(prop=font)
+
+        # 设置x轴日期格式
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+        fig.autofmt_xdate()
+
+        # 保存图表
+        file_name = f"{safe_title}_{item_id}_sell_quantity.png"
+        save_path = os.path.join(self.charts_dir, file_name)
+        fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        logger.info(f"在售数量图已保存至: {save_path}")
+
         # 关闭图表，释放内存
         plt.close(fig)
 

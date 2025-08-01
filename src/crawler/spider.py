@@ -60,7 +60,7 @@ class Spider:
     def __init__(self):
         """初始化爬虫"""
         # API相关配置
-        self.api_url = settings.API_URL
+        self.KLINE_URL = settings.KLINE_URL
         self.fav_url = settings.FAV_URL
         self.platform = settings.PLATFORM
         self.data_type = settings.DATA_TYPE
@@ -290,7 +290,7 @@ class Spider:
         }
         
         logger.info(f"开始获取商品 {item_id} 的数据，maxTime={max_time}")
-        result = self._make_request(settings.API_URL, params=params)  # 使用settings中的API_URL
+        result = self._make_request(settings.KLINE_URL, params=params)  # 使用settings中的KLINE_URL
         
         if result:
             logger.info(f"成功获取商品 {item_id} 的数据")
@@ -728,6 +728,97 @@ class Spider:
         except Exception as e:
             logger.error(f"获取收藏夹列表时发生错误: {e}")
             return {}
+
+    def get_item_trend_details(self, item_id: str, data_type: int, type_day: str, special_style: str = '') -> Optional[Dict]:
+        """
+        获取商品趋势详情数据
+
+        Args:
+            item_id: 商品ID
+            data_type: 数据类型
+            type_day: 时间范围（如 "7d" 表示7天）
+            special_style: 特殊样式（可选）
+
+        Returns:
+            商品趋势详情数据字典或None（如果请求失败）
+        """
+        # 准备请求数据
+        json_data = {
+            "dataType": data_type,
+            "itemId": item_id,
+            "platform": settings.PLATFORM,
+            "specialStyle": special_style,
+            "timestamp": int(time.time() * 1000),  # 当前时间戳（毫秒）
+            "typeDay": type_day
+        }
+
+        logger.info(f"开始获取商品 {item_id} 的趋势详情数据")
+        result = self._make_request(settings.TYPE_TREND_URL, method='POST', json_data=json_data)
+
+        if result:
+            logger.info(f"成功获取商品 {item_id} 的趋势详情数据")
+            return result
+        return None
+
+    def save_trend_data(self, item_id: str, trend_data: Dict) -> bool:
+        """
+        将趋势数据保存为JSON文件
+
+        Args:
+            item_id: 商品ID
+            trend_data: 趋势数据字典
+
+        Returns:
+            bool: 是否保存成功
+        """
+        try:
+            # 确保数据目录存在
+            tread_dir = os.path.join(settings.DATA_DIR, "trend")
+            os.makedirs(tread_dir, exist_ok=True)
+
+            # 构建文件路径
+            file_path = os.path.join(tread_dir, f"{item_id}.json")
+
+            # 保存为JSON文件
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(trend_data, f, ensure_ascii=False, indent=2)
+
+            logger.info(f"成功保存趋势数据到文件: {file_path}")
+            return True
+
+        except Exception as e:
+            logger.error(f"保存趋势数据到JSON文件失败: {e}")
+            return False
+
+    def load_trend_data(self, item_id: str) -> Optional[Dict]:
+        """
+        从本地加载趋势数据
+
+        Args:
+            item_id: 商品ID
+
+        Returns:
+            趋势数据字典，如果文件不存在则返回None
+        """
+        try:
+            # 构建文件路径
+            file_path = os.path.join(settings.DATA_DIR, "trend", f"{item_id}.json")
+
+            # 检查文件是否存在
+            if not os.path.exists(file_path):
+                logger.info(f"本地趋势数据文件不存在: {file_path}")
+                return None
+
+            # 读取JSON文件
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            logger.info(f"成功从本地加载趋势数据: {file_path}")
+            return data
+
+        except Exception as e:
+            logger.error(f"加载本地趋势数据失败: {e}")
+            return None
 
 if __name__ == "__main__":
     # 测试代码

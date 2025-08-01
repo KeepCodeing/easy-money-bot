@@ -553,6 +553,76 @@ def generate_all_charts(
         logger.error(f"批量生成图表时出错: {e}")
 
 
+def crawl_and_save_trend(filename: Optional[str] = None, indicator: str = "all", send_notification: bool = True, ntfy_topic: str = settings.NATY_TOPIC_BUY_SELL_NOTIFY):
+    """
+    爬取数据并保存，同时生成图表
+    
+    Args:
+        filename: 可选的文件名，如果不提供则自动生成
+        indicator: 指标类型，可选 'all'、'boll' 或 'vegas'
+        send_notification: 是否发送通知
+        ntfy_topic: ntfy的主题名称
+    """
+    logger.info("开始执行爬虫任务")
+    start_time = time.time()
+
+    try:
+        # 初始化爬虫
+        spider = Spider()
+        
+        # 获取收藏商品列表
+        fav_folders = spider.get_favorite_items()
+        
+        # 创建图表对象
+        chart = KLineChart()
+
+        trend_data = spider.load_trend_data("1381082957596262401")
+        print(trend_data)
+        
+        if trend_data:
+            # 绘制在售数量图
+            chart_path = chart.plot_sell_quantity(
+                item_id="1381082957596262401",
+                raw_data=trend_data['data'],
+                title="示例商品 - 在售数量"
+            )
+            print(f"图表已保存至: {chart_path}")
+        
+        exit()
+        
+        # 用于收集所有图表路径
+        chart_paths = {}
+        
+        for fav_data in fav_folders:
+            for item in fav_data.get('items', []):
+                print(item)
+                trend_data = spider.get_item_trend_details(item['item_id'], 3, "1")
+                spider.save_trend_data(item['item_id'], trend_data)
+                # 绘制在售数量图
+                chart_path = chart.plot_sell_quantity(
+                    item_id=item['item_id'],
+                    raw_data=trend_data['data'],
+                    title="示例商品 - 在售数量"
+                )
+                print(f"图表已保存至: {chart_path}")
+                print(trend_data)
+                exit()
+            # 爬取数据（数据会被保存到items目录）
+            # result = spider.crawl_all_items(fav_data.get('items', []))
+            # fav_name = fav_data.get('name', "Unknown")
+            
+            # if not result:
+            #     logger.error("爬取数据失败，未获取到任何数据")
+            #     return
+                
+            # logger.info(f"开始分析商品数据，检测信号")
+            
+            
+    except Exception as e:
+        logger.error(f"执行任务时出错: {e}")
+        elapsed_time = time.time() - start_time
+        logger.info(f"任务异常终止，耗时: {elapsed_time:.2f} 秒")
+
 def crawl_and_save(filename: Optional[str] = None, indicator: str = "all", send_notification: bool = True, ntfy_topic: str = settings.NATY_TOPIC_BUY_SELL_NOTIFY):
     """
     爬取数据并保存，同时生成图表
@@ -1067,6 +1137,11 @@ def main():
     rank_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
     rank_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
 
+    # 趋势命令
+    trend_parser = subparsers.add_parser("trend", help="获取趋势数据")
+    trend_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
+    trend_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
+
     args = parser.parse_args()
     
     if args.command == "crawl":
@@ -1082,6 +1157,10 @@ def main():
             
     elif args.command == "rank":
         handle_rank_command(args)
+        
+    elif args.command == "trend":
+        crawl_and_save_trend()
+        
     else:
         # 默认显示帮助信息
         parser.print_help()

@@ -30,8 +30,8 @@ os.makedirs(os.path.join(DATA_DIR, "signals"), exist_ok=True)  # 信号目录
 DB_PATH = os.path.join(DATA_DIR, "db.sqlite")
 
 # API配置
-API_URL = os.getenv(
-    "API_URL", "https://sdt-api.ok-skins.com/user/steam/category/v1/kline"
+KLINE_URL = os.getenv(
+    "KLINE_URL", "https://sdt-api.ok-skins.com/user/steam/category/v1/kline"
 )  # get 请求
 FAV_URL = os.getenv(
     "FAV_URL", "https://sdt-api.ok-skins.com/user/collect/skin/v1/page"
@@ -42,6 +42,11 @@ TOTAL_BUY_RANK = os.getenv(
 FAV_LIST_URL = os.getenv(
     "FAV_LIST_URL", "http://sdt-api.ok-skins.com/user/collect/skin/folder/v1/list"
 )  # get 请求
+
+TYPE_TREND_URL = os.getenv(
+    "TYPE_TREND_URL", "https://sdt-api.ok-skins.com/user/steam/type-trend/v2/item/details"
+)  # post 请求
+
 PLATFORM = os.getenv("PLATFORM", "YOUPIN")  # 平台，主要使用悠悠有品
 DATA_TYPE = os.getenv("DATA_TYPE", 2)  # 数据类型，对应K线tab
 
@@ -67,11 +72,14 @@ FAV_LIST_ID = [
 # 策略参数
 CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 1))  # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv("CATEGORY_DAYS", 90))  # 360天
+
 BOLLINGER_PERIOD = int(os.getenv("BOLLINGER_PERIOD", 20))  # 布林线周期
 BOLLINGER_STD = int(os.getenv("BOLLINGER_STD", 2))  # 布林线标准差
+
 # 布林线触碰容差值（上轨和下轨分别设置）
 BOLL_TOLERANCE_UPPER = 0.01  # 上轨容差 0.5%
 BOLL_TOLERANCE_LOWER = 0.01  # 下轨容差 0.5%
+
 VEGAS_EMA1 = int(os.getenv("VEGAS_EMA1", 12))  # 维加斯通道EMA1周期
 VEGAS_EMA2 = int(os.getenv("VEGAS_EMA2", 144))  # 维加斯通道EMA2周期
 VEGAS_EMA3 = int(os.getenv("VEGAS_EMA3", 169))  # 维加斯通道EMA3周期
@@ -83,6 +91,8 @@ VOLUME_MA3 = int(os.getenv("VOLUME_MA3", 20))  # 成交量MA3周期
 VOLUME_MA1_FILTER_SCORE = int(os.getenv("VOLUME_MA1_FILTER_SCORE", 150)) # 成交量 / MA1 > FILTER，认为有吸筹迹象
 VOLUME_MA_FILTER_DAY_RANGE = int(os.getenv("VOLUME_MA_FILTER_DAY_RANGE", 5)) # 计算近N天内的吸筹迹象
 MIN_VOLUME_COUNT = int(os.getenv("MIN_VOLUME_COUNT", 50)) # 最低成交量
+
+TREAD_FILTER_DAY_RANGE = int(os.getenv("TREAD_FILTER_DAY_RANGE", 14)) # 趋势过滤天数
 
 # 爬虫配置
 CRAWL_INTERVAL = int(os.getenv("CRAWL_INTERVAL", 4))  # 小时
