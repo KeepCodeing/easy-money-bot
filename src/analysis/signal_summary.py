@@ -34,7 +34,8 @@ class SignalSummary:
                   previous_touch: Optional[Dict] = None,
                   price_changes: Optional[Dict] = None,
                   fav_name: str = None,
-                  volume_ma: list = []):
+                  volume_ma: list = [],
+                  large_order_timeline: list = None):
         """
         添加新的信号
 
@@ -81,7 +82,8 @@ class SignalSummary:
                 'day7': {'price': 0.0, 'diff': 0.0, 'rate': 0.0}
             },
             'item_id': item_id,
-            'volume_ma': volume_ma
+            'volume_ma': volume_ma,
+            'large_order_timeline': large_order_timeline
         })
         
         logger.info(f"添加{signal_type}信号: 商品={item_name}({item_id}), 价格={price:.2f}, 时间={timestamp}")
@@ -212,6 +214,37 @@ class SignalSummary:
             filtered_signals,
             key=lambda x: x[1]['price_changes']['day7']['rate']
         )
+        
+    def _filter_singal_by_type(self, signals: list[dict], signal_type: str = None):
+        filtered_singals = []
+        
+        for item in signals:
+            if item['signal_type'] == signal_type:
+                if item:
+                    filtered_singals.append(item)
+                
+        return filtered_singals
+        
+    def _sort_signals_by_ma_ratio(self, signals: list[dict], signal_type: str = None) -> List[dict]:
+        """
+        按ma_ratio对信号进行排序（降序排列，ma_ratio值越大越靠前）
+        
+        Args:
+            signals: 信号字典列表
+            signal_type: 可选的信号类型过滤 ('buy' 或 'sell')
+            
+        Returns:
+            排序后的信号列表，每个元素为 (item_id, signal_dict) 元组
+        """
+        
+        # 过滤信号类型（如果指定）
+        
+        filtered_signals = self._filter_singal_by_type(signals, signal_type)
+        for signal in filtered_signals:
+            
+           sorted(signal['large_order_timeline']['items'], key=lambda x: x['ma_ratio'], reverse=True)
+        
+        return filtered_signals
 
     def send_ntfy_notification(self, topic_name: str = "cs2market") -> bool:
         """
@@ -496,11 +529,13 @@ class SignalSummary:
                 # 分类并排序信号
                 buy_signals = []
                 sell_signals = []
+                large_order_signals = []
                 message_parts.append(f"==========={fav_name or 'Unknown'}===========")
                 
                 # 获取排序后的买入和卖出信号
                 sorted_buy_signals = self._sort_signals_by_price_change(item, 'buy')
                 sorted_sell_signals = self._sort_signals_by_price_change(item, 'sell')
+                sorted_large_order_signals = self._sort_signals_by_ma_ratio(item, 'large_order')
                 
                 # 处理买入信号
                 for item_id, signal in sorted_buy_signals:
@@ -516,7 +551,7 @@ class SignalSummary:
                         f"   Volume MA(5/10/20): {'/'.join(map(str, signal['volume_ma']))}",
                         f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
                         f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
-                        f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"
+                        f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)",
                     ]
                     
                     # 添加历史触碰点信息
@@ -541,7 +576,7 @@ class SignalSummary:
                         f"   Volume MA(5/10/20): {'/'.join(map(str, signal['volume_ma']))}",
                         f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
                         f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
-                        f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)"
+                        f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)",
                     ]
                     
                     # 添加历史触碰点信息
@@ -551,6 +586,46 @@ class SignalSummary:
                     
                     signal_info = "\n".join(signal_info)
                     sell_signals.append(signal_info)
+                
+                # 处理拉货信号
+                for item in sorted_large_order_signals:
+                    cleaned_name = self._clean_item_name(item['name'])
+
+                    timeline = item['large_order_timeline']
+                    info = timeline['info']
+                    large_order_message = '\n'.join([
+                        f"      Day Range: {info['day_range']}",
+                        f"      5 Days Volume: {'/'.join(map(str, info['neraly_vol']))}",
+                        f"      5 Days MA5: {'/'.join(map(str, info['neraly_ma5']))}",
+                    ]) + '\n'
+                    
+                    for data in timeline['items']:
+                        temp_message = [
+                            f"      Event Time: {data['timestamp']}",
+                            f"      MA/Vol Ratio: +{data['ma_ratio']:.2f}%",
+                            f"      Score: {data['score']:.2f}",
+                            f"      Volume: {data['volume']}",
+                            f"      Price Change: ¥{data['price_change']['open']}-¥{data['price_change']['close']} | {'+' if data['price_change']['rate'] > 0 else '-'}{data['price_change']['rate']}%",
+                        ]
+                        
+                        large_order_message += '\n'.join(temp_message)
+                    
+                    # 构建信号信息
+                    signal_info = [
+                        f"📌 {cleaned_name}",
+                        # f"   Timestamp: {item['timestamp']}",
+                        f"   ID: {item['item_id']}",
+                        f"   Price: ¥{item['price']:.2f}",
+                        f"   Volume: {int(item['volume'])}",
+                        f"   Volume MA(5/10/20): {'/'.join(map(lambda x: f'{x:.2f}', item['volume_ma']))}",
+                        f"   BOLL: ¥{item['boll_values']['middle']:.2f} | ¥{item['boll_values']['upper']:.2f} | ¥{item['boll_values']['lower']:.2f}",
+                        f"   Large Order Event:",
+                        f"{large_order_message}",
+                        f"\n"
+                    ]
+
+                    signal_info = "\n".join(signal_info)
+                    large_order_signals.append(signal_info)
                 
                 # 添加买入信号
                 if buy_signals:
@@ -564,6 +639,11 @@ class SignalSummary:
                     message_parts.extend(sell_signals)
                     message_parts.append("")
             
+                if large_order_signals:
+                    message_parts.append("💱 Large Order Signals:")
+                    message_parts.extend(large_order_signals)
+                    message_parts.append("")
+                    
             # 组合消息内容
             message = "\n".join(message_parts) + "\n"
             
