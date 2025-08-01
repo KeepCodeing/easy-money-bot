@@ -225,7 +225,7 @@ class KLineChart:
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
                         signal_type='sell',
-                        price=open_price,
+                        price=body_high_price,
                         open_price=open_price,
                         close_price=close_price,
                         volume=volume,
@@ -240,7 +240,10 @@ class KLineChart:
                         fav_name=fav_name,
                         volume_ma=volume_ma
                     )
-                logger.info(
+                    
+                    logger.info(f"最新 上轨触碰点: {idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}")
+                    
+                logger.debug(
                     f"检测到上轨触碰点: 日期={idx}, 最高价={high_price:.2f}, 布林上轨={upper_band:.2f}"
                 )
 
@@ -303,7 +306,7 @@ class KLineChart:
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
                         signal_type='buy',
-                        price=close_price,
+                        price=body_low_price,
                         open_price=open_price,
                         close_price=close_price,
                         volume=volume,
@@ -318,7 +321,9 @@ class KLineChart:
                         fav_name=fav_name,
                         volume_ma=volume_ma
                     )
-                logger.info(
+                    logger.info(f"最新 下轨触碰点: {idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}")
+                    
+                logger.debug(
                     f"检测到下轨触碰点: 日期={idx}, 最低价={low_price:.2f}, 布林下轨={lower_band:.2f}"
                 )
 
