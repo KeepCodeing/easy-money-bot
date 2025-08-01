@@ -608,7 +608,7 @@ class SignalSummary:
                             f"      Price Change: ¥{data['price_change']['open']}-¥{data['price_change']['close']} | {'+' if data['price_change']['rate'] > 0 else '-'}{data['price_change']['rate']}%",
                         ]
                         
-                        large_order_message += '\n'.join(temp_message)
+                        large_order_message += '\n'.join(temp_message) + '\n'
                     
                     # 构建信号信息
                     signal_info = [
@@ -621,7 +621,6 @@ class SignalSummary:
                         f"   BOLL: ¥{item['boll_values']['middle']:.2f} | ¥{item['boll_values']['upper']:.2f} | ¥{item['boll_values']['lower']:.2f}",
                         f"   Large Order Event:",
                         f"{large_order_message}",
-                        f"\n"
                     ]
 
                     signal_info = "\n".join(signal_info)
