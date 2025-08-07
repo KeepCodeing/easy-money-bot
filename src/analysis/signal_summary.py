@@ -212,7 +212,8 @@ class SignalSummary:
         # 按7天价格变化率排序（降幅越大越靠前）
         return sorted(
             filtered_signals,
-            key=lambda x: x[1]['price_changes']['day7']['rate']
+            key=lambda x: x[1]['price_changes']['day7']['rate'],
+            reverse=True
         )
         
     def _filter_singal_by_type(self, signals: list[dict], signal_type: str = None):
