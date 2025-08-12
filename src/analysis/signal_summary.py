@@ -607,7 +607,7 @@ class SignalSummary:
                         #     f"      Price Change: ¥{data['price_change']['open']}-¥{data['price_change']['close']} | {'+' if data['price_change']['rate'] > 0 else '-'}{data['price_change']['rate']}%",
                         # ]
                         message_content = [
-                            f"{data['timestamp']}", 
+                            f"{data['timestamp']}({(datetime.now() - datetime.strptime(str(data['timestamp']), '%Y-%m-%d %H:%M:%S')).days} days ago)", 
                             f"+{data['ma_ratio']:.2f}%", 
                             f"{data['score']:.2f}", 
                             f"{data['volume']}", 
@@ -622,7 +622,7 @@ class SignalSummary:
                     large_order_message = '| ' + ' | '.join(title_list) + ' |\n' 
 
                     for line in content_:
-                        large_order_message += '   | ' + ' | '.join([words.center(span) for words, span in zip(line, center_span)]) + ' |' "\n"
+                        large_order_message += '   | ' + ' | '.join([words.center(span) for words, span in zip(line, center_span)]) + ' |\n'
 
                     # 构建信号信息
                     signal_info = [
