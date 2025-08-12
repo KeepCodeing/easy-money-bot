@@ -573,8 +573,8 @@ class SignalSummary:
                         f"📌 {cleaned_name}",
                         f"   ID: {item_id}",
                         f"   Price: ¥{signal['price']:.2f}",
-                        f"   Volume: {int(signal['volume'])}",
-                        f"   Volume MA(5/10/20): {'/'.join(map(str, signal['volume_ma']))}",
+                        f"   Volume: {round(signal['volume'])}",
+                        f"   Volume MA(5/10/20): {'/'.join(map(str, map(round, signal['volume_ma'])))}",
                         f"   BOLL: ¥{signal['boll_values']['middle']:.2f} | ¥{signal['boll_values']['upper']:.2f} | ¥{signal['boll_values']['lower']:.2f}",
                         f"   3days ago: ¥{signal['price_changes']['day3']['price']:.2f} ({signal['price_changes']['day3']['rate']:+.2f}%)",
                         f"   7days ago: ¥{signal['price_changes']['day7']['price']:.2f} ({signal['price_changes']['day7']['rate']:+.2f}%)",
@@ -594,34 +594,49 @@ class SignalSummary:
 
                     timeline = item['large_order_timeline']
                     info = timeline['info']
-                    large_order_message = '\n'.join([
-                        f"      Day Range: {info['day_range']}",
-                        f"      5 Days Volume: {'/'.join(map(str, info['neraly_vol']))}",
-                        f"      5 Days MA5: {'/'.join(map(str, info['neraly_ma5']))}",
-                    ]) + '\n'
+                    title_list = ["EventTime", "Ratio", "Score", "Volume", "Price Change"]
+                    content_ = []
+                    center_span = [len(title) for title in title_list]
                     
                     for data in timeline['items']:
-                        temp_message = [
-                            f"      Event Time: {data['timestamp']}",
-                            f"      MA/Vol Ratio: +{data['ma_ratio']:.2f}%",
-                            f"      Score: {data['score']:.2f}",
-                            f"      Volume: {data['volume']}",
-                            f"      Price Change: ¥{data['price_change']['open']}-¥{data['price_change']['close']} | {'+' if data['price_change']['rate'] > 0 else '-'}{data['price_change']['rate']}%",
-                        ]
+                        # temp_message = [
+                        #     f"      Event Time: {data['timestamp']}",
+                        #     f"      MA/Vol Ratio: +{data['ma_ratio']:.2f}%",
+                        #     f"      Score: {data['score']:.2f}",
+                        #     f"      Volume: {data['volume']}",
+                        #     f"      Price Change: ¥{data['price_change']['open']}-¥{data['price_change']['close']} | {'+' if data['price_change']['rate'] > 0 else '-'}{data['price_change']['rate']}%",
+                        # ]
+                        message_content = [
+                            f"{data['timestamp']}", 
+                            f"+{data['ma_ratio']:.2f}%", 
+                            f"{data['score']:.2f}", 
+                            f"{data['volume']}", 
+                            f"¥{data['price_change']['open']}-¥{data['price_change']['close']} / {'+' if data['price_change']['rate'] > 0 else ''}{data['price_change']['rate']}%"
+                        ]             
                         
-                        large_order_message += '\n'.join(temp_message) + '\n'
+                        content_.append(message_content)
+                        
+                        center_span = [max(len(title), len(content), span) for title, content, span in zip(title_list, message_content, center_span)]
                     
+                    title_list = [title.center(span) for span, title in zip(center_span, title_list)]
+                    large_order_message = '| ' + ' | '.join(title_list) + ' |\n' 
+
+                    for line in content_:
+                        large_order_message += '   | ' + ' | '.join([words.center(span) for words, span in zip(line, center_span)]) + ' |' "\n"
+
                     # 构建信号信息
                     signal_info = [
                         f"📌 {cleaned_name}",
-                        # f"   Timestamp: {item['timestamp']}",
                         f"   ID: {item['item_id']}",
+                        f"   Timestamp: {item['timestamp']}",
                         f"   Price: ¥{item['price']:.2f}",
                         f"   Volume: {int(item['volume'])}",
-                        f"   Volume MA(5/10/20): {'/'.join(map(lambda x: f'{x:.2f}', item['volume_ma']))}",
+                        f"   Volume MA(5/10/20): {'/'.join(map(str, map(round, item['volume_ma'])))}",
+                        f"   5 Days Volume: {'/'.join(map(str, map(round, info['neraly_vol'])))}",
+                        f"   5 Days MA5: {'/'.join(map(str, map(round, info['neraly_ma5'])))}",
                         f"   BOLL: ¥{item['boll_values']['middle']:.2f} | ¥{item['boll_values']['upper']:.2f} | ¥{item['boll_values']['lower']:.2f}",
-                        f"   Large Order Event:",
-                        f"{large_order_message}",
+                        f"   Large Order Event({info['day_range']} days):",
+                        f"   {large_order_message}",
                     ]
 
                     signal_info = "\n".join(signal_info)
@@ -656,6 +671,8 @@ class SignalSummary:
             }
             
             logger.info(message)
+
+            exit(0)
 
             response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
             # 同时保存为markdown文件
