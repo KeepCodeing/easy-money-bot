@@ -672,7 +672,7 @@ class SignalSummary:
             
             logger.info(message)
 
-            exit(0)
+            # exit(0)
 
             response = send_ntfy(topic_name, message, url=settings.NATY_SERVER_URL, headers=headers)
             # 同时保存为markdown文件
