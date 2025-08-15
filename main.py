@@ -576,19 +576,19 @@ def crawl_and_save_trend(filename: Optional[str] = None, indicator: str = "all",
         # 创建图表对象
         chart = KLineChart()
 
-        trend_data = spider.load_trend_data("1381082957596262401")
-        print(trend_data)
+        # trend_data = spider.load_trend_data("1381082957596262401")
+        # print(trend_data)
         
-        if trend_data:
-            # 绘制在售数量图
-            chart_path = chart.plot_sell_quantity(
-                item_id="1381082957596262401",
-                raw_data=trend_data['data'],
-                title="示例商品 - 在售数量"
-            )
-            print(f"图表已保存至: {chart_path}")
+        # if trend_data:
+        #     # 绘制在售数量图
+        #     chart_path = chart.plot_sell_quantity(
+        #         item_id="1381082957596262401",
+        #         raw_data=trend_data['data'],
+        #         title="示例商品 - 在售数量"
+        #     )
+        #     print(f"图表已保存至: {chart_path}")
         
-        exit()
+        # exit()
         
         # 用于收集所有图表路径
         chart_paths = {}
@@ -1108,6 +1108,11 @@ def handle_rank_command(args):
             
             send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
 
+def handle_sell_rank_command(args):
+    spider = Spider()
+    
+    print(spider.get_total_sell_rank("CSGO_Type_Rifle:weapon_awp"))    
+    pass
 
 def main():
     """主函数"""
@@ -1142,6 +1147,8 @@ def main():
     trend_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
     trend_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
 
+    sell_parser = subparsers.add_parser("sell", help="获取拉盘趋势")
+    
     args = parser.parse_args()
     
     if args.command == "crawl":
@@ -1160,7 +1167,9 @@ def main():
         
     elif args.command == "trend":
         crawl_and_save_trend()
-        
+    elif args.command == "sell":
+        handle_sell_rank_command(args)
+        pass
     else:
         # 默认显示帮助信息
         parser.print_help()

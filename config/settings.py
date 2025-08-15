@@ -50,12 +50,34 @@ TYPE_TREND_URL = os.getenv(
 PLATFORM = os.getenv("PLATFORM", "YOUPIN")  # 平台，主要使用悠悠有品
 DATA_TYPE = os.getenv("DATA_TYPE", 2)  # 数据类型，对应K线tab
 
+MIN_SELL_NUM = 50  # 最低在售数量
+
 # 交易量排行榜配置
 TOP_TOTAL_BUY_COUNT = 10  # 获取前10个数据
 TOTAL_BUY_DAY_RANGE = "ONE_DAY"  # 统计时间段
-MIN_SELL_NUM = 200  # 最低在售数量
 RANK_DATA_FIELD = "transactionCount"  # 排序字段：sellNumsRate（在售数量变化率）或 transactionCount（交易量）
 RANK_SORT_TYPE = "DESC"  # 排序方式：ASC（升序）或 DESC（降序）
+
+TOP_TOTAL_SELL_COUNT = 5  # 获取前5个数据
+TOTAL_SELL_DAY_RANGE = "ONE_DAY"  # 统计时间段
+RANK_SELL_FIELD = "sellNumsDiff"  # sellNumsDiff 在售数量变化
+RANK_SELL_SORT_TYPE = "ASC"  # 排序方式：ASC（升序）或 DESC（降序）
+SELL_MIN_VAL = 20 # 最低在售价格
+SELL_MAX_VAL = 1000 # 最高在售价格
+SELL_FILTER_EXTERIOR = "WearCategory0" # 外观：崭新出厂
+SELL_FILTER_QUANLITY = "normal" # 类型：普通
+SELL_WEAPON_TPYES = ["CSGO_Type_Rifle:weapon_awp", 
+                     "CSGO_Type_Rifle:weapon_ak47", 
+                     "CSGO_Type_Rifle:weapon_m4a1_silencer", 
+                     "CSGO_Type_Rifle:weapon_m4a1", 
+                     "CSGO_Type_Pistol:weapon_deagle", 
+                     "CSGO_Type_Pistol:weapon_usp_silencer", 
+                     "CSGO_Type_Pistol:weapon_glock", 
+                     "Type_CustomPlayer:customplayer_counter_strike",
+                     "Type_CustomPlayer:customplayer_terrorist"]
+
+
+
 
 FAV_LIST_ID = [
     # "1399917014021996544",  # 手套
@@ -102,7 +124,7 @@ CHART_DAYS = int(os.getenv("CHART_DAYS", 30))  # 图表显示天数
 SAVE_CHART = os.getenv("SAVE_CHART", False )  # 是否保存图表
 
 # 存储配置
-SAVE_JSON = os.getenv("SAVE_JSON", False)  # 是否保存json
+SAVE_JSON = os.getenv("SAVE_JSON", True)  # 是否保存json
 
 # HTTP请求配置
 REQUEST_TIMEOUT = 30  # 请求超时时间（秒）

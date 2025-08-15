@@ -666,6 +666,90 @@ class Spider:
         except Exception as e:
             logger.error(f"获取交易量排行榜数据时发生错误: {e}")
             return None
+        
+    def get_total_sell_rank(self, weapon_type: str) -> Optional[List[Dict]]:
+        """
+        获取指定收藏夹中商品的交易量排行榜数据
+        
+        Args:
+            fav_id: 收藏夹ID
+            
+        Returns:
+            排行榜数据列表或None（如果请求失败）
+        """
+        try:
+            current_timestamp = int(time.time() * 1000)  # 使用毫秒时间戳
+            
+            # 准备请求数据
+            json_data = {
+                "page": 1,
+                "pageSize": 15,
+                "nextId": "",
+                "dataRange": settings.TOTAL_SELL_DAY_RANGE,
+                "dataField": settings.RANK_SELL_FIELD,
+                "sortType": settings.RANK_SELL_SORT_TYPE,
+                "folder": {
+                    "expected": "",
+                },
+                "rangeConditionList": [
+                    {
+                        "field": "price",
+                        "minVal": settings.SELL_MIN_VAL,
+                        "maxVal": settings.SELL_MAX_VAL
+                    },
+                    {
+                        "field": "sellNums",
+                        "minVal": settings.MIN_SELL_NUM,
+                        "maxVal": None
+                    },
+                    {
+                        "field": "priceRate",
+                        "range": "SEVEN_DAYS",
+                        "minVal": None,
+                        "maxVal": None
+                    },
+                    {
+                        "field": "transactionCount",
+                        "range": "THREE_DAYS",
+                        "minVal": None,
+                        "maxVal": None
+                    }
+                ],
+                "timestamp": current_timestamp,
+                "queryName": "",
+                "exteriorList": [settings.SELL_FILTER_EXTERIOR],
+                "qualityList": [settings.SELL_FILTER_QUANLITY],
+                "rarityList": [],
+                "weaponList": [weapon_type],
+                "typeList": []
+            }
+            
+            logger.info(f"开始获取收藏夹 {weapon_type} 的在售减少量排行榜数据")
+            
+            # 发送请求
+            response = self._make_request(settings.TOTAL_BUY_RANK, method='POST', json_data=json_data)
+            
+            if not response or not response.get('success'):
+                logger.error(f"获取收藏夹 {fav_id} 的交易量排行榜数据失败")
+                return None
+            
+            # 解析数据
+            data = response.get('data', {})
+            items = data.get('list', [])
+            
+            # 处理每个商品的数据
+            processed_items = [self._process_rank_item(item) for item in items]
+            
+            # 只返回前TOP_TOTAL_BUY_COUNT个数据
+            result = processed_items[:settings.TOP_TOTAL_SELL_COUNT] if processed_items else []
+            
+            logger.info(f"成功获取到 {len(result)} 条交易量排行榜数据")
+            return result
+            
+        except Exception as e:
+            logger.error(f"获取交易量排行榜数据时发生错误: {e}")
+            return None
+        
 
     def get_all_fav_total_buy_rank(self) -> Dict[str, List[Dict]]:
         """
