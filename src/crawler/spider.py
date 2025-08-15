@@ -680,6 +680,21 @@ class Spider:
         try:
             current_timestamp = int(time.time() * 1000)  # 使用毫秒时间戳
             
+            filter_dict = {}
+            
+            if [ "Type_CustomPlayer:customplayer_counter_strike", "Type_CustomPlayer:customplayer_terrorist"].count(weapon_type):
+                filter_dict = {
+                    "exteriorList": [],
+                    "qualityList": [],
+                    "weaponList": [weapon_type],
+                }
+            else:
+                filter_dict = {
+                    "exteriorList": [settings.SELL_FILTER_EXTERIOR],
+                    "qualityList": [settings.SELL_FILTER_QUANLITY],
+                    "weaponList": [weapon_type],
+                }
+                
             # 准备请求数据
             json_data = {
                 "page": 1,
@@ -717,12 +732,11 @@ class Spider:
                 ],
                 "timestamp": current_timestamp,
                 "queryName": "",
-                "exteriorList": [settings.SELL_FILTER_EXTERIOR],
-                "qualityList": [settings.SELL_FILTER_QUANLITY],
                 "rarityList": [],
-                "weaponList": [weapon_type],
-                "typeList": []
+                "typeList": [],
+                **filter_dict
             }
+            
             
             logger.info(f"开始获取收藏夹 {weapon_type} 的在售减少量排行榜数据")
             

@@ -17,6 +17,7 @@ from typing import Dict, List, Optional, Tuple
 import re
 import pandas as pd
 import numpy as np
+import random
 
 from src.crawler.spider import Spider
 from src.storage.database import DatabaseManager
@@ -1111,8 +1112,56 @@ def handle_rank_command(args):
 def handle_sell_rank_command(args):
     spider = Spider()
     
-    print(spider.get_total_sell_rank("CSGO_Type_Rifle:weapon_awp"))    
-    pass
+    message = "交易量排行榜数据汇总：\n"
+    
+    for weapon_type in settings.SELL_WEAPON_TPYES:
+        result = spider.get_total_sell_rank(weapon_type[0])        
+        print(f"\n类型 [{weapon_type[1]}] 的交易量排行榜数据:")
+        for i, item in enumerate(result, 1):
+            print(f"\n{i}. {item['item_name']} (ID: {item['item_id']}):")
+            print(f"   等级: {item['item_rarity']}")
+            print(f"   存世量: {item['survive_num']}")
+            print(f"   在售情况:")
+            print(f"     当前: {item['sell_nums']['current']} 个")
+            print(f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)")
+            print(f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)")
+            print(f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)")
+            print(f"   价格情况:")
+            print(f"     当前: {item['price']['current']:.2f}")
+            print(f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)")
+            print(f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)")
+            print(f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)")
+            print(f"   24小时交易:")
+            print(f"     成交量: {item['transaction']['count_24h']} 个")
+            print(f"     成交额: {item['transaction']['amount_24h']:.2f}")
+            print(f"     当日成交量: {item['transaction']['count_1day']} 个")
+            
+            folder_name = weapon_type[1]
+            message += f"\n=== 收藏夹 [{folder_name}] ===\n"
+            for i, item in enumerate(result, 1):
+                message += f"\n{i}. {item['item_name']} (ID: {item['item_id']})\n"
+                message += f"   等级: {item['item_rarity']}\n"
+                message += f"   存世量: {item['survive_num']}\n"
+                message += f"   在售情况:\n"
+                message += f"     当前: {item['sell_nums']['current']} 个\n"
+                message += f"     1天前: {item['sell_nums']['day1']['nums']} 个 (变化: {item['sell_nums']['day1']['diff']:+d}, {item['sell_nums']['day1']['rate']:+.2f}%)\n"
+                message += f"     3天前: {item['sell_nums']['day3']['nums']} 个 (变化: {item['sell_nums']['day3']['diff']:+d}, {item['sell_nums']['day3']['rate']:+.2f}%)\n"
+                message += f"     7天前: {item['sell_nums']['day7']['nums']} 个 (变化: {item['sell_nums']['day7']['diff']:+d}, {item['sell_nums']['day7']['rate']:+.2f}%)\n"
+                message += f"   价格情况:\n"
+                message += f"     当前: {item['price']['current']:.2f}\n"
+                message += f"     1天前: {item['price']['day1']['price']:.2f} (变化: {item['price']['day1']['diff']:+.2f}, {item['price']['day1']['rate']:+.2f}%)\n"
+                message += f"     3天前: {item['price']['day3']['price']:.2f} (变化: {item['price']['day3']['diff']:+.2f}, {item['price']['day3']['rate']:+.2f}%)\n"
+                message += f"     7天前: {item['price']['day7']['price']:.2f} (变化: {item['price']['day7']['diff']:+.2f}, {item['price']['day7']['rate']:+.2f}%)\n"
+                message += f"   24小时交易:\n"
+                message += f"     成交量: {item['transaction']['count_24h']} 个\n"
+                message += f"     成交额: {item['transaction']['amount_24h']:.2f}\n"
+                message += f"     当日成交量: {item['transaction']['count_1day']} 个\n\n"
+        
+        delay = random.uniform(settings.FOLDER_DELAY_MIN, settings.FOLDER_DELAY_MAX)
+        time.sleep(delay)
+
+    if args.notify:
+        send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL)
 
 def main():
     """主函数"""
@@ -1148,6 +1197,9 @@ def main():
     trend_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
 
     sell_parser = subparsers.add_parser("sell", help="获取拉盘趋势")
+    sell_parser.add_argument("--notify", action="store_true", default=False, help="发送通知")
+    sell_parser.add_argument("--ntfy-topic", type=str, default=settings.NATY_TOPIC_BUY_SELL_NOTIFY, help="ntfy主题名称")
+    
     
     args = parser.parse_args()
     

@@ -60,23 +60,21 @@ RANK_SORT_TYPE = "DESC"  # 排序方式：ASC（升序）或 DESC（降序）
 
 TOP_TOTAL_SELL_COUNT = 5  # 获取前5个数据
 TOTAL_SELL_DAY_RANGE = "ONE_DAY"  # 统计时间段
-RANK_SELL_FIELD = "sellNumsDiff"  # sellNumsDiff 在售数量变化
-RANK_SELL_SORT_TYPE = "ASC"  # 排序方式：ASC（升序）或 DESC（降序）
+RANK_SELL_FIELD = "transactionCount"  # sellNumsDiff 在售数量变化
+RANK_SELL_SORT_TYPE = "DESC"  # 排序方式：ASC（升序）或 DESC（降序）
 SELL_MIN_VAL = 20 # 最低在售价格
 SELL_MAX_VAL = 1000 # 最高在售价格
 SELL_FILTER_EXTERIOR = "WearCategory0" # 外观：崭新出厂
 SELL_FILTER_QUANLITY = "normal" # 类型：普通
-SELL_WEAPON_TPYES = ["CSGO_Type_Rifle:weapon_awp", 
-                     "CSGO_Type_Rifle:weapon_ak47", 
-                     "CSGO_Type_Rifle:weapon_m4a1_silencer", 
-                     "CSGO_Type_Rifle:weapon_m4a1", 
-                     "CSGO_Type_Pistol:weapon_deagle", 
-                     "CSGO_Type_Pistol:weapon_usp_silencer", 
-                     "CSGO_Type_Pistol:weapon_glock", 
-                     "Type_CustomPlayer:customplayer_counter_strike",
-                     "Type_CustomPlayer:customplayer_terrorist"]
-
-
+SELL_WEAPON_TPYES = [("CSGO_Type_Rifle:weapon_awp", "AWP"), 
+                     ("CSGO_Type_Rifle:weapon_ak47", "AK-47"), 
+                     ("CSGO_Type_Rifle:weapon_m4a1_silencer", "M4A1"), 
+                     ("CSGO_Type_Rifle:weapon_m4a1", "M4A4"), 
+                     ("CSGO_Type_Pistol:weapon_deagle", "Deagle"), 
+                     ("CSGO_Type_Pistol:weapon_usp_silencer", "USP"), 
+                     ("CSGO_Type_Pistol:weapon_glock", "Glock"), 
+                     ("Type_CustomPlayer:customplayer_counter_strike", "CounterStrike"),
+                     ("Type_CustomPlayer:customplayer_terrorist", "Terrorist")]
 
 
 FAV_LIST_ID = [

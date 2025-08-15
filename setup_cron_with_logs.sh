@@ -25,18 +25,25 @@ echo "# CS2Market Bot Tasks - Added $(date '+%Y-%m-%d %H:%M:%S')" >> "$TEMP_CRON
 # echo "PATH=${SCRIPT_DIR}/venv/bin:\$PATH" >> "$TEMP_CRON"
 
 # 添加爬虫任务 (10:00, 14:00, 18:00, 22:00, 02:00, 06:00)
-echo "0 10 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_10).log 2>&1" >> "$TEMP_CRON"
-echo "0 14 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
-echo "0 18 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_18).log 2>&1" >> "$TEMP_CRON"
-echo "0 22 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_22).log 2>&1" >> "$TEMP_CRON"
+# echo "0 10 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_10).log 2>&1" >> "$TEMP_CRON"
+# echo "0 14 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
+# echo "0 18 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_18).log 2>&1" >> "$TEMP_CRON"
+# echo "0 22 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_22).log 2>&1" >> "$TEMP_CRON"
 # echo "0 2 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_02).log 2>&1" >> "$TEMP_CRON"
 # echo "0 6 * * * cd ${SCRIPT_DIR} && python main.py crawl --indicator boll >> ${LOGS_DIR}/crawl_\$(date +\%Y\%m\%d_06).log 2>&1" >> "$TEMP_CRON"
 
 # 添加排名任务 (09:00, 14:30, 18:30, 23:00)
-echo "0 9 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_09).log 2>&1" >> "$TEMP_CRON"
-echo "30 14 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
-echo "30 18 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_1830).log 2>&1" >> "$TEMP_CRON"
-echo "0 23 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_23).log 2>&1" >> "$TEMP_CRON"
+# echo "0 9 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_09).log 2>&1" >> "$TEMP_CRON"
+# echo "30 14 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
+# echo "30 18 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_1830).log 2>&1" >> "$TEMP_CRON"
+# echo "0 23 * * * cd ${SCRIPT_DIR} && python main.py rank --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_23).log 2>&1" >> "$TEMP_CRON"
+
+# 添加买盘任务 (09:00, 14:30, 18:30, 23:00)
+echo "0 9 * * * cd ${SCRIPT_DIR} && python main.py sell --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_09).log 2>&1" >> "$TEMP_CRON"
+echo "30 14 * * * cd ${SCRIPT_DIR} && python main.py sell --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_14).log 2>&1" >> "$TEMP_CRON"
+echo "30 18 * * * cd ${SCRIPT_DIR} && python main.py sell --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_1830).log 2>&1" >> "$TEMP_CRON"
+echo "0 23 * * * cd ${SCRIPT_DIR} && python main.py sell --notify >> ${LOGS_DIR}/rank_\$(date +\%Y\%m\%d_23).log 2>&1" >> "$TEMP_CRON"
+
 
 # 添加日志清理任务（保留7天的日志）
 echo "0 0 * * * find ${LOGS_DIR} -name \"*.log\" -mtime +7 -delete" >> "$TEMP_CRON"
