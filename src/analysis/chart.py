@@ -338,6 +338,7 @@ class KLineChart:
                 nearly_vol = df.loc[last_n_indices, 'Volume']
                 nearly_vol_ma = [ma[-n:] for ma in item_volume_ma[-n:]]
                 
+                
                 # 打印调试信息
                 # logger.info(f"近{n}天成交量:\n{nearly_vol}")
                 # logger.info(f"近{n}天MA值:\n{nearly_vol_ma}")
@@ -364,22 +365,22 @@ class KLineChart:
                         # 正确获取当前行的数据
                         row = df.loc[date]
                         
-                        open_price = float(row["Open"])
-                        close_price = float(row["Close"])
-                        volume = float(row["Volume"])
+                        open_price_ = float(row["Open"])
+                        close_price_ = float(row["Close"])
+                        volume_ = float(row["Volume"])
                         
                         logger.info(f"拉盘信号: {item_name} 于 {date}, score: {ma5_score}")
-                        logger.info(f"开盘价: {open_price}, 收盘价: {close_price}, 成交量: {volume}")
+                        logger.info(f"开盘价: {open_price_}, 收盘价: {close_price_}, 成交量: {volume_}")
                         
                         large_order_timeline['items'].append({
                             'timestamp': date,
                             'score': ma5_score,
                             'ma_ratio': round((vol - ma5_value) / ma5_value * 100, 2),
-                            'volume': int(volume),
+                            'volume': int(volume_),
                             'price_change': {
-                                'open': open_price,
-                                'close': close_price,
-                                'rate': round((close_price - open_price) / open_price * 100, 2)
+                                'open': open_price_,
+                                'close': close_price_,
+                                'rate': round((close_price_ - open_price_) / open_price_ * 100, 2)
                             },
                         })
 
@@ -395,7 +396,7 @@ class KLineChart:
                         item_id=str(item_id),
                         item_name=str(item_name or f'Item-{item_id}'),
                         signal_type='large_order',
-                        price=close_price,
+                        price=body_high_price,
                         open_price=open_price,
                         close_price=close_price,
                         volume=volume,
@@ -406,7 +407,7 @@ class KLineChart:
                         },
                         timestamp=pd.to_datetime(idx),
                         fav_name=fav_name,
-                        volume_ma=list(nearly_vol_ma[-1]),
+                        volume_ma=list([ma[-1] for ma in nearly_vol_ma]),
                         large_order_timeline=large_order_timeline
                     )
 
@@ -850,7 +851,7 @@ class KLineChart:
             item_id: 商品ID
             raw_data: 原始数据，格式为：
                 [
-                    [timestamp, sell_quantity, buy_price, buy_quantity, hourly_volume, hourly_amount, survive_num],
+                    [timestamp, price, sell_quantity, buy_price, buy_quantity, hourly_amount, hourly_volume, survive_num],
                     ...
                 ]
             title: 图表标题，默认为"商品ID - 在售数量"
@@ -864,15 +865,25 @@ class KLineChart:
             logger.warning(f"商品 {item_id} 没有数据，无法绘制在售数量图")
             return None
 
+        # 清理数据：将None或null替换为0
+        cleaned_data = []
+        for row in raw_data:
+            cleaned_row = [0 if x is None else x for x in row]
+            cleaned_data.append(cleaned_row)
+            
+        print('\n'.join(map(str, cleaned_data[-10:])))
+
         # 转换数据为DataFrame
         df = pd.DataFrame(
-            raw_data,
+            cleaned_data,
             columns=["timestamp", "price", "sell_quantity", "buy_price", "buy_quantity", "hourly_amount", "hourly_volume", "survive_num"]
         )
         df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
         df.set_index("timestamp", inplace=True)
 
         df = df.tail(settings.TREAD_FILTER_DAY_RANGE * 24)
+        
+        print(df)
         
         # 按日期范围筛选数据
         # if start_date or end_date:
@@ -916,15 +927,15 @@ class KLineChart:
         fig.autofmt_xdate()
 
         # 保存图表
-        file_name = f"{safe_title}_{item_id}_sell_quantity.png"
-        save_path = os.path.join(self.charts_dir, file_name)
-        fig.savefig(save_path, dpi=300, bbox_inches="tight")
-        logger.info(f"在售数量图已保存至: {save_path}")
+        # file_name = f"{safe_title}_{item_id}_sell_quantity.png"
+        # save_path = os.path.join(self.charts_dir, file_name)
+        # fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        # logger.info(f"在售数量图已保存至: {save_path}")
 
         # 关闭图表，释放内存
-        plt.close(fig)
+        # plt.close(fig)
 
-        return save_path
+        # return save_path
 
     def _filter_recent_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """

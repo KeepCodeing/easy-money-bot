@@ -1162,7 +1162,7 @@ def handle_sell_rank_command(args):
         headers = {
             "Title": "Rank Detect",
             "Tags": "CS2",
-            "Priority": "2"
+            "Priority": "3"
         }
         send_notify(args.ntfy_topic, message, settings.NATY_SERVER_URL, headers=headers)
 
