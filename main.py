@@ -22,12 +22,15 @@ import random
 from src.crawler.spider import Spider
 from src.storage.database import DatabaseManager
 from config import settings
-from src.analysis.chart import KLineChart, IndicatorType
+# from src.analysis.chart import KLineChart, IndicatorType
 from src.analysis.data_cleaner import MarketDataCleaner
 from src.utils.file_utils import clean_filename
 from src.analysis.signal_summary import SignalSummary
 from src.notification.ntfy import send as send_notify
 from config import settings
+from src.crawler.dt_spider import SteamDtSpider
+from src.chart.kline import KLineChart
+from src.analysis.indicators import IndicatorType
 
 # 配置日志
 logging.basicConfig(
@@ -1231,4 +1234,27 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    spider = SteamDtSpider()
+    
+    
+    with open("data/items/test.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    kline = KLineChart(180)
+    
+    kline.plot_candlestick("Test", "test", data, IndicatorType.VEGAS)
+    # result = spider.get_favorite_items()
+    
+    # for fav in result:
+    #     for item in fav['items']:
+    #         k_line = spider.get_item_kline_history(item['item_id'])
+    #         # json.dump(kline)
+            
+    #         with open("data/items/test", "w", encoding="utf-8") as f:
+    #             json.dump(k_line, f, ensure_ascii=False, indent=2)
+            
+    #         # kline.plot_candlestick("Test", "test", k_line, IndicatorType.BOLL)
+    #         print(k_line)
+    #         break
+    # print(result)
