@@ -1250,7 +1250,7 @@ if __name__ == "__main__":
     # print(singals)
     
     
-    kline.plot_candlestick("Test", "Test", data, IndicatorType.CS_MA, singals)
+    kline.plot_candlestick("Test", "Test", data, IndicatorType.BOLL, singals)
     
     exit()
     result = spider.get_favorite_items()

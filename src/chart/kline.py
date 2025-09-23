@@ -156,7 +156,7 @@ class KLineChart:
 
         # 6. 智能绘制信号
         if signals_to_plot:
-            self._plot_signals_on_axes(df, signals_to_plot, axes)
+            self._plot_signals_on_axes(df, signals_to_plot, axes, indicator_type)
 
         # 7. 保存图表
         try:
@@ -172,10 +172,11 @@ class KLineChart:
             plt.close(fig)
             return None
 
-    def _plot_signals_on_axes(self, df: pd.DataFrame, signals: List[Dict], axes: List[plt.Axes]):
+    def _plot_signals_on_axes(self, df: pd.DataFrame, signals: List[Dict], axes: List[plt.Axes], indicator_type:IndicatorType = IndicatorType.ALL):
         logger.info(f"开始在图表上智能绘制 {len(signals)} 个信号点...")
         strategy_panel_map = {'RSI': 2, 'MACD': 3, 'Bollinger': 0, 'Vegas': 0, 'CsMa': 0}
         panel_to_ax_map = {0: axes[0], 1: axes[2], 2: axes[4], 3: axes[6]}
+        indicator_map = {IndicatorType.BOLL: "Bollinger", IndicatorType.VEGAS: "Vegas", IndicatorType.CS_MA: "CsMa"}
 
         for signal in signals:
             try:
@@ -197,7 +198,7 @@ class KLineChart:
                 if not ax: continue
                 
                 y_coord = 0
-                if panel_idx == 0:
+                if panel_idx == 0 and indicator_map[indicator_type].lower() in strategy_name.lower():
                     y_coord = signal['price']
                 elif panel_idx == 2 and 'rsi_value' in signal['details']:
                     y_coord = signal['details']['rsi_value']
@@ -206,6 +207,9 @@ class KLineChart:
 
                 marker_color = 'red' if signal_type == 'BUY' else 'green'
                 marker_shape = '^' if signal_type == 'BUY' else 'v'
+                
+                if y_coord == 0:
+                    continue
                 
                 ax.scatter(
                     date_idx, y_coord, color=marker_color, marker=marker_shape,
