@@ -47,6 +47,11 @@ class TechnicalIndicators:
         self.macd_fast = getattr(settings, 'MACD_FAST', 12)
         self.macd_slow = getattr(settings, 'MACD_SLOW', 26)
         self.macd_signal = getattr(settings, 'MACD_SIGNAL', 9)
+        
+        # (新增) CsMa 参数
+        self.cs_ma_fast = getattr(settings, 'CS_MA_FAST', 7)
+        self.cs_ma_medium = getattr(settings, 'CS_MA_MEDIUM', 56)
+        self.cs_ma_slow = getattr(settings, 'CS_MA_SLOW', 112)
     
     def calculate_bollinger_bands(self, df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
         """计算布林带指标"""
@@ -119,4 +124,23 @@ class TechnicalIndicators:
             return macd_line, signal_line, histogram
         except Exception as e:
             logger.error(f"计算MACD时出错: {e}")
+            return pd.Series(dtype=float), pd.Series(dtype=float), pd.Series(dtype=float)
+        
+    def calculate_cs_ma(self, df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
+        """
+        计算CsMa策略所需的三条移动平均线 (MA)。
+
+        Args:
+            df: 包含'Close'列的DataFrame。
+
+        Returns:
+            Tuple[pd.Series, pd.Series, pd.Series]: (MA快线, MA中线, MA慢线)。
+        """
+        try:
+            ma_fast = df['Close'].rolling(window=self.cs_ma_fast).mean()
+            ma_medium = df['Close'].rolling(window=self.cs_ma_medium).mean()
+            ma_slow = df['Close'].rolling(window=self.cs_ma_slow).mean()
+            return ma_fast, ma_medium, ma_slow
+        except Exception as e:
+            logger.error(f"计算CS MA时出错: {e}")
             return pd.Series(dtype=float), pd.Series(dtype=float), pd.Series(dtype=float)

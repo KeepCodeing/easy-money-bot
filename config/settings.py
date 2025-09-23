@@ -165,3 +165,5 @@ NATY_TOPIC_BUY_SELL_NOTIFY = os.getenv("NATY_TOPIC_BUY_SELL_NOTIFY", "catch_mone
 NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh")  # change it on .env
 AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")  # change it on .env
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "") # chang it on .env
+
+STRATEGYS = ["RSI"]

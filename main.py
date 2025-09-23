@@ -18,6 +18,7 @@ import re
 import pandas as pd
 import numpy as np
 import random
+from src.strategy.StrategyCenter import StrategyCenter
 
 from src.crawler.spider import Spider
 from src.storage.database import DatabaseManager
@@ -1244,6 +1245,9 @@ if __name__ == "__main__":
     kline = KLineChart(180)
     
     kline.plot_candlestick("Test", "test", data, IndicatorType.VEGAS)
+    
+    strategy = StrategyCenter()
+    strategy.run_strategies(data)
     # result = spider.get_favorite_items()
     
     # for fav in result:
