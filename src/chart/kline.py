@@ -90,10 +90,6 @@ class KLineChart:
         # --- 2. 核心修复：在全量数据上计算所有指标 ---
         logger.debug(f"在 {len(df_full)} 条完整数据上计算指标...")
         
-        # 主图指标
-        middle_full, upper_full, lower_full = self.indicators_calculator.calculate_bollinger_bands(df_full)
-        vegas_ema1, vegas_ema2, vegas_ema3 = self.indicators_calculator.calculate_vegas_tunnel(df_full)
-        
         # 副图指标
         vol_ma1_full, vol_ma2_full, vol_ma3_full = self.indicators_calculator.calculate_volume_ma(df_full)
         rsi_full = self.indicators_calculator.calculate_rsi(df_full)
@@ -106,6 +102,8 @@ class KLineChart:
         # --- 4. 准备 addplots，并从全量指标中截取对应部分 ---
         addplots = []
         if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
+            # 主图指标
+            middle_full, upper_full, lower_full = self.indicators_calculator.calculate_bollinger_bands(df_full)
             addplots.extend([
                 mpf.make_addplot(middle_full[df.index], color='yellow', linestyle='--'),
                 mpf.make_addplot(upper_full[df.index], color='red', linestyle='--'),
@@ -113,6 +111,8 @@ class KLineChart:
             ])
             
         if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
+            # 主图指标
+            vegas_ema1, vegas_ema2, vegas_ema3 = self.indicators_calculator.calculate_vegas_tunnel(df_full)
             addplots.extend([
                 mpf.make_addplot(vegas_ema1[df.index], color='red', linestyle='-'),
                 mpf.make_addplot(vegas_ema2[df.index], color='blue', linestyle='-'),
@@ -163,7 +163,6 @@ class KLineChart:
             return None
 
     def _plot_signals_on_axes(self, df: pd.DataFrame, signals: List[Dict], axes: List[plt.Axes]):
-        # ... (此方法无需修改，保持原样) ...
         logger.info(f"开始在图表上智能绘制 {len(signals)} 个信号点...")
         strategy_panel_map = {'RSI': 2, 'MACD': 3, 'Bollinger': 0, 'Vegas': 0, 'CsMa': 0}
         panel_to_ax_map = {0: axes[0], 1: axes[2], 2: axes[4], 3: axes[6]}

@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-基于MACD指标的交叉策略。
+基于MACD指标的交叉策略 (支持全量历史数据扫描)。
 """
 
 import logging
-import pandas as pd
 from typing import List, Dict, Any
 
+import pandas as pd
 from .StrategyInterface import StrategyInterface
 
 logger = logging.getLogger(__name__)
@@ -25,75 +25,122 @@ class MacdStrategy(StrategyInterface):
         初始化MACD策略。
         """
         super().__init__()
-        # 从指标计算器中获取MACD参数，动态生成策略名称
         fast = self.indicators_calculator.macd_fast
         slow = self.indicators_calculator.macd_slow
         signal = self.indicators_calculator.macd_signal
         self.strategy_name = f"MACD_Cross_{fast}_{slow}_{signal}"
 
-    def detect(self,  df: pd.DataFrame) -> List[Dict[str, Any]]:
+    def detect(self, df: pd.DataFrame, mode: str = 'newest') -> List[Dict[str, Any]]:
         """
         执行MACD交叉策略检测。
 
         Args:
-            raw_kline_data (List[list]): 原始K线数据。
+            df (pd.DataFrame): 预处理好的K线数据。
+            mode (str, optional): 检测模式。
+                                  'newest': 只检测最新的数据点。
+                                  'full': 检测全部历史数据点。
+                                  默认为 'newest'。
 
         Returns:
             List[Dict[str, Any]]: 信号列表。
         """
-        signals = []
-
-        # 需要足够的数据来计算MACD并判断交叉，至少需要慢线周期+信号线周期
         required_len = self.indicators_calculator.macd_slow + self.indicators_calculator.macd_signal
         if df.empty or len(df) < required_len:
-            logger.warning(f"数据不足 ({len(df)} < {required_len})，无法计算MACD交叉。")
-            return signals
+            logger.warning(f"数据不足 ({len(df)} < {required_len})，无法计算 MACD交叉。")
+            return []
 
-        # 1. 计算MACD指标
+        # 1. 对全量数据一次性计算MACD指标
         macd_line, signal_line, _ = self.indicators_calculator.calculate_macd(df)
-        if macd_line.empty or signal_line.empty or macd_line.isna().all():
-            return signals
+        if macd_line.isna().all() or signal_line.isna().all():
+            return []
+        
+        signals = []
+        
+        # 2. 根据模式执行不同逻辑
+        if mode == 'newest':
+            # --- 原有逻辑：只处理最新点 ---
+            # 确保有至少两个点可以比较
+            valid_macd = macd_line.dropna()
+            valid_signal = signal_line.dropna()
+            if len(valid_macd) < 2 or len(valid_signal) < 2:
+                return []
             
-        # 2. 获取最新和次新的数据点以判断交叉
-        # 我们需要至少两个非NaN值来比较
-        macd_line = macd_line.dropna()
-        signal_line = signal_line.dropna()
+            signal_type, details = self._check_cross_condition(
+                macd_line.iloc[-2], macd_line.iloc[-1],
+                signal_line.iloc[-2], signal_line.iloc[-1]
+            )
+            
+            if signal_type:
+                signal = self._create_signal_dict(
+                    timestamp=df.index[-1],
+                    price=df['Close'].iloc[-1],
+                    signal_type=signal_type,
+                    details=details
+                )
+                signals.append(signal)
+
+        elif mode == 'full':
+            # --- 新逻辑：遍历全量数据 ---
+            # 将指标合并到DataFrame中以便对齐和遍历
+            df_merged = df.copy()
+            df_merged['macd'] = macd_line
+            df_merged['signal'] = signal_line
+            df_merged.dropna(inplace=True) # 去掉无法计算指标的早期数据
+
+            # 从第二个有效数据点开始遍历，以便和前一个点比较
+            for i in range(1, len(df_merged)):
+                prev_row = df_merged.iloc[i-1]
+                curr_row = df_merged.iloc[i]
+                
+                signal_type, details = self._check_cross_condition(
+                    prev_row['macd'], curr_row['macd'],
+                    prev_row['signal'], curr_row['signal']
+                )
+
+                if signal_type:
+                    signal = self._create_signal_dict(
+                        timestamp=curr_row.name, # .name是索引(即时间戳)
+                        price=curr_row['Close'],
+                        signal_type=signal_type,
+                        details=details
+                    )
+                    signals.append(signal)
         
-        if len(macd_line) < 2 or len(signal_line) < 2:
-            return signals
+        else:
+            logger.warning(f"未知的检测模式: '{mode}'。请使用 'newest' 或 'full'。")
 
-        latest_macd = macd_line.iloc[-1]
-        prev_macd = macd_line.iloc[-2]
+        if signals:
+            logger.info(f"策略 {self.strategy_name} 在模式 '{mode}' 下检测到 {len(signals)} 个信号。")
         
-        latest_signal_line = signal_line.iloc[-1]
-        prev_signal_line = signal_line.iloc[-2]
-
-        latest_timestamp = df.index[-1]
-        latest_price = df.iloc[-1]['Close']
-
-        # 3. 判断信号
-        signal_type = None
-        # 判断金叉 (Buy Signal)
-        if prev_macd < prev_signal_line and latest_macd > latest_signal_line:
-            signal_type = 'buy'
-        # 判断死叉 (Sell Signal)
-        elif prev_macd > prev_signal_line and latest_macd < latest_signal_line:
-            signal_type = 'sell'
-        
-        # 4. 如果有信号，则构建并添加信号字典
-        if signal_type:
-            signal = {
-                'strategy': self.strategy_name,
-                'type': signal_type,
-                'price': latest_price,
-                'timestamp': latest_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                'details': {
-                    'cross_type': 'Golden Cross' if signal_type == 'buy' else 'Death Cross',
-                    'macd_line': round(latest_macd, 2),
-                    'signal_line': round(latest_signal_line, 2)
-                }
-            }
-            signals.append(signal)
-            logger.info(f"策略 {self.strategy_name} 检测到信号: {signal}")
-
         return signals
+
+    def _check_cross_condition(self, prev_macd, curr_macd, prev_signal, curr_signal) -> (str | None, Dict | None):
+        """辅助函数：检查两个时间点的MACD线和信号线是否发生交叉"""
+        details = None
+        # 金叉
+        if prev_macd < prev_signal and curr_macd > curr_signal:
+            details = {
+                'cross_type': 'Golden Cross',
+                'macd_line': round(curr_macd, 2),
+                'signal_line': round(curr_signal, 2)
+            }
+            return 'buy', details
+        # 死叉
+        elif prev_macd > prev_signal and curr_macd < curr_signal:
+            details = {
+                'cross_type': 'Death Cross',
+                'macd_line': round(curr_macd, 2),
+                'signal_line': round(curr_signal, 2)
+            }
+            return 'sell', details
+        return None, None
+
+    def _create_signal_dict(self, timestamp, price, signal_type, details) -> Dict[str, Any]:
+        """辅助函数：创建标准格式的信号字典"""
+        return {
+            'strategy': self.strategy_name,
+            'type': signal_type,
+            'price': price,
+            'timestamp': pd.to_datetime(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+            'details': details
+        }

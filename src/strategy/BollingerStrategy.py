@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """
-基于布林带（Bollinger Bands）的通道突破策略。
+基于布林带（Bollinger Bands）的通道突破策略 (支持全量历史数据扫描)。
 """
 
 import logging
-import pandas as pd
 from typing import List, Dict, Any
 
+import pandas as pd
 from .StrategyInterface import StrategyInterface
 from config import settings
 
@@ -26,90 +26,124 @@ class BollingerStrategy(StrategyInterface):
                  lower_tolerance: float = settings.BOLL_TOLERANCE_LOWER):
         """
         初始化布林带策略的特定参数。
-
-        Args:
-            upper_tolerance (float): 上轨的触碰容差百分比 (例如, 0.01 代表 1%)。
-            lower_tolerance (float): 下轨的触碰容差百分比。
         """
         super().__init__()
         self.upper_tolerance = upper_tolerance
         self.lower_tolerance = lower_tolerance
         
-        # 从指标计算器中获取布林带参数，动态生成策略名称
         period = self.indicators_calculator.boll_period
         std = self.indicators_calculator.boll_std
         self.strategy_name = f"Bollinger_{period}_{std}"
 
-    def detect(self,  df: pd.DataFrame) -> List[Dict[str, Any]]:
+    def detect(self, df: pd.DataFrame, mode: str = 'newest') -> List[Dict[str, Any]]:
         """
         执行布林带策略检测。
 
         Args:
-            raw_kline_data (List[list]): 原始K线数据。
-
+            df (pd.DataFrame): 预处理好的K线数据。
+            mode (str, optional): 检测模式。
+                                  'newest': 只检测最新的数据点。
+                                  'full': 检测全部历史数据点。
+                                  默认为 'newest'。
         Returns:
             List[Dict[str, Any]]: 信号列表。
         """
-        signals = []
-
         if df.empty or len(df) < self.indicators_calculator.boll_period:
             logger.warning("数据不足，无法计算布林带。")
-            return signals
+            return []
 
-        # 1. 计算布林带指标
+        # 1. 对全量数据一次性计算布林带指标
         middle, upper, lower = self.indicators_calculator.calculate_bollinger_bands(df)
         if upper.isna().all() or lower.isna().all():
-            return signals
-
-        # 2. 获取最新数据点的信息
-        latest_data = df.iloc[-1]
-        latest_timestamp = df.index[-1]
+            return []
         
-        # 为了更精确地判断触碰，我们同时考虑最高/最低价和收盘价
-        latest_high = latest_data['High']
-        latest_low = latest_data['Low']
-        latest_close = latest_data['Close']
+        signals = []
+
+        # 2. 根据模式执行不同逻辑
+        if mode == 'newest':
+            # --- 原有逻辑：只处理最新点 ---
+            if upper.isna().iloc[-1] or lower.isna().iloc[-1]: return []
+            
+            latest_data = df.iloc[-1]
+            signal_type, details = self._check_signal_condition(
+                latest_data, middle.iloc[-1], upper.iloc[-1], lower.iloc[-1]
+            )
+            
+            if signal_type:
+                signal = self._create_signal_dict(
+                    timestamp=df.index[-1],
+                    price=latest_data['Close'],
+                    signal_type=signal_type,
+                    details=details
+                )
+                signals.append(signal)
+
+        elif mode == 'full':
+            # --- 新逻辑：遍历全量数据 ---
+            for i in range(len(df)):
+                # 跳过指标无效的早期数据
+                if pd.isna(upper.iloc[i]) or pd.isna(lower.iloc[i]):
+                    continue
+
+                current_data = df.iloc[i]
+                signal_type, details = self._check_signal_condition(
+                    current_data, middle.iloc[i], upper.iloc[i], lower.iloc[i]
+                )
+
+                if signal_type:
+                    signal = self._create_signal_dict(
+                        timestamp=df.index[i],
+                        price=current_data['Close'],
+                        signal_type=signal_type,
+                        details=details
+                    )
+                    signals.append(signal)
         
-        latest_upper_band = upper.iloc[-1]
-        latest_lower_band = lower.iloc[-1]
+        else:
+            logger.warning(f"未知的检测模式: '{mode}'。请使用 'newest' 或 'full'。")
 
-        # 3. 判断信号
-        signal_type = None
-        price_at_signal = 0.0
-
-        # 判断卖出信号 (触碰上轨)
-        # 只要最高价超过上轨减去容差的阈值，就认为触碰
-        upper_threshold = latest_upper_band * (1 - self.upper_tolerance)
-        if latest_high >= upper_threshold:
-            signal_type = 'sell'
-            price_at_signal = latest_close # 使用收盘价作为信号价格
-
-        # 判断买入信号 (触碰下轨)
-        # 只要最低价低于下轨加上容差的阈值，就认为触碰
-        lower_threshold = latest_lower_band * (1 + self.lower_tolerance)
-        if latest_low <= lower_threshold:
-            # 如果同时满足买入和卖出条件（例如在极宽的K线中），通常以买入优先或根据具体规则
-            # 这里我们简单地让买入信号覆盖卖出信号
-            signal_type = 'buy'
-            price_at_signal = latest_close
-
-        # 4. 如果有信号，则构建并添加信号字典
-        if signal_type:
-            signal = {
-                'strategy': self.strategy_name,
-                'type': signal_type,
-                'price': price_at_signal,
-                'timestamp': latest_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                'details': {
-                    'close_price': latest_close,
-                    'high_price': latest_high,
-                    'low_price': latest_low,
-                    'upper_band': round(latest_upper_band, 2),
-                    'middle_band': round(middle.iloc[-1], 2),
-                    'lower_band': round(latest_lower_band, 2)
-                }
-            }
-            signals.append(signal)
-            logger.info(f"策略 {self.strategy_name} 检测到信号: {signal}")
-
+        if signals:
+            logger.info(f"策略 {self.strategy_name} 在模式 '{mode}' 下检测到 {len(signals)} 个信号。")
+        
         return signals
+
+    def _check_signal_condition(self, data_point, middle_band, upper_band, lower_band) -> (str | None, Dict | None):
+        """辅助函数：检查单个数据点的价格是否触碰布林带轨道"""
+        high_price = data_point['High']
+        low_price = data_point['Low']
+        
+        signal_type = None
+        
+        # 检查卖出信号 (触碰上轨)
+        upper_threshold = upper_band * (1 - self.upper_tolerance)
+        if high_price >= upper_threshold:
+            signal_type = 'sell'
+
+        # 检查买入信号 (触碰下轨)
+        lower_threshold = lower_band * (1 + self.lower_tolerance)
+        if low_price <= lower_threshold:
+            # 在宽幅震荡日，可能同时触碰上下轨，这里让买入信号优先
+            signal_type = 'buy'
+            
+        if signal_type:
+            details = {
+                'close_price': data_point['Close'],
+                'high_price': high_price,
+                'low_price': low_price,
+                'upper_band': round(upper_band, 2),
+                'middle_band': round(middle_band, 2),
+                'lower_band': round(lower_band, 2)
+            }
+            return signal_type, details
+            
+        return None, None
+
+    def _create_signal_dict(self, timestamp, price, signal_type, details) -> Dict[str, Any]:
+        """辅助函数：创建标准格式的信号字典"""
+        return {
+            'strategy': self.strategy_name,
+            'type': signal_type,
+            'price': price,
+            'timestamp': pd.to_datetime(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+            'details': details
+        }
