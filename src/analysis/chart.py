@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-图表绘制模块 (支持分面板信号绘制)
+图表绘制模块 (已支持CsMa指标绘制和分面板信号绘制)
 """
 
 import os
@@ -19,7 +19,7 @@ from config import settings
 from src.utils.file_utils import clean_filename
 from .indicators import TechnicalIndicators, IndicatorType
 
-# --- 日志和字体配置 (保持不变) ---
+# --- 日志和字体配置 ---
 logger = logging.getLogger(__name__)
 
 try:
@@ -39,7 +39,6 @@ class KLineChart:
     一个纯粹的K线图绘制器，支持在主图和副图上绘制不同策略的信号。
     """
     def __init__(self, days_to_show: int = 90, save_dir: Optional[str] = None):
-        # ... (__init__, _create_chart_style, _prepare_dataframe 方法保持不变) ...
         self.days_to_show = days_to_show
         self.charts_dir = save_dir or os.path.join(settings.DATA_DIR, "charts")
         if not os.path.exists(self.charts_dir):
@@ -60,7 +59,10 @@ class KLineChart:
 
     def _prepare_dataframe(self, raw_kline_data: List[list]) -> pd.DataFrame:
         if not raw_kline_data: return pd.DataFrame()
-        df = pd.DataFrame(raw_kline_data, columns=['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'Amount'])
+        df = pd.DataFrame(
+            raw_kline_data,
+            columns=['Time', 'Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
+        )
         df['Time'] = pd.to_datetime(df['Time'].astype(int), unit='s')
         df.set_index('Time', inplace=True)
         numeric_cols = ['Open', 'Close', 'High', 'Low', 'Volume', 'Amount']
@@ -77,49 +79,58 @@ class KLineChart:
         indicator_type: IndicatorType = IndicatorType.ALL,
         signals_to_plot: Optional[List[Dict]] = None
     ) -> Optional[str]:
-        """
-        绘制K线图，并根据策略类型在相应面板上标注信号。
-        """
         if not raw_kline_data:
             logger.warning(f"商品 {item_name} ({item_id}) 没有数据，无法绘制。")
             return None
 
-        # --- 1. 数据和指标准备 ---
+        # 1. 数据准备和指标计算（在全量数据上）
         df_full = self._prepare_dataframe(raw_kline_data)
         if df_full.empty: return None
+
+        # --- 在全量数据上计算所有指标 ---
+        middle_full, upper_full, lower_full = self.indicators_calculator.calculate_bollinger_bands(df_full)
+        cs_ma7_full, cs_ma56_full, cs_ma112_full = self.indicators_calculator.calculate_cs_ma(df_full)
+        vol_ma1_full, vol_ma2_full, vol_ma3_full = self.indicators_calculator.calculate_volume_ma(df_full)
+        rsi_full = self.indicators_calculator.calculate_rsi(df_full)
+        macd_line_full, signal_line_full, histogram_full = self.indicators_calculator.calculate_macd(df_full)
+        
+        # 2. 截取用于显示的数据
         df = df_full.tail(self.days_to_show)
 
+        # 3. 准备 addplots
         addplots = []
-        # 主图指标
         if indicator_type in [IndicatorType.BOLL, IndicatorType.ALL]:
-            middle, upper, lower = self.indicators_calculator.calculate_bollinger_bands(df)
             addplots.extend([
-                mpf.make_addplot(middle, color='yellow', linestyle='--'),
-                mpf.make_addplot(upper, color='red', linestyle='--'),
-                mpf.make_addplot(lower, color='green', linestyle='--'),
+                mpf.make_addplot(middle_full[df.index], color='yellow', linestyle='--'),
+                mpf.make_addplot(upper_full[df.index], color='red', linestyle='--'),
+                mpf.make_addplot(lower_full[df.index], color='green', linestyle='--'),
             ])
-        if indicator_type in [IndicatorType.VEGAS, IndicatorType.ALL]:
-            # ... Vegas, CsMa 等均线指标绘制 ...
-            pass
-            
-        # 副图指标
-        vol_ma1, vol_ma2, vol_ma3 = self.indicators_calculator.calculate_volume_ma(df)
+        
+        # (新增) 绘制 CsMa 指标
+        if indicator_type in [IndicatorType.ALL]: # 您可以创建一个新的IndicatorType.CSMA
+            addplots.extend([
+                mpf.make_addplot(cs_ma7_full[df.index], color='lightblue', width=1),
+                mpf.make_addplot(cs_ma56_full[df.index], color='orange', width=1.5),
+                mpf.make_addplot(cs_ma112_full[df.index], color='purple', width=2),
+            ])
+        
+        # Panel 1: 成交量MA
         addplots.extend([
-            mpf.make_addplot(vol_ma1, panel=1, color='blue', alpha=0.7),
-            mpf.make_addplot(vol_ma2, panel=1, color='orange', alpha=0.7),
-            mpf.make_addplot(vol_ma3, panel=1, color='purple', alpha=0.7),
+            mpf.make_addplot(vol_ma1_full[df.index], panel=1, color='blue', alpha=0.7),
+            mpf.make_addplot(vol_ma2_full[df.index], panel=1, color='orange', alpha=0.7),
+            mpf.make_addplot(vol_ma3_full[df.index], panel=1, color='purple', alpha=0.7),
         ])
-        rsi = self.indicators_calculator.calculate_rsi(df)
-        addplots.append(mpf.make_addplot(rsi, panel=2, color='orange', ylabel='RSI'))
+        # Panel 2: RSI
+        addplots.append(mpf.make_addplot(rsi_full[df.index], panel=2, color='orange', ylabel='RSI'))
         addplots.append(mpf.make_addplot(pd.Series(70, index=df.index), panel=2, color='r', linestyle=':'))
         addplots.append(mpf.make_addplot(pd.Series(30, index=df.index), panel=2, color='g', linestyle=':'))
-        macd_line, signal_line, histogram = self.indicators_calculator.calculate_macd(df)
-        colors = ['green' if v >= 0 else 'red' for v in histogram]
-        addplots.append(mpf.make_addplot(histogram, panel=3, type='bar', color=colors, ylabel='MACD'))
-        addplots.append(mpf.make_addplot(macd_line, panel=3, color='blue'))
-        addplots.append(mpf.make_addplot(signal_line, panel=3, color='orange'))
+        # Panel 3: MACD
+        colors = ['green' if v >= 0 else 'red' for v in histogram_full[df.index]]
+        addplots.append(mpf.make_addplot(histogram_full[df.index], panel=3, type='bar', color=colors, ylabel='MACD'))
+        addplots.append(mpf.make_addplot(macd_line_full[df.index], panel=3, color='blue'))
+        addplots.append(mpf.make_addplot(signal_line_full[df.index], panel=3, color='orange'))
 
-        # --- 2. 绘制图表 ---
+        # 4. 绘制图表
         chart_title = f"{item_name} ({len(df)}天)"
         panel_ratios = (6, 2, 2, 2)
         fig, axes = mpf.plot(
@@ -128,11 +139,11 @@ class KLineChart:
             panel_ratios=panel_ratios, datetime_format="%m/%d", title=f"\n{chart_title}"
         )
 
-        # --- 3. 智能绘制信号 ---
+        # 5. 智能绘制信号
         if signals_to_plot:
             self._plot_signals_on_axes(df, signals_to_plot, axes)
 
-        # --- 4. 保存图表 ---
+        # 6. 保存图表
         try:
             safe_title = clean_filename(item_name)
             file_name = f"{safe_title}_{item_id}.png"
@@ -147,64 +158,32 @@ class KLineChart:
             return None
 
     def _plot_signals_on_axes(self, df: pd.DataFrame, signals: List[Dict], axes: List[plt.Axes]):
-        """
-        辅助函数：根据策略类型将信号绘制到正确的面板上。
-        """
+        # ... (此方法无需修改，保持原样) ...
         logger.info(f"开始在图表上智能绘制 {len(signals)} 个信号点...")
-        
-        # 定义策略与面板的映射关系
-        # Key: 策略名中包含的关键字, Value: 对应的面板索引 (axes index)
-        strategy_panel_map = {
-            'RSI': 2,       # RSI 信号绘制在 panel 2 (axes[2])
-            'MACD': 3,      # MACD 信号绘制在 panel 3 (axes[4] - 因为vol副图占了axes[1], mplfinance的axes索引比较特殊)
-            'Bollinger': 0, # 布林带信号绘制在主图 (axes[0])
-            'Vegas': 0,
-            'CsMa': 0
-        }
-        
-        # mplfinance的axes索引比较特殊,副图从偶数位开始: 0=主图, 2=Panel1(vol), 4=Panel2(rsi), 6=Panel3(macd)
-        # 我们需要一个转换
+        strategy_panel_map = {'RSI': 2, 'MACD': 3, 'Bollinger': 0, 'Vegas': 0, 'CsMa': 0}
         panel_to_ax_map = {0: axes[0], 1: axes[2], 2: axes[4], 3: axes[6]}
 
         for signal in signals:
             try:
                 signal_date = pd.to_datetime(signal['timestamp'])
                 if signal_date not in df.index:
-                    continue # 如果信号不在当前显示范围，则跳过
-
+                    continue
                 date_idx = df.index.get_loc(signal_date)
                 signal_type = signal['type'].upper()
                 strategy_name = signal['strategy']
-
-                # 确定信号应绘制在哪个面板
-                panel_idx = 0 # 默认为主图
+                panel_idx = 0
                 for key, idx in strategy_panel_map.items():
                     if key.lower() in strategy_name.lower():
                         panel_idx = idx
                         break
-                
                 ax = panel_to_ax_map.get(panel_idx)
-                if not ax:
-                    logger.warning(f"找不到策略 '{strategy_name}' 对应的绘图面板。")
-                    continue
-                
-                # 确定信号的Y轴坐标
+                if not ax: continue
                 y_coord = 0
-                if panel_idx == 0: # 主图信号
-                    y_coord = signal['price']
-                elif panel_idx == 2: # RSI
-                    y_coord = signal['details']['rsi_value']
-                elif panel_idx == 3: # MACD
-                    y_coord = signal['details']['macd_line']
-
-                # 绘制标记
+                if panel_idx == 0: y_coord = signal['price']
+                elif panel_idx == 2 and 'rsi_value' in signal['details']: y_coord = signal['details']['rsi_value']
+                elif panel_idx == 3 and 'macd_line' in signal['details']: y_coord = signal['details']['macd_line']
                 marker_color = 'red' if signal_type == 'BUY' else 'green'
                 marker_shape = '^' if signal_type == 'BUY' else 'v'
-                
-                ax.scatter(
-                    date_idx, y_coord, color=marker_color, marker=marker_shape,
-                    s=120, edgecolors='white', zorder=10
-                )
-
+                ax.scatter(date_idx, y_coord, color=marker_color, marker=marker_shape, s=120, edgecolors='white', zorder=10)
             except Exception as e:
                 logger.warning(f"绘制信号点失败: {signal}, 错误: {e}")

@@ -118,6 +118,16 @@ class KLineChart:
                 mpf.make_addplot(vegas_ema2[df.index], color='blue', linestyle='-'),
                 mpf.make_addplot(vegas_ema3[df.index], color='green', linestyle='-'),
             ])
+            
+         # (新增) 绘制 CsMa 指标
+        if indicator_type in [IndicatorType.CS_MA, IndicatorType.ALL]: # 您可以创建一个新的IndicatorType.CSMA
+            cs_ma7_full, cs_ma56_full, cs_ma112_full = self.indicators_calculator.calculate_cs_ma(df_full)
+            addplots.extend([
+                mpf.make_addplot(cs_ma7_full[df.index], color='lightblue', width=1),
+                mpf.make_addplot(cs_ma56_full[df.index], color='orange', width=1.5),
+                mpf.make_addplot(cs_ma112_full[df.index], color='purple', width=2),
+            ])
+        
         
         # Panel 1: 成交量MA
         addplots.extend([

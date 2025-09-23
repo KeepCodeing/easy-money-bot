@@ -19,6 +19,7 @@ class IndicatorType(Enum):
     """指标类型枚举"""
     BOLL = "boll"
     VEGAS = "vegas"
+    CS_MA = "CsMa"
     ALL = "all"
 
 class TechnicalIndicators:

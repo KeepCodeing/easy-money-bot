@@ -166,4 +166,4 @@ NATY_SERVER_URL = os.getenv("NATY_SERVER_URL", "https://ntfy.sh")  # change it o
 AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")  # change it on .env
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "") # chang it on .env
 
-STRATEGYS = ["RSI", "MACD", "Vegas"]
+STRATEGYS = ['RSI', 'MACD', 'Bollinger', 'Vegas', 'CsMa']
