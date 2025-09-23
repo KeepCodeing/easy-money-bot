@@ -67,7 +67,7 @@ class StrategyCenter:
             logger.error(f"在策略中心准备DataFrame时出错: {e}")
             return pd.DataFrame()
 
-    def run_strategies(self, raw_kline_data: List[list]) -> List[Dict[str, Any]]:
+    def run_strategies(self, raw_kline_data: List[list], mode: str = "newest") -> List[Dict[str, Any]]:
         """
         统一的策略执行入口 (已优化)。
         """
@@ -94,7 +94,7 @@ class StrategyCenter:
             try:
                 strategy_instance: StrategyInterface = strategy_class()
                 # 将预处理好的DataFrame传递给每个策略
-                signals = strategy_instance.detect(df) 
+                signals = strategy_instance.detect(df, mode) 
                 if signals:
                     all_signals.extend(signals)
             except Exception as e:

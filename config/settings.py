@@ -90,7 +90,7 @@ FAV_LIST_ID = [
 ]
 
 # 策略参数
-CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 2))  # 4 * 90 = 360天
+CATEGORY_MONTH = int(os.getenv("CATEGORY_MONTH", 4))  # 4 * 90 = 360天
 CATEGORY_DAYS = int(os.getenv("CATEGORY_DAYS", 90))  # 360天
 
 BOLLINGER_PERIOD = int(os.getenv("BOLLINGER_PERIOD", 20))  # 布林线周期

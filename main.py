@@ -1239,26 +1239,30 @@ if __name__ == "__main__":
     spider = SteamDtSpider()
     
     
-    with open("data/items/test.json", "r", encoding="utf-8") as f:
+    with open("data/items/残酷的达里尔爵士（头盖骨）| 专业人士.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     
     kline = KLineChart(180)
     
-    kline.plot_candlestick("Test", "test", data, IndicatorType.VEGAS)
     
     strategy = StrategyCenter()
-    strategy.run_strategies(data)
-    # result = spider.get_favorite_items()
+    singals = strategy.run_strategies(data, "full")
+    # print(singals)
     
-    # for fav in result:
-    #     for item in fav['items']:
-    #         k_line = spider.get_item_kline_history(item['item_id'])
-    #         # json.dump(kline)
+    
+    kline.plot_candlestick("Test", "Test", data, IndicatorType.VEGAS, singals)
+    
+    exit()
+    result = spider.get_favorite_items()
+    
+    for fav in result:
+        for item in fav['items']:
+            k_line = spider.get_item_kline_history(item['item_id'])
+
+            with open(f"data/items/{item['name']}.json", "w", encoding="utf-8") as f:
+                json.dump(k_line, f, ensure_ascii=False, indent=2)
             
-    #         with open("data/items/test", "w", encoding="utf-8") as f:
-    #             json.dump(k_line, f, ensure_ascii=False, indent=2)
-            
-    #         # kline.plot_candlestick("Test", "test", k_line, IndicatorType.BOLL)
-    #         print(k_line)
-    #         break
-    # print(result)
+            # kline.plot_candlestick("Test", "test", k_line, IndicatorType.BOLL)
+            print(k_line)
+            break
+    print(result)

@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-基于RSI指标的超买超卖策略。
+基于RSI指标的超买超卖策略 (支持全量历史数据扫描)。
 """
 
 import logging
-import pandas as pd
 from typing import List, Dict, Any
 
-from .StrategyInterface import StrategyInterface
-from config import settings # 引入配置以获取RSI阈值
+import pandas as pd
+from .StrategyInterface import StrategyInterface # 假设您已恢复了StrategyInterface.py
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +21,8 @@ class RsiStrategy(StrategyInterface):
     """
 
     def __init__(self,
-                 oversold_threshold: int = 30,
-                 overbought_threshold: int = 80):
+                 oversold_threshold: int = 35,
+                 overbought_threshold: int = 75):
         """
         初始化RSI策略的特定参数。
 
@@ -37,53 +36,92 @@ class RsiStrategy(StrategyInterface):
         self.strategy_name = f"RSI_{self.oversold_threshold}_{self.overbought_threshold}"
 
 
-    def detect(self,  df: pd.DataFrame) -> List[Dict[str, Any]]:
+    def detect(self, df: pd.DataFrame, mode: str = 'newest') -> List[Dict[str, Any]]:
         """
         执行RSI策略检测。
 
         Args:
-            raw_kline_data (List[list]): 原始K线数据。
+            df (pd.DataFrame): 预处理好的K线数据。
+            mode (str, optional): 检测模式。
+                                  'newest': 只检测最新的数据点 (用于实时信号)。
+                                  'full': 检测全部历史数据点 (用于回测)。
+                                  默认为 'newest'。
 
         Returns:
             List[Dict[str, Any]]: 信号列表。
         """
-        signals = []
-
         if df.empty or len(df) < self.indicators_calculator.rsi_period:
             logger.warning("数据不足，无法计算RSI。")
-            return signals
+            return []
 
-        # 1. 计算RSI指标
+        # --- 1. 计算RSI指标 (对全量数据一次性计算) ---
         rsi_series = self.indicators_calculator.calculate_rsi(df)
         if rsi_series.empty or rsi_series.isna().all():
-            return signals
-            
-        # 2. 获取最新数据点的信息
-        latest_data = df.iloc[-1]
-        latest_rsi = rsi_series.iloc[-1]
-        latest_timestamp = df.index[-1]
-        latest_price = latest_data['Close']
-
-        # 3. 判断信号
-        signal_type = None
-        if latest_rsi < self.oversold_threshold:
-            signal_type = 'buy'
-        elif latest_rsi > self.overbought_threshold:
-            signal_type = 'sell'
+            return []
         
-        # 4. 如果有信号，则构建并添加信号字典
-        if signal_type:
-            signal = {
-                'strategy': self.strategy_name,
-                'type': signal_type,
-                'price': latest_price,
-                'timestamp': latest_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                'details': {
-                    'rsi_value': round(latest_rsi, 2),
-                    'threshold': self.oversold_threshold if signal_type == 'buy' else self.overbought_threshold
-                }
-            }
-            signals.append(signal)
-            logger.info(f"策略 {self.strategy_name} 检测到信号: {signal}")
+        signals = []
 
+        # --- 2. 根据模式执行不同逻辑 ---
+        if mode == 'newest':
+            # --- 原有逻辑：只处理最新点 ---
+            latest_rsi = rsi_series.iloc[-1]
+            if pd.isna(latest_rsi): return []
+
+            latest_data = df.iloc[-1]
+            signal_type = self._check_signal_condition(latest_rsi)
+            
+            if signal_type:
+                signal = self._create_signal_dict(
+                    timestamp=df.index[-1],
+                    price=latest_data['Close'],
+                    signal_type=signal_type,
+                    rsi_value=latest_rsi
+                )
+                signals.append(signal)
+
+        elif mode == 'full':
+            # --- 新逻辑：遍历全量数据 ---
+            for i in range(len(rsi_series)):
+                current_rsi = rsi_series.iloc[i]
+                if pd.isna(current_rsi): continue
+
+                signal_type = self._check_signal_condition(current_rsi)
+
+                if signal_type:
+                    current_data = df.iloc[i]
+                    signal = self._create_signal_dict(
+                        timestamp=df.index[i],
+                        price=current_data['Close'],
+                        signal_type=signal_type,
+                        rsi_value=current_rsi
+                    )
+                    signals.append(signal)
+        
+        else:
+            logger.warning(f"未知的检测模式: '{mode}'。请使用 'newest' 或 'full'。")
+
+        if signals:
+            logger.info(f"策略 {self.strategy_name} 在模式 '{mode}' 下检测到 {len(signals)} 个信号。")
+        
         return signals
+
+    def _check_signal_condition(self, rsi_value: float) -> str | None:
+        """辅助函数：检查单点的RSI是否触发信号"""
+        if rsi_value < self.oversold_threshold:
+            return 'buy'
+        elif rsi_value > self.overbought_threshold:
+            return 'sell'
+        return None
+
+    def _create_signal_dict(self, timestamp, price, signal_type, rsi_value) -> Dict[str, Any]:
+        """辅助函数：创建标准格式的信号字典"""
+        return {
+            'strategy': self.strategy_name,
+            'type': signal_type,
+            'price': price,
+            'timestamp': pd.to_datetime(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+            'details': {
+                'rsi_value': round(rsi_value, 2),
+                'threshold': self.oversold_threshold if signal_type == 'buy' else self.overbought_threshold
+            }
+        }
