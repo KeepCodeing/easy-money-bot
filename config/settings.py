@@ -43,6 +43,12 @@ FAV_LIST_URL = os.getenv(
     "FAV_LIST_URL", "http://sdt-api.ok-skins.com/user/collect/skin/folder/v1/list"
 )  # get 请求
 
+INVENTORY_URL = os.getenv(
+    "INVENTORY_URL", "https://api.steamdt.com/user/steam/inventory/v3"
+)
+
+INVENTORY_STEAM_ID = os.getenv("INVENTORY_STEAM_ID", "")
+
 TYPE_TREND_URL = os.getenv(
     "TYPE_TREND_URL", "https://sdt-api.ok-skins.com/user/steam/type-trend/v2/item/details"
 )  # post 请求
@@ -134,8 +140,8 @@ PAGE_DELAY_MIN = 1  # 翻页最小延迟（秒）
 PAGE_DELAY_MAX = 4  # 翻页最大延迟（秒）
 FOLDER_DELAY_MIN = 2  # 收藏夹切换最小延迟（秒）
 FOLDER_DELAY_MAX = 5  # 收藏夹切换最大延迟（秒）
-ITEM_DELAY_MIN = 2  # 商品爬取最小延迟（秒）
-ITEM_DELAY_MAX = 8  # 商品爬取最大延迟（秒）
+ITEM_DELAY_MIN = 8  # 商品爬取最小延迟（秒）
+ITEM_DELAY_MAX = 15  # 商品爬取最大延迟（秒）
 
 # 用户代理列表
 USER_AGENTS = [
@@ -167,3 +173,4 @@ AUTH_TOKEN = os.getenv("AUTH_TOKEN", "")  # change it on .env
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN", "") # chang it on .env
 
 STRATEGYS = ['RSI', 'MACD', 'Bollinger', 'Vegas', 'CsMa']
+INVENTORY_STRATEGYS = ['RSI', 'Bollinger']

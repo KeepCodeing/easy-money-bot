@@ -9,7 +9,7 @@ SteamDt (steamdt) 平台爬虫实现。
 import time
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 import random
 from .spider_interface import SpiderInterface
@@ -254,7 +254,7 @@ class SteamDtSpider(SpiderInterface):
             
             # 添加延迟，避免请求过于频繁
             if i < len(timestamps) - 1:  # 最后一次请求后不需要延迟
-                delay = random.uniform(settings.PAGE_DELAY_MIN, settings.PAGE_DELAY_MAX)  # 使用配置的翻页延迟
+                delay = random.uniform(settings.ITEM_DELAY_MIN, settings.ITEM_DELAY_MAX)  # 使用配置的翻页延迟
                 logger.info(f"等待 {delay:.1f} 秒后继续...")
                 time.sleep(delay)
         
@@ -264,3 +264,44 @@ class SteamDtSpider(SpiderInterface):
             logger.warning(f"商品 {item_id} 没有获取到任何有效数据")
             
         return all_data
+    
+    def get_inventory_items(self) -> Dict[str, str]:
+        """
+        获取库存内饰品列表
+        """
+        try:
+            logger.info("开始获取库存饰品列表")
+            
+            # 准备请求参数
+            params = {
+                'timestamp': int(time.time() * 1000),  # 当前时间戳（毫秒）
+                'app_id': 730, # 魔法数字
+                'sticker_evaluate': 0, 
+                'steam_id': settings.INVENTORY_STEAM_ID
+            }
+            
+            # 发送请求
+            response = self._make_request(settings.INVENTORY_URL, method='GET', params=params)
+            
+            if not response or not response.get('success'):
+                logger.error("获取库存饰品列表失败")
+                return {}
+            
+            # 解析数据
+            inventory = response.get('data', []).get('inventory', [])
+            
+            assets = inventory.get('assets', [])
+            classinfos = inventory.get('classinfos', {})
+            
+            item_ids = {}
+            
+            for item in assets:
+                classinfoKey = item['classinfoKey']
+                item_ids[item['itemId']] = classinfos[classinfoKey]['name']
+            
+            logger.info(f"成功获取到 {len(item_ids)} 饰品信息")
+            return item_ids
+            
+        except Exception as e:
+            logger.error(f"获取库存饰品列表时发生错误: {e}")
+            return {}

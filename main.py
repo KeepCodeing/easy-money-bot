@@ -18,13 +18,11 @@ import re
 import pandas as pd
 import numpy as np
 import random
-from src.strategy.StrategyCenter import StrategyCenter
+from src.strategy.StrategyCenter import StrategyCenter, StrategyType
 
-from src.crawler.spider import Spider
 from src.storage.database import DatabaseManager
 from config import settings
 # from src.analysis.chart import KLineChart, IndicatorType
-from src.analysis.data_cleaner import MarketDataCleaner
 from src.utils.file_utils import clean_filename
 from src.analysis.signal_summary import SignalSummary
 from src.notification.ntfy import send as send_notify
@@ -1233,12 +1231,9 @@ def main():
         # 默认显示帮助信息
         parser.print_help()
 
-
-if __name__ == "__main__":
-    # main()
+def run_local_test():
     spider = SteamDtSpider()
-    
-    
+
     with open("data/items/残酷的达里尔爵士（头盖骨）| 专业人士.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     
@@ -1247,22 +1242,37 @@ if __name__ == "__main__":
     
     strategy = StrategyCenter()
     singals = strategy.run_strategies(data, "full")
-    # print(singals)
-    
-    
+
     kline.plot_candlestick("Test", "Test", data, IndicatorType.BOLL, singals)
+
+def run_favorite_folder_crawl():
+    spider = SteamDtSpider()
+    strategy = StrategyCenter()
+    fav_list = spider.get_favorite_items()
     
-    exit()
-    result = spider.get_favorite_items()
-    
-    for fav in result:
+    for fav in fav_list:
         for item in fav['items']:
             k_line = spider.get_item_kline_history(item['item_id'])
+            singals = strategy.run_strategies(k_line, "newest")
+            print(item['name'])
+            print(singals)
 
-            with open(f"data/items/{item['name']}.json", "w", encoding="utf-8") as f:
-                json.dump(k_line, f, ensure_ascii=False, indent=2)
-            
-            # kline.plot_candlestick("Test", "test", k_line, IndicatorType.BOLL)
-            print(k_line)
-            break
-    print(result)
+def run_my_categories_crawl():
+    spider = SteamDtSpider()
+    strategy = StrategyCenter(StrategyType.INVENTORY)
+    item_infos = spider.get_inventory_items()
+    
+    for item_id in item_infos:
+        k_line = spider.get_item_kline_history(item_id=item_id)
+        singals = strategy.run_strategies(k_line, "newest")
+        
+        print(item_infos[item_id])
+        print(singals)
+
+if __name__ == "__main__":
+    
+    
+    run_my_categories_crawl()
+    
+    exit()
+    run_favorite_folder_crawl()

@@ -23,6 +23,7 @@ class CsMaStrategy(StrategyInterface):
     """
 
     def __init__(self):
+        """初始化CsMa策略。"""
         super().__init__()
         fast = self.indicators_calculator.cs_ma_fast
         medium = self.indicators_calculator.cs_ma_medium
@@ -45,7 +46,9 @@ class CsMaStrategy(StrategyInterface):
 
         # 2. 根据模式执行
         if mode == 'newest':
-            if any(pd.isna(s.iloc[-2:]) for s in [df['Close'], ma7, ma56, ma112]): return []
+            # --- 核心修复：使用 .isna().any() 来检查NaN ---
+            if len(df) < 2 or any(s.iloc[-2:].isna().any() for s in [df['Close'], ma7, ma56, ma112]):
+                return []
             
             signal_type, details = self._check_signal_condition(
                 df['Close'].iloc[-2], df['Close'].iloc[-1],

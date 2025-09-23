@@ -8,7 +8,7 @@
 import abc
 import random
 import time
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Set
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -152,3 +152,17 @@ class SpiderInterface(abc.ABC):
                         [[timestamp, open, close, high, low, volume, amount], ...]
         """
         raise NotImplementedError("子类必须实现 get_item_kline_history 方法")
+    
+    @abc.abstractmethod
+    def get_inventory_items(self) -> Dict[str, str]:
+        """
+        【抽象方法】获取库存中的所有商品列表。
+
+        每个子类需要根据具体平台的API来实现此方法。
+
+        Returns:
+            List[Dict[str, str]]: 商品列表，每个商品是一个字典，
+                                  必须包含 'item_id' 和 'name' 两个键。
+                                  例如: [{'item_id': '123', 'name': 'AK-47'}]
+        """
+        raise NotImplementedError("子类必须实现 get_inventory_items 方法")

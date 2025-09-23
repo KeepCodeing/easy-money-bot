@@ -21,13 +21,20 @@ from .CsMaStrategy import CsMaStrategy
 
 logger = logging.getLogger(__name__)
 
+from enum import Enum
+
+class StrategyType(Enum):
+    """策略类型枚举"""
+    INVENTORY = "Inventory" # 库存只关注卖点
+    OTHERS = "Others"
+
 class StrategyCenter:
     """
     策略中心 (优化版)。
     数据预处理仅执行一次，然后将DataFrame分发给所有策略。
     """
 
-    def __init__(self):
+    def __init__(self, type=StrategyType.OTHERS):
         """
         初始化策略中心，注册所有可用的策略。
         """
@@ -39,7 +46,10 @@ class StrategyCenter:
             "CsMa": CsMaStrategy,
         }
         
-        self.configured_strategies = settings.STRATEGYS
+        if type == StrategyType.INVENTORY:
+            self.configured_strategies = settings.INVENTORY_STRATEGYS
+        else:
+            self.configured_strategies = settings.STRATEGYS
         
         logger.info(f"策略中心已初始化，已注册策略: {list(self._strategies.keys())}")
         logger.info(f"将按顺序执行以下策略: {self.configured_strategies}")
