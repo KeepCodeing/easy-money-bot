@@ -30,6 +30,7 @@ from config import settings
 from src.crawler.dt_spider import SteamDtSpider
 from src.chart.kline import KLineChart
 from src.analysis.indicators import IndicatorType
+from src.utils.formatter import format_signals_to_simplified_table
 
 # 配置日志
 logging.basicConfig(
@@ -1245,19 +1246,48 @@ def run_local_test():
 
     kline.plot_candlestick("Test", "Test", data, IndicatorType.BOLL, singals)
 
+def format_item_singal(name: str, singal: dict):
+    return {
+        'name': name,
+        
+    }
+
 def run_favorite_folder_crawl():
     spider = SteamDtSpider()
     strategy = StrategyCenter()
     fav_list = spider.get_favorite_items()
     
+    singals_result = {}
+    
     for fav in fav_list:
+        singals_result[fav['name']] = {
+            'sell': {},
+            'buy': {}
+        }
+        
         for item in fav['items']:
             k_line = spider.get_item_kline_history(item['item_id'])
             singals = strategy.run_strategies(k_line, "newest")
-            print(item['name'])
-            print(singals)
+            
+            sell_singals = []
+            buy_singals = []
+            
+            for singal in singals:
+                if singal['type'] == 'sell':
+                    sell_singals.append(singal)
+                else:
+                    buy_singals.append(singal)
+                    
+            if len(sell_singals):
+                singals_result[fav['name']]['sell'][item['name']] = sell_singals
+            if len(buy_singals):
+                singals_result[fav['name']]['buy'][item['name']] = buy_singals
+            
+    formatted_result = format_signals_to_simplified_table(singals_result)
 
-def run_my_categories_crawl():
+    print(formatted_result)
+
+def run_my_inventory_crawl():
     spider = SteamDtSpider()
     strategy = StrategyCenter(StrategyType.INVENTORY)
     item_infos = spider.get_inventory_items()
@@ -1272,7 +1302,7 @@ def run_my_categories_crawl():
 if __name__ == "__main__":
     
     
-    run_my_categories_crawl()
+    # run_my_inventory_crawl()
     
-    exit()
+    # exit()
     run_favorite_folder_crawl()
