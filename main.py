@@ -31,6 +31,7 @@ from src.crawler.dt_spider import SteamDtSpider
 from src.chart.kline import KLineChart
 from src.analysis.indicators import IndicatorType
 from src.utils.formatter import format_signals_to_simplified_table
+from src.notification.ntfy import send as send_ntfy
 
 # 配置日志
 logging.basicConfig(
@@ -1246,12 +1247,16 @@ def run_local_test():
 
     kline.plot_candlestick("Test", "Test", data, IndicatorType.BOLL, singals)
 
-def format_item_singal(name: str, singal: dict):
-    return {
-        'name': name,
-        
-    }
+def send_report(message: str):
 
+    headers = {
+        "Title": "CS2 Market Trading Signals",
+        "Tags": "CS2",
+        "Priority": "3"
+    }
+    
+    send_ntfy(settings.NATY_TOPIC_BUY_SELL_NOTIFY, message, url=settings.NATY_SERVER_URL, headers=headers)
+    
 def run_favorite_folder_crawl():
     spider = SteamDtSpider()
     strategy = StrategyCenter()
@@ -1285,7 +1290,9 @@ def run_favorite_folder_crawl():
             
     formatted_result = format_signals_to_simplified_table(singals_result)
 
-    print(formatted_result)
+    send_report(formatted_result)
+    
+    logger.info(formatted_result)
 
 def run_my_inventory_crawl():
     spider = SteamDtSpider()

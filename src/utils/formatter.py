@@ -15,12 +15,31 @@ def get_strategy_shorthand(strategy_name: str) -> str:
         return 'CsMa'
     return 'Unknown'
 
+def clean_item_name(name: str) -> str:
+        """
+        清理商品名称中的特殊字符
+        
+        Args:
+            name: 原始商品名称
+            
+        Returns:
+            清理后的商品名称
+        """
+        # 移除可能影响markdown表格格式的字符
+        special_chars = ['|', '*', '`', '_', '{', '}', '[', ']', '(', ')', '#', '+', '-', '.', '!']
+        cleaned_name = name
+        for char in special_chars:
+            cleaned_name = cleaned_name.replace(char, ' ')
+        # 移除多余的空格
+        cleaned_name = ' '.join(cleaned_name.split())
+        return cleaned_name
+
 def format_signals_to_simplified_table(data: Dict[str, Any]) -> str:
     """将信号字典格式化为简化的字符串表格。"""
     output_lines = []
 
     for fav_name, signals_by_type in data.items():
-        output_lines.append(f"========== 收藏夹: {fav_name} ==========")
+        output_lines.append(f"\n========== 收藏夹: {fav_name} ==========")
         
         for signal_type, items in signals_by_type.items():
             # 1. 聚合处理：按商品名称分组，合并策略和价格
@@ -47,7 +66,7 @@ def format_signals_to_simplified_table(data: Dict[str, Any]) -> str:
                 strategy_str = "/".join(sorted(list(agg_data['strategies'])))
                 # 将价格列表拼接成字符串
                 price_str = ", ".join(f"{p:.2f}" for p in agg_data['prices'])
-                rows.append([item_name, strategy_str, price_str])
+                rows.append([clean_item_name(item_name), strategy_str, price_str])
 
             # 3. 动态计算列宽 (处理中文字符)
             def get_str_width(s):
