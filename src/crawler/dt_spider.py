@@ -18,7 +18,6 @@ from .spider_interface import SpiderInterface
 from config import settings
 
 # 配置日志
-# 配置日志
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
